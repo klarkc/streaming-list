@@ -8,17 +8,25 @@
   "main": "",
   "keywords": [
     "web-components",
+    "web-component",
     "twitch.tv",
     "youtube",
     "polymer",
-    "html5"
+    "html5",
+    "seed"
   ],
   "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
-  ]
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  }
 }
