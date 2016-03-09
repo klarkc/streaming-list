@@ -1,0 +1,24 @@
+{
+  "name": "streaming-list",
+  "homepage": "https://github.com/klarkc/streaming-list",
+  "authors": [
+    "klarkc <walker@praiseweb.com.br>"
+  ],
+  "description": "A webcomponent written with Polymer for list twitch.tv and (in future) youtube streams. You will be able to filter the results by a specific game and define priority for a selected language.",
+  "main": "",
+  "keywords": [
+    "web-components",
+    "twitch.tv",
+    "youtube",
+    "polymer",
+    "html5"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
