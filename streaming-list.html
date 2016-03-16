@@ -9,19 +9,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <!--
-An element providing a solution to no problem in particular.
+A webcomponent written with Polymer to list Twitch and (in future) Youtube streams. You will be able to filter the results by a specific game and define priority for a selected language.
 
 Example:
 
-    <streaming-list></streaming-list>
-
-Example:
-
-    <streaming-list>
-      <h2>Hello streaming-list</h2>
-    </streaming-list>
+    <streaming-list lang="pt" game="Dota 2"></streaming-list>
 
 @demo demo/index.html
 @hero hero.svg
@@ -35,7 +30,16 @@ Example:
         box-sizing: border-box;
       }
     </style>
-
+    <iron-ajax
+               auto
+               url="{{apiUrl}}"
+               handle-as="json"
+               last-response="{{response}}"
+               debounce-duration="300"
+               params='{{concatParams(limit, lang, game)}}'></iron-ajax>
+    <template is="dom-repeat" items="[[response.streams]]">
+      <div>[[item.channel.display_name]]</div>
+    </template>
   </template>
 
   <script>
@@ -44,11 +48,11 @@ Example:
 
       properties: {
         /**
-         * `apiUrl` indicates the URL of twitch API server
+         * `apiUrl` indicates the URL of twitch API to list streams
          */
         apiUrl: {
           type: String,
-          value: "https://api.twitch.tv"
+          value: "https://api.twitch.tv/kraken/streams"
         },
 
         /**
@@ -74,6 +78,10 @@ Example:
           type: String,
           default: null
         }
+      },
+
+      concatParams(limit, lang, game) {
+        return JSON.stringfy({limit: limit, language: lang, game: game});
       }
     });
   </script>
