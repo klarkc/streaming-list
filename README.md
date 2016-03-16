@@ -1,4 +1,17 @@
-# streaming-list
+streaming-list
+=
+
+[![Travis][travis-image]][travis-url]
+[![Codacy][codacy-image]][codacy-url]
+[![Coverage][coverage-image]][coverage-url]
+
+[travis-image]: https://img.shields.io/travis/klarkc/streaming-list/master.svg?style=flat-square
+[travis-url]: https://travis-ci.org/klarkc/streaming-list
+[codacy-image]: https://img.shields.io/codacy/67950dc659aa4f589efd881190b5a5a0.svg
+[codacy-url]: https://www.codacy.com/app/walker/streaming-list
+[coverage-image]: https://api.codacy.com/project/badge/coverage/67950dc659aa4f589efd881190b5a5a0
+[coverage-url]: https://www.codacy.com/app/walker/streaming-list
+
 A webcomponent written with [Polymer](https://www.polymer-project.org/) for list [Twitch](https://www.twitch.tv/) and (in future) [Youtube](http://youtube.com/) streams. You will be able to filter the results by a specific game and define priority for a selected language.
 
 ## Dependencies
