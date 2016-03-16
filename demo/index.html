@@ -20,29 +20,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <p>An example of <code>&lt;streaming-list&gt;</code>:</p>
 
-    <p>Make words! <button id="saybtn">Say Something</button></p>
-    <p>Make lasers! <button id="laserbtn">Fire lasers</button></p>
-
-    <streaming-list author='{"name": "Lord Meowser", "image": "http://lorempixel.com/g/300/200/cats/"}' fancy>
-      <h2>Hello streaming-list</h2>
-    </streaming-list>
-
-    <script>
-      var seedElement = document.querySelector('streaming-list');
-
-      document.querySelector('#saybtn').addEventListener('click', function() {
-        alert(seedElement.sayHello('Hallo!'));
-      });
-
-      document.querySelector('#laserbtn').addEventListener('click', function() {
-        seedElement.fireLasers();
-      });
-
-      document.addEventListener("streaming-list-lasers", function(e) {
-        console.log(e.detail.sound);
-      });
-
-    </script>
-
+    <streaming-list></streaming-list>
   </body>
 </html>
