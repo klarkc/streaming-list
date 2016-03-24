@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
+    <script src="twitch-res.js"></script>
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../streaming-list.html">
@@ -33,26 +34,55 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script>
       suite('<streaming-list>', function() {
 
-        var myEl;
+        var myEl,
+            server,
+            request;
 
         setup(function() {
+          server = sinon.fakeServer.create();
+          server.respondWith(
+            'GET',
+            '/kraken/streams',
+            [
+              200,
+              {'Content-Type': 'application/json'},
+              document.twitchRes
+            ]
+          );
+
           myEl = fixture('streaming-list-fixture');
         });
 
-        test('defines the "apiUrl" property', function() {
-          assert.equal(myEl.apiUrl, 'https://api.twitch.tv');
+        teardown(function(){
+          server.restore();
         });
 
-        test('defines the "limit" property', function() {
-          assert.equal(myEl.limit, 5);
+        suite('when the element are created', function(){
+          test('defines the "apiUrl" property', function() {
+            assert.equal(myEl.apiUrl, 'https://api.twitch.tv/kraken/streams');
+          });
+
+          test('defines the "limit" property', function() {
+            assert.equal(myEl.limit, 5);
+          });
+
+          test('defines the "lang" property', function() {
+            assert.equal(myEl.lang, "en");
+          });
+
+          test('defines the "game" property', function() {
+            assert.equal(myEl.game, null);
+          });
         });
 
-        test('defines the "lang" property', function() {
-          assert.equal(myEl.lang, "en");
-        });
-
-        test('defines the "game" property', function() {
-          assert.equal(myEl.game, null);
+        suite('when the element is ready', function(){
+          test('generate an automatic request', function(){
+            return new Promise(function(resolve){
+              myEl.addEventListener('request', function(){
+                resolve();
+              });
+            });
+          });
         });
 
       });
