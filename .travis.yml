@@ -3,7 +3,7 @@ sudo: false
 before_script:
 - npm install -g bower polylint web-component-tester
 - bower install
-- polylint
+- polylint -i *.html demo/* test/*
 env:
   global:
   - secure: gZ5vpMlc9fuKSZeMmT6xf4+FIVWxET6f6Lkp6l5Qo9vL2X/KC/bMJF1v2w5xXFLFTdm/hPUDkeQRDUBBJhGcsXhJeWIvAXdPkObV9ZPRwpDnnN1qU5lOqVIy6gFjDm2Wm6UNXcRnyP1TrGpMwbG13EUtD0rF8LZqBm3B833sKS4=
