@@ -40,9 +40,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         setup(function() {
           server = sinon.fakeServer.create();
+          server.autoRespond = true;
           server.respondWith(
             'GET',
-            '/kraken/streams',
+            /\/kraken\/streams/,
             [
               200,
               {'Content-Type': 'application/json'},
@@ -57,7 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           server.restore();
         });
 
-        suite('when the element are created', function(){
+        suite('when the element is created', function(){
           test('defines the "apiUrl" property', function() {
             assert.equal(myEl.apiUrl, 'https://api.twitch.tv/kraken/streams');
           });
@@ -76,9 +77,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         suite('when the element is ready', function(){
-          test('generate an automatic request', function(){
+          test('auto generate one request event', function(){
             return new Promise(function(resolve){
               myEl.addEventListener('request', function(){
+                resolve();
+              });
+            });
+          });
+
+          test('auto generate one response event', function(){
+            return new Promise(function(resolve){
+              myEl.addEventListener('response', function(){
                 resolve();
               });
             });
