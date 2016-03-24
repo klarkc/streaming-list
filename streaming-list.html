@@ -31,12 +31,13 @@ Example:
       }
     </style>
     <iron-ajax
+               id="ajax"
                auto
                url="{{apiUrl}}"
                handle-as="json"
                last-response="{{response}}"
                debounce-duration="300"
-               params='{{concatParams(limit, lang, game)}}'></iron-ajax>
+               params='{{_concatParams(limit, lang, game)}}'></iron-ajax>
     <template is="dom-repeat" items="[[response.streams]]">
       <div>[[item.channel.display_name]]</div>
     </template>
@@ -45,6 +46,24 @@ Example:
   <script>
     Polymer({
       is: "streaming-list",
+
+      /**
+       * Fired when a request is sent.
+       *
+       * @event request
+       */
+
+      /**
+       * Fired when a response is received.
+       *
+       * @event response
+       */
+
+      /**
+       * Fired when an error is received.
+       *
+       * @event error
+       */
 
       properties: {
         /**
@@ -80,8 +99,34 @@ Example:
         }
       },
 
-      concatParams(limit, lang, game) {
+      listeners: {
+        'ajax.request': '_onRequest',
+        'ajax.response': '_onResponse',
+        'ajax.error': '_onError'
+      },
+
+      _concatParams: function(limit, lang, game) {
         return JSON.stringfy({limit: limit, language: lang, game: game});
+      },
+
+      _onRequest: function(event) {
+        this.fire('request', event);
+      },
+
+      _onResponse: function(event) {
+        this.fire('response', event);
+      },
+
+      _onError: function(event) {
+        this.fire('error', event);
+      },
+
+      /**
+       * Performs an AJAX request to the streaming server
+       * @returns {!IronRequestElement} Returns !IronRequestElement
+       */
+      generateRequest() {
+        return this.$.ajax.generateRequest();
       }
     });
   </script>
