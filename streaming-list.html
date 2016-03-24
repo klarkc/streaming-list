@@ -96,6 +96,16 @@ Example:
         game: {
           type: String,
           default: null
+        },
+
+        /**
+        * `response` The data retrieved from the server
+        */
+        response: {
+          type: Object,
+          value: {streams: []},
+          readOnly: true,
+          notify: true
         }
       },
 
