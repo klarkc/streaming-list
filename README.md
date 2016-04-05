@@ -15,9 +15,9 @@ streaming-list
 A webcomponent written with [Polymer](https://www.polymer-project.org/) for list [Twitch](https://www.twitch.tv/) and (in future) [Youtube](http://youtube.com/) streams. You will be able to filter the results by a specific game and define priority for a selected language.
 
 Example:
-
-    <streaming-list lang="pt" game="Dota 2"></streaming-list>
-
+```html
+<streaming-list lang="pt" game="Dota 2"></streaming-list>
+```
 It still not ready, I am working to put some logic to tap events and in the parameters.
 
 The demo and API is [available here](http://klarkc.github.io/streaming-list/).
