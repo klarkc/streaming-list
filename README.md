@@ -14,6 +14,8 @@ streaming-list
 
 A webcomponent written with [Polymer](https://www.polymer-project.org/) for list [Twitch](https://www.twitch.tv/) and (in future) [Youtube](http://youtube.com/) streams. You will be able to filter the results by a specific game and define priority for a selected language.
 
+It still not ready, I am working to put some logic to tap events and in the parameters.
+
 ## Dependencies
 
 Element dependencies are managed via [Bower](http://bower.io/). You can
