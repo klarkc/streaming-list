@@ -4,8 +4,8 @@
   "authors": [
     "klarkc <walker@praiseweb.com.br>"
   ],
-  "description": "A webcomponent written with Polymer for list twitch.tv and (in future) youtube streams. You will be able to filter the results by a specific game and define priority for a selected language.",
-  "main": "",
+  "description": "A webcomponent written with Polymer for list twitch.tv and (in future) youtube streams.",
+  "main": "streaming-list.html",
   "keywords": [
     "web-components",
     "web-component",
