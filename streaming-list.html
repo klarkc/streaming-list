@@ -111,7 +111,7 @@ Example:
                handle-as="json"
                last-response="{{response}}"
                debounce-duration="300"
-               params='{{_concatParams(limit, lang, game)}}'></iron-ajax>
+               params="{{_concatParams(limit, lang, game)}}"></iron-ajax>
     <template is="dom-repeat" items="[[response.streams]]">
       <paper-card
                   heading="[[_formatStatus(item.channel.status)]]"
