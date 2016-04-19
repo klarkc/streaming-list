@@ -1,0 +1,204 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/hardware-icons.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../paper-behaviors/paper-button-behavior.html">
+<link rel="import" href="../paper-behaviors/paper-ripple-behavior.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-card/paper-card.html">
+
+<script src="../numeral/min/numeral.min.js"></script>
+<script src="iso-639-1_flags.js"></script>
+
+<!--
+A card for a specific object returned from twitch.tv api.
+
+Example:
+
+    <twitchtv-card data="[[data_to_be_rendered]]"></twitchtv-card>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="twitchtv-card">
+  <link rel="import" type="css" href="../flag-icon-css/css/flag-icon.min.css">
+  <template>
+    <style>
+      :host {
+        box-sizing: border-box;
+      }
+
+      paper-card {
+        display: block;
+        cursor: pointer;
+        margin-bottom: 8px;
+      }
+
+      paper-card.white {
+        --paper-card-header-color: #fff;
+      }
+
+      paper-card .card-content {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+
+      paper-card .card-content > .vertical {
+        padding: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      paper-card .card-content .vertical {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+
+      paper-card::shadow .game, paper-card::shadow .title, paper-card::shadow .viewers {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        -ms-text-overflow: ellipsis;
+      }
+
+      paper-card .card-content .title {
+        @apply(--paper-font-headline);
+      }
+
+      .game, .viewers {
+        color: var(--paper-grey-600);
+        margin-left: 4px;
+      }
+
+      .game a {
+        color: var(--paper-grey-600);
+        text-decoration: none;
+      }
+
+      .game a:hover {
+        color: var(--paper-grey-800);
+      }
+
+      paper-icon-button {
+        width: 64px;
+        height: 64px;
+      }
+
+      paper-icon-button::shadow img {
+        border-radius: 50%;
+      }
+    </style>
+    <paper-card
+                heading="[[_formatStatus(data.channel.status)]]"
+                image="[[data.preview.medium]]"
+                preload-image="true"
+                class="white"
+                on-tap="_onTap"
+                >
+      <div class="card-content">
+        <paper-icon-button src="[[data.channel.logo]]" title="Go to the channel"></paper-icon-button>
+        <div class="vertical">
+          <div class="layout horizontal">
+            <span class="title flex">[[data.channel.display_name]]</span>
+            <span class$="[[_formatFlag(data.channel.language)]]" title$="[[_formatLanguage(data.channel.language)]]"></span>
+          </div>
+          <div class="layout horizontal center">
+            <iron-icon class="game" icon="hardware:videogame-asset"></iron-icon>
+            <span class="game"><a href="[[_gameUrl(data.channel.game)]]" title="View more streams from this game" target="_blank">[[data.channel.game]]</a></span>
+          </div>
+          <div class="layout horizontal center">
+            <iron-icon class="viewers" icon="icons:visibility"></iron-icon>
+            <span class="viewers">[[_formatViewers(data.viewers)]]</span>
+          </div>
+        </div>
+      </div>
+    </paper-card>
+  </template>
+  <script>
+    Polymer({
+      is: "twitchtv-card",
+      properties: {
+        /**
+         * `data` JSON Object representing source data (look Twitch.TV api for details)
+         */
+        data: {
+          type: Object,
+          default: null
+        },
+
+        /**
+        * `width` If you define width (in pixels) the card size will be fixed with the given width, this number is also used to load the preview image closest to the given width
+        */
+        width: {
+          type: Number,
+          value: null
+        },
+      },
+
+      ready: function(){
+        if(this.width) {
+          this.style.width = this.width + 'px';
+        }
+      },
+
+      _concatParams: function(limit, lang, game) {
+        return JSON.stringfy({limit: limit, language: lang, game: game});
+      },
+
+      _formatLanguage: function(language, isFlag) {
+        language = language.replace(/\-.*$/, '');
+        var filtered = languages.filter(function(data){
+          return data.code === language;
+        });
+
+        if(filtered.length < 1 || !filtered[0].flag) {
+          console.log('[streaming-list] Flag not found for language code', language, 'please report to upstream opening an issue');
+          return null;
+        }
+
+        if(isFlag) {
+          return 'flag-icon flag-icon-' + filtered[0].flag;
+        }
+
+        return filtered[0].name;
+      },
+
+      _formatFlag: function(language) {
+        return this._formatLanguage(language, true);
+      },
+
+      _formatViewers: function(views) {
+        return numeral(views).format('0.0a') + ' viewers';
+      },
+
+      _formatStatus: function(status) {
+        var cut = status.substr(0, 40)
+        if (status.length > cut.length) {
+          cut += '...';
+        }
+        return cut;
+      },
+
+      _gameUrl: function(game) {
+        return 'https://www.twitch.tv/directory/game/' + encodeURI(game);
+      },
+
+      _onTap: function(event) {
+        // Go to the video, WIP
+        window.open(this.data.channel.url, '_blank');
+      },
+    });
+  </script>
+</dom-module>

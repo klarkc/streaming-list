@@ -10,17 +10,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-icons/hardware-icons.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../paper-behaviors/paper-button-behavior.html">
-<link rel="import" href="../paper-behaviors/paper-ripple-behavior.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-card/paper-card.html">
-
-<script src="../numeral/min/numeral.min.js"></script>
-<script src="iso-639-1_flags.js"></script>
+<link rel="import" href="twitchtv-card.html">
 
 <!--
 A webcomponent written with Polymer to list Twitch and (in future) Youtube streams. You will be able to filter the results by a specific game and define priority for a selected language.
@@ -34,74 +26,16 @@ Example:
 -->
 
 <dom-module id="streaming-list">
-  <link rel="import" type="css" href="../flag-icon-css/css/flag-icon.min.css">
-
   <template>
     <style>
       :host {
         display: block;
         box-sizing: border-box;
-      }
-
-      paper-card {
-        cursor: pointer;
-        margin-bottom: 8px;
-        max-width: 320px;
-        @apply(--streaming-paper-card);
-      }
-
-      paper-card.white {
-        --paper-card-header-color: #fff;
-      }
-
-      paper-card .card-content {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
-      }
-
-      paper-card .card-content > .vertical {
-        padding: 8px;
-        white-space: nowrap;
-        overflow: hidden;
-      }
-
-      paper-card .card-content .vertical {
-        @apply(--layout-flex);
         @apply(--layout-vertical);
       }
 
-      paper-card::shadow .game, paper-card::shadow .title, paper-card::shadow .viewers {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        -o-text-overflow: ellipsis;
-        -ms-text-overflow: ellipsis;
-      }
-
-      paper-card .card-content .title {
-        @apply(--paper-font-headline);
-      }
-
-      .game, .viewers {
-        color: var(--paper-grey-600);
-        margin-left: 4px;
-      }
-
-      .game a {
-        color: var(--paper-grey-600);
-        text-decoration: none;
-      }
-
-      .game a:hover {
-        color: var(--paper-grey-800);
-      }
-
-      paper-icon-button {
-        width: 64px;
-        height: 64px;
-      }
-
-      paper-icon-button::shadow img {
-        border-radius: 50%;
+      twitchtv-card {
+        margin: 16px;
       }
     </style>
     <iron-ajax
@@ -113,31 +47,7 @@ Example:
                debounce-duration="300"
                params="{{_concatParams(limit, lang, game)}}"></iron-ajax>
     <template is="dom-repeat" items="[[response.streams]]">
-      <paper-card
-                  heading="[[_formatStatus(item.channel.status)]]"
-                  image="[[item.preview.medium]]"
-                  class="white"
-                  on-tap="_onTap"
-                  url="[[item._links.self]]"
-                  >
-        <div class="card-content">
-          <paper-icon-button src="[[item.channel.logo]]" title="Go to the channel"></paper-icon-button>
-          <div class="vertical">
-            <div class="layout horizontal">
-              <span class="title flex">[[item.channel.display_name]]</span>
-              <span class$="[[_formatFlag(item.channel.language)]]" title$="[[_formatLanguage(item.channel.language)]]"></span>
-            </div>
-            <div class="layout horizontal center">
-              <iron-icon class="game" icon="hardware:videogame-asset"></iron-icon>
-              <span class="game"><a href="[[_gameUrl(item.channel.game)]]" title="View more streams from this game" target="_blank">[[item.channel.game]]</a></span>
-            </div>
-            <div class="layout horizontal center">
-              <iron-icon class="viewers" icon="icons:visibility"></iron-icon>
-              <span class="viewers">[[_formatViewers(item.viewers)]]</span>
-            </div>
-          </div>
-        </div>
-      </paper-card>
+      <twitchtv-card data="[[item]]" width="[[width]]"></twitchtv-card>
     </template>
   </template>
 
@@ -181,6 +91,14 @@ Example:
         },
 
         /**
+        * `width` If you define width (in pixels) the container layout will be changed to wrap and the card size will be fixed with the given width
+        */
+        width: {
+          type: Number,
+          value: null
+        },
+
+        /**
          * `lang` Used to filter the language of the videos
          */
         lang: {
@@ -212,46 +130,14 @@ Example:
         'ajax.error': '_onError'
       },
 
+      ready: function(){
+        if(this.width) {
+          this.className = 'layout horizontal wrap';
+        }
+      },
+
       _concatParams: function(limit, lang, game) {
         return JSON.stringfy({limit: limit, language: lang, game: game});
-      },
-
-      _formatLanguage: function(language, isFlag) {
-        language = language.replace(/\-.*$/, '');
-        var filtered = languages.filter(function(item){
-          return item.code === language;
-        });
-
-        if(filtered.length < 1 || !filtered[0].flag) {
-          console.log('[streaming-list] Flag not found for language code', language, 'please report to upstream opening an issue');
-          return null;
-        }
-
-        if(isFlag) {
-          return 'flag-icon flag-icon-' + filtered[0].flag;
-        }
-
-        return filtered[0].name;
-      },
-
-      _formatFlag: function(language) {
-        return this._formatLanguage(language, true);
-      },
-
-      _formatViewers: function(views) {
-        return numeral(views).format('0.0a') + ' viewers';
-      },
-
-      _formatStatus: function(status) {
-        var cut = status.substr(0, 40)
-        if (status.length > cut.length) {
-          cut += '...';
-        }
-        return cut;
-      },
-
-      _gameUrl: function(game) {
-        return 'https://www.twitch.tv/directory/game/' + encodeURI(game);
       },
 
       _onRequest: function(event) {
@@ -264,11 +150,6 @@ Example:
 
       _onError: function(event) {
         this.fire('error', event);
-      },
-
-      _onTap: function(event) {
-        // Go to the video, WIP
-        // console.log(event);
       },
 
       /**
