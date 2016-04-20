@@ -125,6 +125,12 @@ Example:
         margin: auto 0;
         background-color: #DDD;
       }
+
+      .card-image iron-image {
+        width: 100%;
+        --iron-image-width: 100%;
+        pointer-events: none;
+      }
     </style>
     <paper-card
                 class="white"
@@ -220,7 +226,7 @@ Example:
       },
 
       _formatViewers: function (views) {
-        return numeral(views).format('0.0a') + ' viewers';
+        return numeral(views).format('0a') + ' viewers';
       },
 
       _formatStatus: function (status) {
