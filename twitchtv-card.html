@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../iron-icons/hardware-icons.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../paper-behaviors/paper-button-behavior.html">
@@ -117,17 +118,29 @@ Example:
       paper-icon-button::shadow img {
         border-radius: 50%;
       }
+
+      .flag-icon {
+        border-bottom: solid 1px;
+        border-color: #DDD;
+        margin: auto 0;
+        background-color: #DDD;
+      }
     </style>
     <paper-card
-                image="[[data.preview.medium]]"
                 class="white"
                 on-tap="_onTap"
                 animated-shadow="true"
                 id="card"
                 >
-      <paper-ripple recenters should-keep-animating="true"></paper-ripple>
+      <div class="card-image">
+        <iron-image
+                    id="image"
+                    src="[[data.preview.medium]]"
+                    on-loaded-changed="_onImageLoaded">
+        </iron-image>
+      </div>
       <div class="card-header">
-        <textfit-div min-font-size="10" max-font-size="28" text="[[data.channel.status]]" ignore-errors="true"></textfit-div>
+        <textfit-div id="status" min-font-size="10" max-font-size="28" text="[[data.channel.status]]" ignore-errors="true" manual-fire="true"></textfit-div>
       </div>
       <div class="card-content">
         <paper-icon-button src="[[data.channel.logo]]" title$="Go to [[data.channel.display_name]] channel"></paper-icon-button>
@@ -146,6 +159,7 @@ Example:
           </div>
         </div>
       </div>
+      <paper-ripple recenters should-keep-animating="true"></paper-ripple>
     </paper-card>
   </template>
   <script>
@@ -229,6 +243,10 @@ Example:
 
         window.open(this.data.channel.url, '_blank');
       },
+
+      _onImageLoaded: function(event) {
+        this.$.status.doFitMe();
+      }
     });
   </script>
 </dom-module>
