@@ -17,6 +17,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../textfit-div/textfit-div.html">
 
 <script src="../numeral/min/numeral.min.js"></script>
 <script src="iso-639-1_flags.js"></script>
@@ -38,56 +40,72 @@ Example:
     <style>
       :host {
         box-sizing: border-box;
+        position: relative;
       }
 
-      paper-card {
+      #card {
         display: block;
         cursor: pointer;
-        margin-bottom: 8px;
       }
 
-      paper-card.white {
-        --paper-card-header-color: #fff;
+      :host::shadow #card:hover {
+        @apply(--shadow-elevation-4dp);
       }
 
-      paper-card .card-content {
+      #card .card-header {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: calc(100% - 32px);
+        height: calc(57% - 32px);
+        padding: 16px;
+        color: var(--twitchtv-card-header-color, #fff);
+        text-shadow: 2px 2px 8px #000;
+
+        @apply(--twitchtv-card-header);
+      }
+
+      #card .card-content {
         @apply(--layout-horizontal);
         @apply(--layout-center);
       }
 
-      paper-card .card-content > .vertical {
+      #card .card-content > .vertical {
         padding: 8px;
         white-space: nowrap;
         overflow: hidden;
       }
 
-      paper-card .card-content .vertical {
+      #card .card-content .vertical {
         @apply(--layout-flex);
         @apply(--layout-vertical);
       }
 
-      paper-card::shadow .game, paper-card::shadow .title, paper-card::shadow .viewers {
+      #card::shadow .game,
+      #card::shadow .title,
+      #card::shadow .viewers {
         overflow: hidden;
         text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
         -ms-text-overflow: ellipsis;
       }
 
-      paper-card .card-content .title {
+      #card .card-content .title {
         @apply(--paper-font-headline);
       }
 
-      .game, .viewers {
+      .game,
+      .viewers {
         color: var(--paper-grey-600);
         margin-left: 4px;
       }
 
-      .game a {
+      .game {
         color: var(--paper-grey-600);
         text-decoration: none;
       }
 
-      .game a:hover {
+      .game:hover {
         color: var(--paper-grey-800);
       }
 
@@ -101,22 +119,26 @@ Example:
       }
     </style>
     <paper-card
-                heading="[[_formatStatus(data.channel.status)]]"
                 image="[[data.preview.medium]]"
-                preload-image="true"
                 class="white"
                 on-tap="_onTap"
+                animated-shadow="true"
+                id="card"
                 >
+      <paper-ripple recenters should-keep-animating="true"></paper-ripple>
+      <div class="card-header">
+        <textfit-div min-font-size="10" max-font-size="28" text="[[data.channel.status]]"></textfit-div>
+      </div>
       <div class="card-content">
-        <paper-icon-button src="[[data.channel.logo]]" title="Go to the channel"></paper-icon-button>
+        <paper-icon-button src="[[data.channel.logo]]" title="Go to [[data.channel.display_name]] channel"></paper-icon-button>
         <div class="vertical">
           <div class="layout horizontal">
-            <span class="title flex">[[data.channel.display_name]]</span>
+            <textfit-div class="title flex" text="[[data.channel.display_name]]"></textfit-div>
             <span class$="[[_formatFlag(data.channel.language)]]" title$="[[_formatLanguage(data.channel.language)]]"></span>
           </div>
           <div class="layout horizontal center">
             <iron-icon class="game" icon="hardware:videogame-asset"></iron-icon>
-            <span class="game"><a href$="[[_gameUrl(data.channel.game)]]" title="View more streams from this game" target="_blank">[[data.channel.game]]</a></span>
+            <span class="game" id="game" title="More [[data.channel.game]] streams">[[data.channel.game]]</span>
           </div>
           <div class="layout horizontal center">
             <iron-icon class="viewers" icon="icons:visibility"></iron-icon>
@@ -139,64 +161,72 @@ Example:
         },
 
         /**
-        * `width` If you define width (in pixels) the card size will be fixed with the given width, this number is also used to load the preview image closest to the given width
-        */
+         * `width` If you define width (in pixels) the card size will be fixed with the given width, this number is also used to load the preview image closest to the given width
+         */
         width: {
           type: Number,
           value: null
-        },
+        }
       },
 
-      ready: function(){
-        if(this.width) {
+      ready: function () {
+        if (this.width) {
           this.style.width = this.width + 'px';
         }
       },
 
-      _concatParams: function(limit, lang, game) {
-        return JSON.stringfy({limit: limit, language: lang, game: game});
+      _concatParams: function (limit, lang, game) {
+        return JSON.stringfy({
+          limit: limit,
+          language: lang,
+          game: game
+        });
       },
 
-      _formatLanguage: function(language, isFlag) {
+      _formatLanguage: function (language, isFlag) {
         language = language.replace(/\-.*$/, '');
-        var filtered = languages.filter(function(data){
+        var filtered = languages.filter(function (data) {
           return data.code === language;
         });
 
-        if(filtered.length < 1 || !filtered[0].flag) {
+        if (filtered.length < 1 || !filtered[0].flag) {
           console.log('[streaming-list] Flag not found for language code', language, 'please report to upstream opening an issue');
           return null;
         }
 
-        if(isFlag) {
+        if (isFlag) {
           return 'flag-icon flag-icon-' + filtered[0].flag;
         }
 
         return filtered[0].name;
       },
 
-      _formatFlag: function(language) {
+      _formatFlag: function (language) {
         return this._formatLanguage(language, true);
       },
 
-      _formatViewers: function(views) {
+      _formatViewers: function (views) {
         return numeral(views).format('0.0a') + ' viewers';
       },
 
-      _formatStatus: function(status) {
-        var cut = status.substr(0, 40)
+      _formatStatus: function (status) {
+        var cut = status.substr(0, 80)
         if (status.length > cut.length) {
           cut += '...';
         }
         return cut;
       },
 
-      _gameUrl: function(game) {
+      _gameUrl: function (game) {
         return 'https://www.twitch.tv/directory/game/' + encodeURI(game);
       },
 
-      _onTap: function(event) {
-        // Go to the video, WIP
+      _onTap: function (event) {
+        if(Polymer.dom(event).localTarget === this.$.game) {
+          window.open(this._gameUrl(this.data.channel.game), '_blank');
+          return;
+        }
+
         window.open(this.data.channel.url, '_blank');
       },
     });
