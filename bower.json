@@ -36,7 +36,6 @@
     "flag-icon-css": "lipis/flag-icon-css#^1.4.0",
     "neon-animation": "PolymerElements/neon-animation#^1.2.0",
     "paper-ripple": "PolymerElements/paper-ripple#^1.0.5",
-    "klarkc/textfit-div": "*",
     "textfit-div": "klarkc/textfit-div"
   },
   "devDependencies": {
