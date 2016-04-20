@@ -45,7 +45,8 @@ Example:
                handle-as="json"
                last-response="{{response}}"
                debounce-duration="300"
-               params="{{_concatParams(limit, lang, game)}}"></iron-ajax>
+               params='[[_concatParams(limit, lang, game)]]'>
+    </iron-ajax>
     <template is="dom-repeat" items="[[response.streams]]">
       <twitchtv-card data="[[item]]" width="[[width]]"></twitchtv-card>
     </template>
@@ -79,6 +80,7 @@ Example:
          */
         apiUrl: {
           type: String,
+          notify: true,
           value: "https://api.twitch.tv/kraken/streams"
         },
 
@@ -87,7 +89,8 @@ Example:
          */
         limit: {
           type: Number,
-          value: 5
+          notify: true,
+          value: 25
         },
 
         /**
@@ -95,6 +98,7 @@ Example:
         */
         width: {
           type: Number,
+          notify: true,
           value: null
         },
 
@@ -103,6 +107,7 @@ Example:
          */
         lang: {
           type: String,
+          notify: true,
           value: "en"
         },
 
@@ -111,7 +116,8 @@ Example:
          */
         game: {
           type: String,
-          default: null
+          notify: true,
+          value: null
         },
 
         /**
@@ -122,6 +128,7 @@ Example:
           value: {streams: []},
           notify: true
         }
+
       },
 
       listeners: {
@@ -136,8 +143,12 @@ Example:
         }
       },
 
+      attached: function(){
+        this.generateRequest();
+      },
+
       _concatParams: function(limit, lang, game) {
-        return JSON.stringfy({limit: limit, language: lang, game: game});
+        return {limit: limit, language: lang, game: game};
       },
 
       _onRequest: function(event) {
