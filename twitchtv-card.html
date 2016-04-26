@@ -47,7 +47,7 @@ Example:
       }
 
       #card {
-        display: none;
+        display: block;
         visibility: hidden;
         cursor: pointer;
         -webkit-user-select: none;
@@ -58,7 +58,6 @@ Example:
 
       #card.loaded {
         visibility: visible;
-        display: block;
       }
 
       :host::shadow #card:hover {
@@ -153,8 +152,8 @@ Example:
       <div class="card-image">
         <iron-image
                     id="image"
-                    src="[[data.preview.medium]]"
-                    on-loaded-changed="_onImageLoaded">
+                    on-loaded-changed="_onImageLoaded"
+                    >
         </iron-image>
       </div>
       <div class="card-header">
@@ -232,6 +231,11 @@ Example:
         }
       },
 
+      attached: function() {
+        // Load image
+        this._loadImage();
+      },
+
       _concatParams: function (limit, lang, game) {
         return JSON.stringfy({
           limit: limit,
@@ -288,20 +292,33 @@ Example:
       },
 
       _onImageLoaded: function(event) {
-        // Only play animation if element was not loaded before
-        if(!this.$.card.classList.contains('loaded')) {
-          this.$.card.style.display = 'block';
-          this.$.status.doFitMe();
+        this.$.status.doFitMe();
+        // Only play animation if element was not loaded before AND there is a IMAGE loaded
+        if(!this.$.card.classList.contains('loaded')
+          && this.$.image.loaded
+        ) {
+          // console.log('Found a image, animating', event.target);
+          this.$.card.classList.add('loaded');
           this.playAnimation();
-        } else {
-          // Otherwise just fit content to the new image
-          this.$.status.doFitMe();
         }
       },
 
       _onNeonAnimationFinish: function(event) {
-        this.$.card.classList.add('loaded');
         this.fire('loaded');
+      },
+
+      _loadImage: function() {
+        var url,
+            // Get width form client width
+            width = this.width || this.$.card.clientWidth;
+
+        url = this.data.preview.template.replace('{width}', width);
+        // Calcules height using 16:9 aspect ratio
+        url = url.replace('{height}', Math.round(width / (16/9)));
+        // Debug
+        // url += '?' + Math.random();
+
+        this.$.image.src = url;
       }
     });
   </script>
