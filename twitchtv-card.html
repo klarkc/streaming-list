@@ -13,6 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../iron-icons/hardware-icons.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../paper-behaviors/paper-button-behavior.html">
 <link rel="import" href="../paper-behaviors/paper-ripple-behavior.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
@@ -45,8 +47,18 @@ Example:
       }
 
       #card {
-        display: block;
+        display: none;
+        visibility: hidden;
         cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      #card.loaded {
+        visibility: visible;
+        display: block;
       }
 
       :host::shadow #card:hover {
@@ -171,6 +183,11 @@ Example:
   <script>
     Polymer({
       is: "twitchtv-card",
+      /**
+       * Fired when the card is fully loaded (including image).
+       *
+       * @event loaded
+       */
       properties: {
         /**
          * `data` JSON Object representing source data (look Twitch.TV api for details)
@@ -186,8 +203,28 @@ Example:
         width: {
           type: Number,
           value: null
+        },
+
+        /**
+         * `animationConfig` Animation configuration (See Polymer docs for details)
+         */
+        animationConfig: {
+          value: function() {
+            return {
+              name: 'fade-in-animation',
+              node: this.$.card
+            }
+          }
         }
       },
+
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior
+      ],
 
       ready: function () {
         if (this.width) {
@@ -251,7 +288,20 @@ Example:
       },
 
       _onImageLoaded: function(event) {
-        this.$.status.doFitMe();
+        // Only play animation if element was not loaded before
+        if(!this.$.card.classList.contains('loaded')) {
+          this.$.card.style.display = 'block';
+          this.$.status.doFitMe();
+          this.playAnimation();
+        } else {
+          // Otherwise just fit content to the new image
+          this.$.status.doFitMe();
+        }
+      },
+
+      _onNeonAnimationFinish: function(event) {
+        this.$.card.classList.add('loaded');
+        this.fire('loaded');
       }
     });
   </script>
