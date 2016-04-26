@@ -160,7 +160,7 @@ Example:
         <textfit-div id="status" min-font-size="10" max-font-size="28" text="[[data.channel.status]]" ignore-errors="true" manual-fire="true"></textfit-div>
       </div>
       <div class="card-content">
-        <paper-icon-button src="[[data.channel.logo]]" title$="Go to [[data.channel.display_name]] channel"></paper-icon-button>
+        <paper-icon-button src="[[_formatLogo(data.channel.logo)]]" title$="Go to [[data.channel.display_name]] channel"></paper-icon-button>
         <div class="vertical">
           <div class="layout horizontal">
             <textfit-div class="title flex" text="[[data.channel.display_name]]" ignore-errors="true"></textfit-div>
@@ -276,6 +276,14 @@ Example:
           cut += '...';
         }
         return cut;
+      },
+
+      _formatLogo: function (image) {
+        if(image) {
+          return image;
+        } else {
+          return "../twitch_icon.svg";
+        }
       },
 
       _gameUrl: function (game) {
