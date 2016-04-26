@@ -18,9 +18,15 @@ Example:
 ```html
 <streaming-list lang="pt" game="Dota 2"></streaming-list>
 ```
-It still not ready, I am working to put some logic to tap events and in the parameters.
 
 The demo and API is [available here](http://klarkc.github.io/streaming-list/).
+
+### Browser Compatibility
+- [x] Google Chrome
+- [x] Mozilla Firefox
+- [x] Safari >= 9
+- [x] Microsoft Edge
+- [ ] Internet Explorer >= 11
 
 ## Dependencies
 
