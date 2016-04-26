@@ -1,22 +1,25 @@
 language: node_js
-sudo: required
-dist: trusty
-before_script:
-- npm install -g bower polylint web-component-tester
-- bower install
-- polylint
-env:
-  global:
-  - secure: gZ5vpMlc9fuKSZeMmT6xf4+FIVWxET6f6Lkp6l5Qo9vL2X/KC/bMJF1v2w5xXFLFTdm/hPUDkeQRDUBBJhGcsXhJeWIvAXdPkObV9ZPRwpDnnN1qU5lOqVIy6gFjDm2Wm6UNXcRnyP1TrGpMwbG13EUtD0rF8LZqBm3B833sKS4=
-  - secure: DObDewETPYiIsASeC3UETPbQ6YBniRZdNV2eTM1xULvuFNDxXJD09KKyWOiMduublEIJRXLjBIXmD8cbVsgrbRUYA4bxcXffDeuc6q6HaQGU9HvIbLz6o3/oxi4fX2G9GwrZtijW2p2Rgw2l9koR3ovjcM97CSTWFUMh5rtXag8=
 node_js: stable
+dist: trusty
+sudo: required
 addons:
   firefox: latest
+  sauce_connect: true
   apt:
     sources:
     - google-chrome
     packages:
     - google-chrome-stable
+before_script:
+- npm install -g bower polylint web-component-tester
+- bower install
+- polylint
 script:
-- xvfb-run wct
-- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then wct; fi
+- xvfb-run wct --skip-plugin sauce
+- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then wct --skip-plugin local; fi
+env:
+  global:
+  - secure: gZ5vpMlc9fuKSZeMmT6xf4+FIVWxET6f6Lkp6l5Qo9vL2X/KC/bMJF1v2w5xXFLFTdm/hPUDkeQRDUBBJhGcsXhJeWIvAXdPkObV9ZPRwpDnnN1qU5lOqVIy6gFjDm2Wm6UNXcRnyP1TrGpMwbG13EUtD0rF8LZqBm3B833sKS4=
+  - secure: DObDewETPYiIsASeC3UETPbQ6YBniRZdNV2eTM1xULvuFNDxXJD09KKyWOiMduublEIJRXLjBIXmD8cbVsgrbRUYA4bxcXffDeuc6q6HaQGU9HvIbLz6o3/oxi4fX2G9GwrZtijW2p2Rgw2l9koR3ovjcM97CSTWFUMh5rtXag8=
+  - secure: wyThiQIpgCSERK0fM46I85kG91OXRh6Iye76tWIFWDOaWYJib0exAuCxT0BLmmx1I9DefUc/fdVT4L+11wCpgkrM8hZHiRNsfGeLYpMe/GiraykEurslA2l/6P9pA/dw1p6Emeazls10GkTHhhG6Sjy+A7tJ2gCPO02SyG7Yzl1IwVj0K0f/QJq4lE11AwMvGQsuxY1CeviynIub8aIblnMTNKvcKTnJ6Sh9Jcn+Orgu3dfA6CGbWUDtjIdIdy+EXZsAaR3bAcXzRfPkpEg+o4oBKh7P8o7LpBl4fv9oaIcGP3oMCd0zcjyp5yy2XIXdPHtHCHufhvg+92zT8UQ8ffALuyc2TAIxhOlJfkcwH/4HHiZTQ908/+yNOlJgKNRLfo9NhrMIYaKLlln9jnOjypbSmW2AJzVWy/zGoEjANfpXv7y727Fi8jcKBsskkGtXyWe6FceHLWiAVXbhEzTaovcx/yNGwK93/KfanExZ1MCaq9h1/O1ohrk25mOvbsCPIZl4T9HwNnfhKO8WhLqW3TDnfaQC3zIOZDL6Sos8q3n6P+o9kWaq2Bq05e26EvjF/WllzO07Qr+O4vV5cwbyJEATxWyG9/ynawGXTyrw4P0g7xEMbKX01LqXodwcrRZon8iVUf+QmgHvp/ACZYSy0WLcTbDKq20+rwR2jI4q5TU=
+  - secure: oqHuF6LGdtz2XFJldFKPi9/CGQep/ieFA1UqWw0YE3G87HvXBoMfa4fn3aoNHoHumM6PCuRSuorLkoQnViJpBHj6eqWCNjvgG5C7fRh57WKLY9A8cBm+vD6EG8XZOqrGRybt0ZdMAn2NSvZlNkD7rZ56/Y4WROYbWxwJOQM1YYgZKHzeitsbbXHUzD2USRUzuZSlfGaVP3YEn5snbhQipfLqCQTwaTMk62DisTPcs2ASV52ZTIAF7ZlPh1cbuwFXvohoQnJIt274LUcuN7zeEoIDQaV7722GL9DtjO0xyvzEvs2xM8FDICGehWnX6gWIegYr/hfEyCkQ5Fq21bcDDD3EOd0kp+2ZqUczzqScq+9JoMZXZ+bhcqCu2zVEAKRucaES9BvGre1/CJ08ASv5PyLxfN4I8OxEs7TEB3tjOElpSsGs+ywUphOmmS2rxVuxEe4+i8VzTf8i3idCy6IOjn1foMrCF1+sifTVyUL+UoeihXCCTTSdLysyuMgrT+rQ5UL/eDctt8P42FkEoGo+jAaMmWmArplq+sRo/I80RsAlorhcBMLHXC4jXB9/yOIMLFmgvPtF8cHK46vBgI23F292IUwAkOqqE7aIjzNAuhSBSh4oCkHkagdFPfQBtQ2xmr+Ub99bbqTmxy+qz4pjqxp6RTVYX0/URtgxzz/JmEU=
