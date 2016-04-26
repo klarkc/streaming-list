@@ -48,7 +48,7 @@ Example:
                params='[[_concatParams(limit, lang, game)]]'>
     </iron-ajax>
     <template is="dom-repeat" items="[[response.streams]]">
-      <twitchtv-card data="[[item]]" width="[[width]]"></twitchtv-card>
+      <twitchtv-card data="[[item]]" width="[[width]]" id="twitch_card"></twitchtv-card>
     </template>
   </template>
 
@@ -162,7 +162,6 @@ Example:
       _onError: function(event) {
         this.fire('error', event);
       },
-
       /**
        * Performs an AJAX request to the streaming server
        * @returns {!IronRequestElement} Returns !IronRequestElement
