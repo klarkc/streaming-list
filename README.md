@@ -6,7 +6,7 @@ streaming-list
 [![Coverage][coverage-image]][coverage-url]
 [![Waffle][waffle-image]][waffle-url]
 
-[travis-image]: https://img.shields.io/travis/klarkc/streaming-list/master.svg?style=flat-square
+[travis-image]: https://img.shields.io/travis/klarkc/streaming-list/master.svg
 [travis-url]: https://travis-ci.org/klarkc/streaming-list
 [codacy-image]: https://img.shields.io/codacy/67950dc659aa4f589efd881190b5a5a0.svg
 [codacy-url]: https://www.codacy.com/app/walker/streaming-list
