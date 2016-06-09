@@ -82,16 +82,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
         });
 
-        suite('on request and response', function(){
-          var requestPromise,
-              responsePromise;
+        suite('on request', function(){
+          var requestPromise;
 
           setup(function(){
             requestPromise = new Promise(function(resolve){
               myEl.addEventListener('request', resolve);
-            });
-            responsePromise = new Promise(function(resolve){
-              myEl.addEventListener('response', resolve);
             });
           });
 
@@ -99,11 +95,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             return requestPromise;
           });
 
+          test('generateRequest is working', function(){
+            return requestPromise.then(function(){
+              return new Promise(function(resolve){
+                myEl.addEventListener('request', resolve);
+                myEl.generateRequest();
+              });
+            });
+          });
+        });
+
+        suite('on response', function(){
+          var responsePromise;
+
+          setup(function(){
+            responsePromise = new Promise(function(resolve){
+              myEl.addEventListener('response', resolve);
+            });
+          });
+
           test('auto generate one response event', function(){
             return responsePromise;
           });
 
-          test('the response property correctly loaded', function(){
+          test('the response property must be correctly loaded', function(){
             return responsePromise.then(function(){
               assert.property(myEl.response, 'streams');
               assert.property(myEl.response, '_total');
@@ -111,6 +126,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               assert.lengthOf(myEl.response.streams, 25);
               assert.equal(myEl.response._total, 14915);
               assert.typeOf(myEl.response._links, 'object');
+            });
+          });
+
+          test('error event should be working', function(){
+            return new Promise(function(resolve){
+              myEl.addEventListener('error', resolve);
+              myEl.apiUrl = "http://poop/" + Math.random() * 1000;
+            });
+          });
+
+          test('element should have the right number of twitchtv-card\'s', function(){
+            return responsePromise.then(function(){
+              var cards =  Polymer.dom(myEl.root).querySelectorAll('#twitch_card');
+             assert.lengthOf(cards, 25);
             });
           });
         });
