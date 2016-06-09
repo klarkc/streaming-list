@@ -77,17 +77,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         suite('when the element is ready', function(){
           test('auto generate one request event', function(){
             return new Promise(function(resolve){
-              myEl.addEventListener('request', function(){
-                resolve();
-              });
+              myEl.addEventListener('request', resolve);
             });
           });
 
           test('auto generate one response event', function(){
             return new Promise(function(resolve){
-              myEl.addEventListener('response', function(){
-                resolve();
-              });
+              myEl.addEventListener('response', resolve);
             });
           });
         });
