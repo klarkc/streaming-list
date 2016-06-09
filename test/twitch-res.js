@@ -1,4 +1,4 @@
-document.twitchRes = JSON.stringify({
+document.twitchRes = {
   "streams": [{
     "_id": 20402950544,
     "game": "League of Legends",
@@ -1333,4 +1333,4 @@ document.twitchRes = JSON.stringify({
     "summary": "https://api.twitch.tv/kraken/streams/summary",
     "followed": "https://api.twitch.tv/kraken/streams/followed"
   }
-});
+};
