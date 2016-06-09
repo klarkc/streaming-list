@@ -187,13 +187,33 @@ Example:
        *
        * @event loaded
        */
+      /**
+       * Fired when the data was changed.
+       *
+       * @event data-changed
+       */
       properties: {
         /**
          * `data` JSON Object representing source data (look Twitch.TV api for details)
          */
         data: {
           type: Object,
-          default: null
+          notify: true,
+          value: function(){
+            return {
+              channel: {
+                status: null,
+                logo: null,
+                display_name: null,
+                language: null,
+                game: null
+              },
+              viewers: null,
+              preview: {
+                template: null
+              }
+            }
+          }
         },
 
         /**
@@ -201,7 +221,8 @@ Example:
          */
         width: {
           type: Number,
-          value: null
+          value: null,
+          observer: '_onWidthChanged'
         },
 
         /**
@@ -225,19 +246,13 @@ Example:
         Polymer.NeonAnimationRunnerBehavior
       ],
 
-      ready: function () {
-        if (this.width) {
-          this.style.width = this.width + 'px';
-        }
-      },
-
       attached: function() {
         // Load image
         this._loadImage();
       },
 
       _concatParams: function (limit, lang, game) {
-        return JSON.stringfy({
+        return JSON.stringify({
           limit: limit,
           language: lang,
           game: game
@@ -245,6 +260,8 @@ Example:
       },
 
       _formatLanguage: function (language, isFlag) {
+        if(!language) return;
+
         language = language.replace(/\-.*$/, '');
         var filtered = languages.filter(function (data) {
           return data.code === language;
@@ -315,10 +332,18 @@ Example:
         this.fire('loaded');
       },
 
+      _onWidthChanged: function(event) {
+        if (this.width) {
+          this.style.width = this.width + 'px';
+          this._loadImage();
+        }
+      },
+
       _loadImage: function() {
         var url,
             // Get width form client width
             width = this.width || this.$.card.clientWidth;
+        if(!this.width || !this.data.preview.template) return;
 
         url = this.data.preview.template.replace('{width}', width);
         // Calcules height using 16:9 aspect ratio

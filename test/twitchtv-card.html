@@ -1,0 +1,196 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="twitch-res.js"></script>
+    <script src="../iso-639-1_flags.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../twitchtv-card.html">
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <test-fixture id="twitchtv-card-fixture">
+      <template>
+        <twitchtv-card></twitchtv-card>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('<twitchtv-card>', function() {
+
+        var myEl,
+            stream;
+
+        setup(function() {
+          myEl = fixture('twitchtv-card-fixture');
+          replace('textfit-div').with('fake-textfit-div');
+
+          stream = document.twitchRes.streams[0];
+        });
+
+        suite('default properties and behavior', function(){
+          test('defines the "data" property', function() {
+            assert.typeOf(myEl.data, 'object');
+            assert.typeOf(myEl.data.channel, 'object');
+            assert.property(myEl.data.channel, 'status');
+            assert.property(myEl.data.channel, 'logo');
+            assert.property(myEl.data.channel, 'display_name');
+            assert.property(myEl.data.channel, 'language');
+            assert.property(myEl.data.channel, 'game');
+            assert.equal(myEl.data.viewers, null);
+          });
+
+          test('defines the "width" property', function() {
+            assert.equal(myEl.width, null);
+          });
+
+          test('defines the "animationConfig" property', function(){
+            assert.property(myEl, 'animationConfig');
+            assert.property(myEl.animationConfig, 'node');
+            assert.typeOf(myEl.animationConfig.name, 'string');
+          });
+
+          test('card must be invisible', function(){
+            var style = window.getComputedStyle(myEl.$.card);
+            assert.equal(style.visibility, 'hidden');
+          });
+
+          test('width must be defined to pixels', function(){
+            myEl.width = 300;
+            assert.equal(myEl.style.width, '300px');
+          });
+
+          test('_concatParams must join correctly', function(){
+            assert.equal(
+              myEl._concatParams(5, 'pt', 'test'),
+              JSON.stringify({
+                limit: 5,
+                language: 'pt',
+                game: 'test'
+              })
+            );
+          });
+
+          test('_formatLanguage must set language', function(){
+            assert.equal(myEl._formatLanguage(null), null);
+            assert.equal(myEl._formatLanguage('pt-BR'), "Portuguese");
+            assert.equal(myEl._formatLanguage('en'), "English");
+            assert.equal(myEl._formatLanguage('qwd12d12'), null);
+            assert.equal(myEl._formatLanguage('en', true), "flag-icon flag-icon-us");
+          });
+
+          test('_formatFlag must set flag', function(){
+            assert.equal(myEl._formatFlag('en'), "flag-icon flag-icon-us");
+          });
+
+          test('_formatViewers must format numeral', function(){
+            assert.equal(myEl._formatViewers(100000), '100k viewers');
+            assert.equal(myEl._formatViewers(100000000), '100m viewers');
+            assert.equal(myEl._formatViewers(0), '0 viewers');
+          });
+
+          test('_formatStatus must cut the status text correctly', function(){
+            assert.lengthOf(
+              myEl._formatStatus(Array(82).join('x')),
+              83
+            );
+            assert.lengthOf(
+              myEl._formatStatus(Array(80).join('x')),
+              79
+            );
+          });
+
+          test('_formatLogo must return something', function(){
+            assert.equal(myEl._formatLogo('xxx'), 'xxx');
+            assert.equal(myEl._formatLogo(null), '../twitch_icon.svg');
+          });
+
+          test('_gameUrl must encodeURI for game', function(){
+            assert.equal(
+              myEl._gameUrl('test'),
+              encodeURI('https://www.twitch.tv/directory/game/test')
+            );
+          });
+
+          test('when _onTap, a window to the channel must be open', function(done){
+            sinon.stub(window, 'open', function(url, target){
+              assert.equal(url, 'test');
+              assert.equal(target, '_blank');
+              done();
+            });
+            myEl.data.channel.url = 'test';
+            myEl.$.card.fire('tap');
+            window.open.restore();
+          });
+
+          test('when _onTap in a game, a window to the game directory must be open', function(done){
+            var gameUrl = 'https://www.twitch.tv/directory/game/test';
+            sinon.stub(window, 'open', function(url, target){
+              assert.equal(url, gameUrl);
+              assert.equal(target, '_blank');
+              done();
+            });
+            myEl.data.channel.game = 'test';
+            myEl.$.card.fire('tap', {}, {node: myEl.$.game});
+            window.open.restore();
+          });
+
+          test('when _onImageLoaded text must fit', function(done){
+            sinon.stub(myEl.$.status, 'doFitMe', done);
+            myEl._onImageLoaded();
+            myEl.$.status.doFitMe.restore();
+          });
+
+          test('when _onImageLoaded class must be added and animation played', function(){
+            myEl.$.card.classList.add('loaded');
+            myEl.$.image.loaded = false;
+            myEl._onImageLoaded();
+            assert.equal(myEl.$.card.classList.contains('loaded'), true);
+          });
+
+        });
+
+        suite('on data changed', function(){
+          var dataPromise;
+
+          setup(function(){
+            dataPromise = new Promise(function(resolve){
+              myEl.addEventListener('data-changed', resolve);
+              myEl.data = stream;
+            });
+          });
+
+          test('generate one data changed event', function(){
+            return dataPromise;
+          });
+
+          test('image must be loaded with defined size', function(){
+            return dataPromise.then(function(){
+              myEl.width = 320;
+              var url = stream.preview.template
+                .replace('{width}', 320)
+                .replace('{height}', 180);
+              assert.equal(myEl.$.image.src, url)
+            });
+          });
+        });
+      });
+    </script>
+
+  </body>
+</html>

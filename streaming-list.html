@@ -44,7 +44,7 @@ Example:
                url="{{apiUrl}}"
                handle-as="json"
                last-response="{{response}}"
-               debounce-duration="300"
+               debounce-duration="30"
                params='[[_concatParams(limit, lang, game)]]'>
     </iron-ajax>
     <template is="dom-repeat" items="[[response.streams]]">
@@ -143,10 +143,6 @@ Example:
         }
       },
 
-      attached: function(){
-        this.generateRequest();
-      },
-
       _concatParams: function(limit, lang, game) {
         return {limit: limit, language: lang, game: game};
       },
@@ -162,6 +158,7 @@ Example:
       _onError: function(event) {
         this.fire('error', event);
       },
+
       /**
        * Performs an AJAX request to the streaming server
        * @returns {!IronRequestElement} Returns !IronRequestElement

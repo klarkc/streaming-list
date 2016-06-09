@@ -1,4 +1,4 @@
-document.twitchRes = JSON.stringify({
+document.twitchRes = {
   "streams": [{
     "_id": 20402950544,
     "game": "League of Legends",
@@ -12,10 +12,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/imaqtpie"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_imaqtpie-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_imaqtpie-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_imaqtpie-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_imaqtpie-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -29,7 +29,7 @@ document.twitchRes = JSON.stringify({
       "created_at": "2011-09-22T13:10:14Z",
       "updated_at": "2016-03-24T13:30:20Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/imaqtpie-profile_image-8efb10b7bed60d76-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
       "video_banner": null,
       "background": null,
@@ -65,10 +65,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/esl_joindotared"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_joindotared-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_joindotared-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_joindotared-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_joindotared-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -82,11 +82,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2015-02-10T14:54:42Z",
       "updated_at": "2016-03-24T13:30:25Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_joindotared-profile_image-cc4669ca1797cae2-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_joindotared-channel_offline_image-36bd66f9d692366c-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_joindotared-profile_banner-b968b6e5a241fc99-480.png",
+      "profile_banner": "http://lorempixel.com/853/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/esl_joindotared",
@@ -118,10 +118,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/ungespielt"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_ungespielt-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_ungespielt-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_ungespielt-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_ungespielt-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -135,11 +135,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2012-10-17T15:56:04Z",
       "updated_at": "2016-03-24T13:30:24Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/ungespielt-profile_image-29328257f994985d-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/ungespielt-channel_offline_image-529c8463e5dbea80-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/ungespielt-profile_banner-6d42206c0c973068-480.png",
+      "profile_banner": "http://lorempixel.com/850/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/ungespielt",
@@ -171,10 +171,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/cohhcarnage"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_cohhcarnage-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_cohhcarnage-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_cohhcarnage-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_cohhcarnage-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -188,9 +188,9 @@ document.twitchRes = JSON.stringify({
       "created_at": "2011-12-06T18:20:34Z",
       "updated_at": "2016-03-24T13:30:45Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/cohhcarnage-profile_image-170de4e7853fde48-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/cohhcarnage-channel_offline_image-f846394d26e4c503-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
       "profile_banner": null,
       "profile_banner_background_color": null,
@@ -224,10 +224,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/esl_ruhub_dota2_ru"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_ruhub_dota2_ru-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_ruhub_dota2_ru-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_ruhub_dota2_ru-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_ruhub_dota2_ru-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -241,9 +241,9 @@ document.twitchRes = JSON.stringify({
       "created_at": "2015-02-27T18:30:50Z",
       "updated_at": "2016-03-24T13:16:18Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_ruhub_dota2_ru-profile_image-0cc186f3885f887e-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_ruhub_dota2_ru-channel_offline_image-0edabfcc09a4298a-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
       "profile_banner": null,
       "profile_banner_background_color": null,
@@ -277,10 +277,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/garenatw"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_garenatw-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_garenatw-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_garenatw-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_garenatw-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -294,9 +294,9 @@ document.twitchRes = JSON.stringify({
       "created_at": "2012-02-24T07:03:33Z",
       "updated_at": "2016-03-24T13:30:38Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/garenatw-profile_image-85f32c0eaad8b48e-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/garenatw-channel_offline_image-41629b499a455465-1920x1080.jpeg",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
       "profile_banner": null,
       "profile_banner_background_color": null,
@@ -330,10 +330,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/p4wnyhof"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_p4wnyhof-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_p4wnyhof-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_p4wnyhof-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_p4wnyhof-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -347,11 +347,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2014-09-21T15:03:12Z",
       "updated_at": "2016-03-24T13:30:13Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/p4wnyhof-profile_image-b30742b7cdd4c4d0-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/p4wnyhof-channel_offline_image-7f7015422b4cf91a-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/p4wnyhof-profile_banner-5c2d5d739bea0bb2-480.png",
+      "profile_banner": "http://lorempixel.com/850/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/p4wnyhof",
@@ -383,10 +383,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/savjz"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_savjz-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_savjz-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_savjz-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_savjz-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -400,11 +400,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2013-05-03T12:27:19Z",
       "updated_at": "2016-03-24T13:30:25Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/savjz-profile_image-fcb7a4314f7a9e31-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/savjz-channel_offline_image-d5f934a3be298830-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/savjz-profile_banner-5478456019f9dd73-480.png",
+      "profile_banner": "http://lorempixel.com/850/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/savjz",
@@ -436,10 +436,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/asiagodtonegg3be0"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_asiagodtonegg3be0-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_asiagodtonegg3be0-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_asiagodtonegg3be0-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_asiagodtonegg3be0-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -455,7 +455,7 @@ document.twitchRes = JSON.stringify({
       "delay": null,
       "logo": null,
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/asiagodtonegg3be0-channel_offline_image-9a70cea2226b2e9c-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
       "profile_banner": null,
       "profile_banner_background_color": null,
@@ -489,10 +489,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/tsm_dyrus"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_tsm_dyrus-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_tsm_dyrus-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_tsm_dyrus-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_tsm_dyrus-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -506,11 +506,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2012-04-27T01:37:07Z",
       "updated_at": "2016-03-24T13:30:19Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/tsm_dyrus-profile_image-65fe199f18b9e0ff-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/tsm_dyrus-channel_offline_image-8de69a5b4e1a593c-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/tsm_dyrus-profile_banner-4f74773e1507d7fc-480.jpeg",
+      "profile_banner": "http://lorempixel.com/640/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/tsm_dyrus",
@@ -542,10 +542,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/flusha"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_flusha-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_flusha-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_flusha-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_flusha-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -559,11 +559,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2012-10-03T23:47:45Z",
       "updated_at": "2016-03-24T13:30:14Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/flusha-profile_image-e92dcef0d14b7d23-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
       "video_banner": null,
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/flusha-profile_banner-2365166c6cf32578-480.png",
+      "profile_banner": "http://lorempixel.com/850/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/flusha",
@@ -595,10 +595,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/nervarien"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_nervarien-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_nervarien-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_nervarien-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_nervarien-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -612,9 +612,9 @@ document.twitchRes = JSON.stringify({
       "created_at": "2011-10-14T16:36:04Z",
       "updated_at": "2016-03-24T13:30:02Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/nervarien-profile_image-8a488c78bf3d3082-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/nervarien-channel_offline_image-8b8038246b36a5d6-1920x1080.jpeg",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
       "profile_banner": null,
       "profile_banner_background_color": null,
@@ -648,10 +648,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/esl_csgo"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_csgo-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_csgo-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_csgo-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_csgo-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -665,11 +665,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2012-06-11T13:36:21Z",
       "updated_at": "2016-03-24T13:16:18Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_csgo-profile_image-546a0c1883798a41-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_csgo-channel_offline_image-c9f885982daa1c83-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/esl_csgo-profile_banner-0d10712c29995dc2-480.jpeg",
+      "profile_banner": "http://lorempixel.com/640/480/",
       "profile_banner_background_color": "#000000",
       "partner": true,
       "url": "https://secure.twitch.tv/esl_csgo",
@@ -701,10 +701,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/riotgames2"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_riotgames2-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_riotgames2-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_riotgames2-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_riotgames2-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -718,11 +718,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2012-10-09T22:28:27Z",
       "updated_at": "2016-03-24T13:30:16Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/riotgames2-profile_image-951339c7b3adf0e5-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/riotgames2-channel_offline_image-122aecf81f4d28dd-1920x1080.jpeg",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/riotgames2-profile_banner-1af0451459abe605-480.jpeg",
+      "profile_banner": "http://lorempixel.com/640/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/riotgames2",
@@ -754,10 +754,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/ceh9"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_ceh9-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_ceh9-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_ceh9-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_ceh9-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -771,9 +771,9 @@ document.twitchRes = JSON.stringify({
       "created_at": "2013-01-09T03:35:12Z",
       "updated_at": "2016-03-24T13:16:14Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/ceh9-profile_image-e0fdbf9505d59164-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/ceh9-channel_offline_image-9e2604e21d87e29c-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
       "profile_banner": null,
       "profile_banner_background_color": null,
@@ -807,10 +807,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/roger9527"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_roger9527-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_roger9527-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_roger9527-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_roger9527-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -824,11 +824,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2014-07-05T05:11:49Z",
       "updated_at": "2016-03-24T13:16:12Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/roger9527-profile_image-e6cccadfeba28124-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/roger9527-channel_offline_image-b3b35cec1f8652c7-1920x1080.jpeg",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/roger9527-profile_banner-41ba859692b0b1ea-480.jpeg",
+      "profile_banner": "http://lorempixel.com/640/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/roger9527",
@@ -860,10 +860,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/gocsprotv"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_gocsprotv-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_gocsprotv-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_gocsprotv-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_gocsprotv-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -877,11 +877,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2015-10-27T17:17:52Z",
       "updated_at": "2016-03-24T13:30:06Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/gocsprotv-profile_image-d93f351e5d835741-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/gocsprotv-channel_offline_image-d6d08ad27c7cc944-1920x1080.jpeg",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/gocsprotv-profile_banner-10b91abc85e7ea21-480.jpeg",
+      "profile_banner": "http://lorempixel.com/640/480/",
       "profile_banner_background_color": null,
       "partner": false,
       "url": "https://secure.twitch.tv/gocsprotv",
@@ -913,10 +913,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/purespam"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_purespam-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_purespam-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_purespam-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_purespam-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -930,11 +930,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2012-03-25T17:50:11Z",
       "updated_at": "2016-03-24T13:30:12Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/purespam-profile_image-4e63541a59b8d058-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/purespam-channel_offline_image-f7b84baec57e05d6-1920x1080.jpeg",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/purespam-profile_banner-1388074d36d5180e-480.jpeg",
+      "profile_banner": "http://lorempixel.com/640/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/purespam",
@@ -966,10 +966,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/milleniumtvhs"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_milleniumtvhs-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_milleniumtvhs-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_milleniumtvhs-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_milleniumtvhs-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -983,11 +983,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2015-04-12T22:11:37Z",
       "updated_at": "2016-03-24T13:30:46Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/milleniumtvhs-profile_image-1c57dacd088f7700-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/milleniumtvhs-channel_offline_image-8fe56d970fce458f-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/milleniumtvhs-profile_banner-b0996e7bc88ba494-480.png",
+      "profile_banner": "http://lorempixel.com/850/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/milleniumtvhs",
@@ -1019,10 +1019,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/meleeman777"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_meleeman777-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_meleeman777-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_meleeman777-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_meleeman777-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -1036,11 +1036,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2014-01-28T13:14:48Z",
       "updated_at": "2016-03-24T13:30:08Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/meleeman777-profile_image-b935c8332585f907-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/meleeman777-channel_offline_image-033d1da95d9b54e8-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/meleeman777-profile_banner-6ca47800dd3d2644-480.png",
+      "profile_banner": "http://lorempixel.com/850/480/",
       "profile_banner_background_color": "#ffffff",
       "partner": true,
       "url": "https://secure.twitch.tv/meleeman777",
@@ -1072,10 +1072,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/streamerhouse"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_streamerhouse-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_streamerhouse-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_streamerhouse-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_streamerhouse-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -1089,11 +1089,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2013-06-14T15:50:41Z",
       "updated_at": "2016-03-24T13:16:20Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/streamerhouse-profile_image-ef307bd1a40c75b1-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/streamerhouse-channel_offline_image-643a63b6ee788b02-1920x1080.jpeg",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/streamerhouse-profile_banner-bf842b59fd9e7bb8-480.png",
+      "profile_banner": "http://lorempixel.com/850/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/streamerhouse",
@@ -1125,10 +1125,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/girlstorule"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_girlstorule-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_girlstorule-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_girlstorule-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_girlstorule-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -1142,11 +1142,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2014-12-22T15:23:35Z",
       "updated_at": "2016-03-24T13:16:21Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/girlstorule-profile_image-bdaf086d1ee91f6a-300x300.jpeg",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/girlstorule-channel_offline_image-00069b818d8c4484-1920x1080.jpeg",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/girlstorule-profile_banner-fa7caef8820a2b23-480.png",
+      "profile_banner": "http://lorempixel.com/850/480/",
       "profile_banner_background_color": "#ffffff",
       "partner": true,
       "url": "https://secure.twitch.tv/girlstorule",
@@ -1178,10 +1178,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/massansc"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_massansc-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_massansc-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_massansc-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_massansc-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -1195,11 +1195,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2012-06-27T04:50:14Z",
       "updated_at": "2016-03-24T13:30:29Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/massansc-profile_image-fbb911c2ff0395ec-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/massansc-channel_offline_image-e00861f551cd6592-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/massansc-profile_banner-a1d2be4d6b603dab-480.png",
+      "profile_banner": "http://lorempixel.com/850/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/massansc",
@@ -1231,10 +1231,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/mushisgosu"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_mushisgosu-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_mushisgosu-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_mushisgosu-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_mushisgosu-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -1248,9 +1248,9 @@ document.twitchRes = JSON.stringify({
       "created_at": "2013-03-31T21:12:14Z",
       "updated_at": "2016-03-24T13:16:18Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/mushisgosu-profile_image-b1c8bb5fd700025e-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/mushisgosu-channel_offline_image-7e3401b20cb5d739-1920x1080.png",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
       "profile_banner": null,
       "profile_banner_background_color": null,
@@ -1284,10 +1284,10 @@ document.twitchRes = JSON.stringify({
       "self": "https://api.twitch.tv/kraken/streams/eloise_ailv"
     },
     "preview": {
-      "small": "https://static-cdn.jtvnw.net/previews-ttv/live_user_eloise_ailv-80x45.jpg",
-      "medium": "https://static-cdn.jtvnw.net/previews-ttv/live_user_eloise_ailv-320x180.jpg",
-      "large": "https://static-cdn.jtvnw.net/previews-ttv/live_user_eloise_ailv-640x360.jpg",
-      "template": "https://static-cdn.jtvnw.net/previews-ttv/live_user_eloise_ailv-{width}x{height}.jpg"
+      "small": "http://lorempixel.com/80/45/",
+      "medium": "http://lorempixel.com/320/180/",
+      "large": "http://lorempixel.com/640/360/",
+      "template": "http://lorempixel.com/{width}/{height}/"
     },
     "channel": {
       "mature": false,
@@ -1301,11 +1301,11 @@ document.twitchRes = JSON.stringify({
       "created_at": "2015-03-23T12:29:16Z",
       "updated_at": "2016-03-24T13:30:11Z",
       "delay": null,
-      "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/eloise_ailv-profile_image-9554ac2957f19a51-300x300.png",
+      "logo": "http://lorempixel.com/300/300/",
       "banner": null,
-      "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/eloise_ailv-channel_offline_image-ada57dabb2583e31-1920x1080.jpeg",
+      "video_banner": "http://lorempixel.com/1920/1080/",
       "background": null,
-      "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/eloise_ailv-profile_banner-b16fe1a4d11481ef-480.jpeg",
+      "profile_banner": "http://lorempixel.com/640/480/",
       "profile_banner_background_color": null,
       "partner": true,
       "url": "https://secure.twitch.tv/eloise_ailv",
@@ -1333,4 +1333,4 @@ document.twitchRes = JSON.stringify({
     "summary": "https://api.twitch.tv/kraken/streams/summary",
     "followed": "https://api.twitch.tv/kraken/streams/followed"
   }
-});
+};

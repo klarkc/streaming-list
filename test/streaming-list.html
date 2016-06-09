@@ -33,10 +33,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       suite('<streaming-list>', function() {
 
         var myEl,
+            twitchRes,
             server,
             request;
-
         setup(function() {
+          twitchRes = JSON.stringify(document.twitchRes);
+
           server = sinon.fakeServer.create();
           server.autoRespond = true;
           server.respondWith(
@@ -45,18 +47,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             [
               200,
               {'Content-Type': 'application/json'},
-              document.twitchRes
+              twitchRes
             ]
           );
-
           myEl = fixture('streaming-list-fixture');
+          replace('twitchtv-card').with('fake-twitchtv-card');
         });
 
         teardown(function(){
           server.restore();
         });
 
-        suite('when the element is created', function(){
+        suite('default properties', function(){
           test('defines the "apiUrl" property', function() {
             assert.equal(myEl.apiUrl, 'https://api.twitch.tv/kraken/streams');
           });
@@ -65,6 +67,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.equal(myEl.limit, 25);
           });
 
+          test('defines the "width" property', function(){
+            assert.equal(myEl.width, null);
+          })
+
           test('defines the "lang" property', function() {
             assert.equal(myEl.lang, "en");
           });
@@ -72,26 +78,75 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           test('defines the "game" property', function() {
             assert.equal(myEl.game, null);
           });
+
+          test('defines the "response" property', function() {
+            assert.property(myEl, 'response');
+            assert.property(myEl.response, 'streams');
+            assert.lengthOf(myEl.response.streams, 0);
+          });
         });
 
-        suite('when the element is ready', function(){
+        suite('on request', function(){
+          var requestPromise;
+
+          setup(function(){
+            requestPromise = new Promise(function(resolve){
+              myEl.addEventListener('request', resolve);
+            });
+          });
+
           test('auto generate one request event', function(){
-            return new Promise(function(resolve){
-              myEl.addEventListener('request', function(){
-                resolve();
+            return requestPromise;
+          });
+
+          test('generateRequest is working', function(){
+            return requestPromise.then(function(){
+              return new Promise(function(resolve){
+                myEl.addEventListener('request', resolve);
+                myEl.generateRequest();
               });
+            });
+          });
+        });
+
+        suite('on response', function(){
+          var responsePromise;
+
+          setup(function(){
+            responsePromise = new Promise(function(resolve){
+              myEl.addEventListener('response', resolve);
             });
           });
 
           test('auto generate one response event', function(){
+            return responsePromise;
+          });
+
+          test('the response property must be correctly loaded', function(){
+            return responsePromise.then(function(){
+              assert.property(myEl.response, 'streams');
+              assert.property(myEl.response, '_total');
+              assert.property(myEl.response, '_links');
+              assert.lengthOf(myEl.response.streams, 25);
+              assert.equal(myEl.response._total, 14915);
+              assert.typeOf(myEl.response._links, 'object');
+            });
+          });
+
+          test('error event should be working', function(){
             return new Promise(function(resolve){
-              myEl.addEventListener('response', function(){
-                resolve();
-              });
+              myEl.addEventListener('error', resolve);
+              myEl.apiUrl = "http://poop/" + Math.random() * 1000;
+            });
+          });
+
+          test('element should have the right number of twitchtv-card\'s', function(){
+            return responsePromise.then(function(){
+              var cards =  Polymer.dom(myEl.root).querySelectorAll('#twitch_card');
+             assert.lengthOf(cards, 25);
             });
           });
         });
-
       });
     </script>
 
