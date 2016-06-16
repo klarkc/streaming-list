@@ -133,9 +133,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
           });
 
-          test('error event should be working', function(){
+          test('loadError event should be working', function(){
             return new Promise(function(resolve){
-              myEl.addEventListener('error', resolve);
+              myEl.addEventListener('loadError', resolve);
               myEl.apiUrl = "http://poop/" + Math.random() * 1000;
             });
           });
