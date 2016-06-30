@@ -29,7 +29,7 @@ The demo and API is [available here](http://klarkc.github.io/streaming-list/).
 - [x] Mozilla Firefox
 - [x] Safari >= 9
 - [x] Microsoft Edge
-- [ ] Internet Explorer >= 11 FAILING
+- [x] Internet Explorer >= 11
 
 ## Dependencies
 
