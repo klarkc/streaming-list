@@ -9,145 +9,126 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
-    <script src="twitch-res.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="twitch-res.js"></script>
 
-    <!-- Step 1: import the element to test -->
-    <link rel="import" href="../streaming-list.html">
-  </head>
-  <body>
+  <!-- Step 1: import the element to test -->
+  <link rel="import" href="../streaming-list.html">
+</head>
+<body>
 
-    <!-- You can use the document as a place to set up your fixtures. -->
-    <test-fixture id="streaming-list-fixture">
-      <template>
-        <streaming-list></streaming-list>
-      </template>
-    </test-fixture>
+  <!-- You can use the document as a place to set up your fixtures. -->
+  <test-fixture id="streaming-list-fixture">
+    <template>
+      <streaming-list></streaming-list>
+    </template>
+  </test-fixture>
 
-    <script>
-      suite('<streaming-list>', function() {
+  <script>
+  suite('<streaming-list>', function() {
 
-        var myEl,
-            twitchRes,
-            server;
-        setup(function() {
-          twitchRes = JSON.stringify(document.twitchRes);
+    var myEl,
+    twitchRes,
+    server;
 
-          server = sinon.fakeServer.create();
-          server.autoRespond = true;
-          server.respondWith(
-            'GET',
-            /\/kraken\/streams/,
-            [
-              200,
-              {'Content-Type': 'application/json'},
-              twitchRes
-            ]
-          );
-          myEl = fixture('streaming-list-fixture');
-          replace('twitchtv-card').with('fake-twitchtv-card');
-        });
+    setup(function() {
+      twitchRes = JSON.stringify(document.twitchRes);
 
-        teardown(function(){
-          server.restore();
-        });
+      server = sinon.fakeServer.create();
+      server.autoRespond = true;
+      server.respondWith(
+        'GET',
+        /\/kraken\/streams/,
+        [
+          200,
+          {'Content-Type': 'application/json'},
+          twitchRes
+        ]
+      );
+      myEl = fixture('streaming-list-fixture');
+      replace('twitchtv-card').with('fake-twitchtv-card');
+    });
 
-        suite('default properties', function(){
-          test('defines the "apiUrl" property', function() {
-            assert.equal(myEl.apiUrl, 'https://api.twitch.tv/kraken/streams');
-          });
+    teardown(function(){
+      server.restore();
+    });
 
-          test('defines the "limit" property', function() {
-            assert.equal(myEl.limit, 25);
-          });
+    test('defines the "apiUrl" property', function() {
+      assert.equal(myEl.apiUrl, 'https://api.twitch.tv/kraken/streams');
+    });
 
-          test('defines the "width" property', function(){
-            assert.equal(myEl.width, null);
-          })
+    test('defines the "limit" property', function() {
+      assert.equal(myEl.limit, 25);
+    });
 
-          test('defines the "lang" property', function() {
-            assert.equal(myEl.lang, "en");
-          });
+    test('defines the "width" property', function(){
+      assert.equal(myEl.width, null);
+    })
 
-          test('defines the "game" property', function() {
-            assert.equal(myEl.game, null);
-          });
+    test('defines the "lang" property', function() {
+      assert.equal(myEl.lang, "en");
+    });
 
-          test('defines the "response" property', function() {
-            assert.property(myEl, 'response');
-            assert.property(myEl.response, 'streams');
-            assert.lengthOf(myEl.response.streams, 0);
-          });
-        });
+    test('defines the "game" property', function() {
+      assert.equal(myEl.game, null);
+    });
 
-        suite('on request', function(){
-          var requestPromise;
+    test('defines the "response" property', function() {
+      assert.property(myEl, 'response');
+      assert.property(myEl.response, 'streams');
+      assert.lengthOf(myEl.response.streams, 0);
+    });
 
-          setup(function(){
-            requestPromise = new Promise(function(resolve){
-              myEl.addEventListener('request', resolve);
-            });
-          });
+    test('generateRequest is working', function(){
+      let spy = myEl.$.ajax.generateRequest = sinon.spy();
+      myEl.generateRequest();
 
-          test('auto generate one request event', function(){
-            return requestPromise;
-          });
+      sinon.assert.calledOnce(spy);
+    });
 
-          test('generateRequest is working', function(){
-            return requestPromise.then(function(){
-              return new Promise(function(resolve){
-                myEl.addEventListener('request', resolve);
-                myEl.generateRequest();
-              });
-            });
-          });
-        });
-
-        suite('on response', function(){
-          var responsePromise;
-
-          setup(function(){
-            responsePromise = new Promise(function(resolve){
-              myEl.addEventListener('response', resolve);
-            });
-          });
-
-          test('auto generate one response event', function(){
-            return responsePromise;
-          });
-
-          test('the response property must be correctly loaded', function(){
-            return responsePromise.then(function(){
-              assert.property(myEl.response, 'streams');
-              assert.property(myEl.response, '_total');
-              assert.property(myEl.response, '_links');
-              assert.lengthOf(myEl.response.streams, 25);
-              assert.equal(myEl.response._total, 14915);
-              assert.typeOf(myEl.response._links, 'object');
-            });
-          });
-
-          test('loadError event should be working', function(){
-            return new Promise(function(resolve){
-              myEl.addEventListener('loadError', resolve);
-              myEl.apiUrl = "http://poop/" + Math.random() * 1000;
-            });
-          });
-
-          test('element should have the right number of twitchtv-card\'s', function(){
-            return responsePromise.then(function(){
-              var cards =  Polymer.dom(myEl.root).querySelectorAll('#twitch_card');
-             assert.lengthOf(cards, 25);
-            });
-          });
-        });
+    test('the response property should be correctly loaded', function(){
+      let responsePromise = new Promise(function(resolve, error){
+        myEl.addEventListener('response', resolve);
+        myEl.addEventListener('loadError', error);
+        myEl.generateRequest();
       });
-    </script>
 
-  </body>
+      return responsePromise.then(function(){
+        assert.property(myEl.response, 'streams');
+        assert.property(myEl.response, '_total');
+        assert.property(myEl.response, '_links');
+        assert.lengthOf(myEl.response.streams, 25);
+        assert.equal(myEl.response._total, 14915);
+        assert.typeOf(myEl.response._links, 'object');
+      });
+    });
+
+    test('loadError event should be working', function(){
+      return new Promise(function(resolve){
+        myEl.addEventListener('loadError', resolve);
+        myEl.apiUrl = "http://poop/" + Math.random() * 1000;
+      });
+    });
+
+    test('element should have the right number of twitchtv-card\'s', function(){
+      let responsePromise = new Promise(function(resolve, error){
+        myEl.addEventListener('response', resolve);
+        myEl.addEventListener('loadError', error);
+        myEl.generateRequest();
+      });
+
+      return responsePromise.then(function(){
+        var cards =  Polymer.dom(myEl.root).querySelectorAll('#twitch_card');
+        assert.lengthOf(cards, 25);
+      });
+    });
+  });
+  </script>
+
+</body>
 </html>
