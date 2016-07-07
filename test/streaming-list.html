@@ -33,33 +33,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   suite('<streaming-list>', function() {
 
     var myEl,
-    twitchRes,
-    server;
+    apiUrl,
+    response;
 
     setup(function() {
-      twitchRes = JSON.stringify(document.twitchRes);
-
-      server = sinon.fakeServer.create();
-      server.autoRespond = true;
-      server.respondWith(
-        'GET',
-        /\/kraken\/streams/,
-        [
-          200,
-          {'Content-Type': 'application/json'},
-          twitchRes
-        ]
-      );
       myEl = fixture('streaming-list-fixture');
-      replace('twitchtv-card').with('fake-twitchtv-card');
-    });
+      apiUrl = 'https://api.twitch.tv/kraken/streams';
+      response = document.twitchRes;
 
-    teardown(function(){
-      server.restore();
+      replace('iron-ajax').with('fake-iron-ajax');
+      replace('twitchtv-card').with('fake-twitchtv-card');
+
+      stub('fake-iron-ajax', {
+        generateRequest: function() {
+          this.lastResponse = response;
+        }
+      });
     });
 
     test('defines the "apiUrl" property', function() {
-      assert.equal(myEl.apiUrl, 'https://api.twitch.tv/kraken/streams');
+      assert.equal(myEl.apiUrl, apiUrl);
     });
 
     test('defines the "limit" property', function() {
@@ -91,6 +84,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       sinon.assert.calledOnce(spy);
     });
 
+    test('iron-ajax should be correctly setted', function(){
+      assert.isTrue(myEl.$.ajax.auto);
+      assert.equal(myEl.$.ajax.url, apiUrl);
+      assert.equal(myEl.$.ajax.handleAs, 'json');
+      assert.deepEqual(myEl.lastResponse, {streams: []});
+      assert.equal(myEl.$.ajax.debounceDuration, 30);
+      assert.deepEqual(myEl.$.ajax.params, {
+        limit: 25,
+        language: 'en',
+        game: null
+      });
+    });
+
     test('the response property should be correctly loaded', function(){
       let responsePromise = new Promise(function(resolve, error){
         myEl.addEventListener('response', resolve);
@@ -99,12 +105,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       return responsePromise.then(function(){
-        assert.property(myEl.response, 'streams');
-        assert.property(myEl.response, '_total');
-        assert.property(myEl.response, '_links');
-        assert.lengthOf(myEl.response.streams, 25);
-        assert.equal(myEl.response._total, 14915);
-        assert.typeOf(myEl.response._links, 'object');
+        assert.equal(myEl.response, response);
       });
     });
 
