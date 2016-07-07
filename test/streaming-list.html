@@ -47,6 +47,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // Here we simulate the iron-ajax behavior
       stub('iron-ajax', {
         generateRequest: function() {
+          this.fire('request');
+          if(this.url !== apiUrl) this.fire('error');
           this._setLastResponse(response);
           this.fire('response');
         }
@@ -87,7 +89,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('iron-ajax should be correctly setted', function(){
-      console.log(myEl.$.ajax);
       assert.isTrue(myEl.$.ajax.auto);
       assert.equal(myEl.$.ajax.url, apiUrl);
       assert.equal(myEl.$.ajax.handleAs, 'json');
@@ -99,7 +100,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('the response property should be correctly loaded', function(){
+    test('the request event must be fired', function(){
+      return new Promise(function(resolve){
+        myEl.addEventListener('request', resolve);
+        myEl.generateRequest();
+      });
+    });
+
+    test('the response event/property should be correctly fired/loaded', function(){
       let responsePromise = new Promise(function(resolve){
         myEl.addEventListener('response', resolve);
         myEl.generateRequest();
@@ -113,7 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     test('loadError event should be working', function(){
       return new Promise(function(resolve){
         myEl.addEventListener('loadError', resolve);
-        myEl.$.ajax.fire('error'); // simulates iron-ajax behavior
+        myEl.apiUrl = "http://poop/" + Math.random() * 1000;
       });
     });
 
