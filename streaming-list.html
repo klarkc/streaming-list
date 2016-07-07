@@ -125,7 +125,9 @@ Example:
         */
         response: {
           type: Object,
-          value: {streams: []},
+          value: function(){
+            return {streams: []}
+          },
           notify: true
         }
 
