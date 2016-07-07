@@ -44,9 +44,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       replace('iron-ajax').with('fake-iron-ajax');
       replace('twitchtv-card').with('fake-twitchtv-card');
 
-      stub('fake-iron-ajax', {
+      // Here we simulate the iron-ajax behavior
+      stub('iron-ajax', {
         generateRequest: function() {
-          this.lastResponse = response;
+          this._setLastResponse(response);
+          this.fire('response');
         }
       });
     });
@@ -85,10 +87,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('iron-ajax should be correctly setted', function(){
+      console.log(myEl.$.ajax);
       assert.isTrue(myEl.$.ajax.auto);
       assert.equal(myEl.$.ajax.url, apiUrl);
       assert.equal(myEl.$.ajax.handleAs, 'json');
-      assert.deepEqual(myEl.lastResponse, {streams: []});
       assert.equal(myEl.$.ajax.debounceDuration, 30);
       assert.deepEqual(myEl.$.ajax.params, {
         limit: 25,
@@ -98,9 +100,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('the response property should be correctly loaded', function(){
-      let responsePromise = new Promise(function(resolve, error){
+      let responsePromise = new Promise(function(resolve){
         myEl.addEventListener('response', resolve);
-        myEl.addEventListener('loadError', error);
         myEl.generateRequest();
       });
 
@@ -112,7 +113,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     test('loadError event should be working', function(){
       return new Promise(function(resolve){
         myEl.addEventListener('loadError', resolve);
-        myEl.apiUrl = "http://poop/" + Math.random() * 1000;
+        myEl.$.ajax.fire('error'); // simulates iron-ajax behavior
       });
     });
 
