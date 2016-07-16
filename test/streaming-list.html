@@ -125,7 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('element should have the right number of twitchtv-card\'s', function(){
+    test('element should have the right twitchtv-card\'s', function(){
       let responsePromise = new Promise(function(resolve, error){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.addEventListener('streaming-list-error', error);
@@ -133,8 +133,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       return responsePromise.then(function(){
-        var cards =  Polymer.dom(myEl.root).querySelectorAll('#twitch_card');
-        assert.lengthOf(cards, 25);
+        flush(function(){
+          let cards =  Polymer.dom(myEl.root).querySelectorAll('twitchtv-card');
+          assert.lengthOf(cards, 25);
+          for(let i in cards) {
+            assert.equal(cards[i].data, myEl.response.streams[i]);
+            assert.equal(cards[i].width, myEl.width);
+          }
+        });
       });
     });
   });
