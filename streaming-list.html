@@ -57,21 +57,21 @@ Example:
       is: "streaming-list",
 
       /**
-       * Fired when a request is sent.
+       * Fired when a streaming-list-request is sent.
        *
-       * @event request
+       * @event streaming-list-request
        */
 
       /**
-       * Fired when a response is received.
+       * Fired when a streaming-list-response is received.
        *
-       * @event response
+       * @event streaming-list-response
        */
 
       /**
-       * Fired when an error is received.
+       * Fired when an streaming-list-error is received.
        *
-       * @event error
+       * @event streaming-list-error
        */
 
       properties: {
@@ -134,9 +134,9 @@ Example:
       },
 
       listeners: {
-        'ajax.request': '_onRequest',
-        'ajax.response': '_onResponse',
-        'ajax.error': '_onError'
+        'iron-ajax-request': '_onRequest',
+        'iron-ajax-response': '_onResponse',
+        'iron-ajax-error': '_onError'
       },
 
       ready: function(){
@@ -150,19 +150,19 @@ Example:
       },
 
       _onRequest: function(event) {
-        this.fire('request', event);
+        this.fire('streaming-list-request', event);
       },
 
       _onResponse: function(event) {
-        this.fire('response', event);
+        this.fire('streaming-list-response', event);
       },
 
       _onError: function(event) {
-        this.fire('loadError', event);
+        this.fire('streaming-list-error', event);
       },
 
       /**
-       * Performs an AJAX request to the streaming server
+       * Performs an AJAX iron-ajax-request to the streaming server
        * @returns {!IronRequestElement} Returns !IronRequestElement
        */
       generateRequest: function() {

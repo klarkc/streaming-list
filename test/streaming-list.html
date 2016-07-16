@@ -47,10 +47,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // Here we simulate the iron-ajax behavior
       stub('iron-ajax', {
         generateRequest: function() {
-          this.fire('request');
-          if(this.url !== apiUrl) this.fire('error');
+          this.fire('iron-ajax-request');
+          if(this.url !== apiUrl) this.fire('iron-ajax-error');
           this._setLastResponse(response);
-          this.fire('response');
+          this.fire('iron-ajax-response');
         }
       });
     });
@@ -100,16 +100,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('the request event must be fired', function(){
+    test('the streaming-list-request event must be fired', function(){
       return new Promise(function(resolve){
-        myEl.addEventListener('request', resolve);
+        myEl.addEventListener('streaming-list-request', resolve);
         myEl.generateRequest();
       });
     });
 
     test('the response event/property should be correctly fired/loaded', function(){
       let responsePromise = new Promise(function(resolve){
-        myEl.addEventListener('response', resolve);
+        myEl.addEventListener('streaming-list-response', resolve);
         myEl.generateRequest();
       });
 
@@ -118,17 +118,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('loadError event should be working', function(){
+    test('streaming-list-error event should be working', function(){
       return new Promise(function(resolve){
-        myEl.addEventListener('loadError', resolve);
+        myEl.addEventListener('streaming-list-error', resolve);
         myEl.apiUrl = "http://poop/" + Math.random() * 1000;
       });
     });
 
     test('element should have the right number of twitchtv-card\'s', function(){
       let responsePromise = new Promise(function(resolve, error){
-        myEl.addEventListener('response', resolve);
-        myEl.addEventListener('loadError', error);
+        myEl.addEventListener('streaming-list-response', resolve);
+        myEl.addEventListener('streaming-list-error', error);
         myEl.generateRequest();
       });
 
