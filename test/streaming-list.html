@@ -134,7 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       return responsePromise.then(function(){
         flush(function(){
-          let cards =  Polymer.dom(myEl.root).querySelectorAll('twitchtv-card');
+          let cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
           assert.lengthOf(cards, 25);
           for(let i in cards) {
             assert.equal(cards[i].data, myEl.response.streams[i]);
