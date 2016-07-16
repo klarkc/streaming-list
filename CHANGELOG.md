@@ -1,3 +1,40 @@
+<a name="v2.0.0"></a>
+v2.0.0#  (2016-07-16)
+
+* fix(docs): fix waffle badge ([8de4d66](https://github.com/klarkc/streaming-list/commit/8de4d66))
+* fix(docs): remove flat from travis badge ([1277eb4](https://github.com/klarkc/streaming-list/commit/1277eb4))
+* fix(docs): remove yeoman information ([b779e95](https://github.com/klarkc/streaming-list/commit/b779e95))
+* fix(streaming-list): rename error event to loadError, fixes #10 ([7607fd2](https://github.com/klarkc/streaming-list/commit/7607fd2)), closes [#10](https://github.com/klarkc/streaming-list/issues/10)
+* fix(streaming-list): response default parameter value use a new instance object instead of global on ([cd61d88](https://github.com/klarkc/streaming-list/commit/cd61d88))
+* fix(tests): change function declaration, fix #11 ([5722bb1](https://github.com/klarkc/streaming-list/commit/5722bb1)), closes [#11](https://github.com/klarkc/streaming-list/issues/11)
+* fix(tests): fix streaming-list tests and stubs ([a594417](https://github.com/klarkc/streaming-list/commit/a594417))
+* fix(tests): for some reason, m$ edge do not understand that twitchtv-card is fake-twitchtv-card ([ccc4808](https://github.com/klarkc/streaming-list/commit/ccc4808))
+* feat(dependencies): add upstream dependency ([56a7956](https://github.com/klarkc/streaming-list/commit/56a7956))
+* feat(docs): add ie to compatible list ([eb87831](https://github.com/klarkc/streaming-list/commit/eb87831))
+* feat(docs): add waffle badge ([5ab6b26](https://github.com/klarkc/streaming-list/commit/5ab6b26))
+* feat(docs): change waffle link and badge label ([3e4041e](https://github.com/klarkc/streaming-list/commit/3e4041e))
+* feat(streaming-list): remove uneeded attached callback, change debounce-duration ([a5a4ba2](https://github.com/klarkc/streaming-list/commit/a5a4ba2))
+* feat(tests): add a new test, change suites naming and behavior ([6c1e439](https://github.com/klarkc/streaming-list/commit/6c1e439))
+* feat(tests): change basic-test to streaming-list ([08a2cf0](https://github.com/klarkc/streaming-list/commit/08a2cf0))
+* feat(tests): change remove JSON.stringify from twitch-res ([d9b3202](https://github.com/klarkc/streaming-list/commit/d9b3202))
+* feat(tests): fix and improve tests ([a758ea2](https://github.com/klarkc/streaming-list/commit/a758ea2))
+* feat(tests): improves streaming-list test ([38b062d](https://github.com/klarkc/streaming-list/commit/38b062d))
+* feat(tests): Reduce complexity of streaming-list tests (still failing) ([eb9ff55](https://github.com/klarkc/streaming-list/commit/eb9ff55))
+* feat(tests): remove fakeServer and use simple functions stubs instead ([e43bf70](https://github.com/klarkc/streaming-list/commit/e43bf70))
+* feat(tests): split response and request tests, add error and generateRequest tests ([0eaf083](https://github.com/klarkc/streaming-list/commit/0eaf083))
+* feat(tests): use stub twitchtv-card instead of original one ([6378af0](https://github.com/klarkc/streaming-list/commit/6378af0))
+* feat(twitchtv-card): add tests, a new event and monitors for width changes ([a73cf53](https://github.com/klarkc/streaming-list/commit/a73cf53))
+* add sauce crendentials ([e6fc9ee](https://github.com/klarkc/streaming-list/commit/e6fc9ee))
+* change tests to firefox 46.0, because SeleniumHQ/selenium#2110 ([b82101f](https://github.com/klarkc/streaming-list/commit/b82101f))
+* enable local tests ([1fa611a](https://github.com/klarkc/streaming-list/commit/1fa611a))
+* perf(streaming-list) remove not needed id parameter ([b01e2dc](https://github.com/klarkc/streaming-list/commit/b01e2dc))
+* rename all events using the standard element-event-name, fixes #14 ([9f5591a](https://github.com/klarkc/streaming-list/commit/9f5591a)), closes [#14](https://github.com/klarkc/streaming-list/issues/14)
+* perf(streaming-list): simplify tests ([dc60ed3](https://github.com/klarkc/streaming-list/commit/dc60ed3))
+* perf(tests): remove unused variable ([2faa903](https://github.com/klarkc/streaming-list/commit/2faa903))
+* perf(twitch-res): change twitch volatile url to lorempixel generated url in tests ([e9b0eb2](https://github.com/klarkc/streaming-list/commit/e9b0eb2))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/klarkc/streaming-list/compare/39dedef...v1.0.0) (2016-04-26)
 
@@ -73,6 +110,3 @@
 ### Performance Improvements
 
 * **refactoring:** Change single quote to double quotes([34f424c](https://github.com/klarkc/streaming-list/commit/34f424c))
-
-
-
