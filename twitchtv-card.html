@@ -42,6 +42,7 @@ Example:
   <template>
     <style>
       :host {
+        display: block;
         box-sizing: border-box;
         position: relative;
       }
@@ -247,6 +248,12 @@ Example:
       ],
 
       attached: function() {
+        if(!this.width) {
+          this.width = this.clientWidth;
+        } else {
+          this.style.display = 'inline-block';
+        }
+
         // Load image
         this._loadImage();
       },
@@ -333,10 +340,8 @@ Example:
       },
 
       _onWidthChanged: function(event) {
-        if (this.width) {
-          this.style.width = this.width + 'px';
-          this._loadImage();
-        }
+        this.style.width = this.width + 'px';
+        this._loadImage();
       },
 
       _loadImage: function() {
