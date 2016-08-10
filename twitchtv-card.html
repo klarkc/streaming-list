@@ -319,7 +319,8 @@ Example:
       },
 
       _onImageLoaded: function(event) {
-        this.$.status.doFitMe();
+        // this.$.status.doFitMe(); NOTE: Causing bug width data-biding (fitting an ancient status)
+
         // Only play animation if element was not loaded before AND there is a IMAGE loaded
         if(!this.$.card.classList.contains('loaded')
           && this.$.image.loaded
@@ -337,6 +338,7 @@ Example:
           this.fire('loaded', this);
         }.bind(this), Math.round(Math.random() * 2000));
         */
+
         this.fire('loaded', this);
       },
 
