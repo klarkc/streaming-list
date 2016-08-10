@@ -33,8 +33,6 @@ Example:
       :host {
         display: block;
         box-sizing: border-box;
-        /* height of spinner plus aditional margin */
-        /*margin-bottom: calc(16px + 28px + 16px);*/
         @apply(--layout-vertical);
       }
 
@@ -57,8 +55,7 @@ Example:
                on-response="_onResponse"
                on-request="_onRequest"
                on-error="_onError"
-               debounce-duration="30"
-               params='[[_concatParams(limit, lang, game, currentPage)]]'>
+               debounce-duration="30">
     </iron-ajax>
     <div id="streams">
       <template is="dom-repeat" items="[[response.streams]]">
@@ -68,7 +65,7 @@ Example:
     <paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>
     <event-infinite-scroll
                id="scroll"
-               scroll="1000"
+               scrollOffset="60"
                on-reach-bottom="_loadMore"
                body="{{body}}">
     </event-infinite-scroll>
@@ -188,7 +185,7 @@ Example:
       },
 
       observers: [
-        'generateRequest(apiUrl, limit, lang, game, currentPage)'
+        'generateRequest(apiUrl, limit, lang, game)'
       ],
 
       listeners: {
@@ -201,12 +198,12 @@ Example:
         }
       },
 
-      _concatParams: function(limit, lang, game, currentPage) {
+      _concatParams: function() {
         return {
-          limit: limit,
-          language: lang,
-          game: game,
-          offset: currentPage * limit
+          limit: this.limit,
+          language: this.lang,
+          game: this.game,
+          offset: (this.currentPage * this.limit) || 0
         };
       },
 
@@ -234,7 +231,10 @@ Example:
 
       _loadMore: function(event) {
         this.$.scroll.stopObserve();
+        this._scrollListening = false;
+
         this._setCurrentPage(this.currentPage + 1);
+        this.generateRequest();
       },
 
       /**
@@ -260,24 +260,23 @@ Example:
       },
 
       _afterLoaded: function(event) {
-        // Listen for scroll event-infinite-scroll
-        //console.log('observing scroll');
-        this.$.scroll.startObserve();
-
         this._removeOldCards();
+
+        // Listen for scroll event-infinite-scroll
+        if(!this._scrollListening) {
+          this.$.scroll.startObserve();
+          this._scrollListening = true;
+        }
       },
 
       _removeOldCards: function(event) {
+        /* Pending implementation */
         if(!this.pages) return;
         if(this.response.streams.length > this.limit * this.pages) {
-          // First scroll, because we don't want a infinite loop
-          this._scrollMiddle();
+          //this.splice('response.streams', 0, this.limit);
 
-          var streams = this.response.streams.slice(
-            (this.response.streams.length - this.limit - 1) * - 1
-          );
-          //console.log(streams);
-          this.set('response.streams', streams);
+          // Scroll to bottom - offset -1
+          //this._scrollUp();
         }
         //console.log(this.response.streams.length);
       },
@@ -285,12 +284,14 @@ Example:
       /**
        * Scroll to middle of page
        */
-      _scrollMiddle: function() {
+      _scrollBottom: function() {
         if (this.body) {
-          var top = document.body.scrollHeight / 2,
+          var top = document.body.scrollHeight,
               left = window.pageX || document.documentElement.scrollLeft;
-          //console.log('scrolling to', left, top);
+          console.log('scrolling to', left, top);
           window.scrollTo(left, top);
+        } else {
+
         }
       },
 
@@ -299,6 +300,8 @@ Example:
        * @returns {!IronRequestElement} Returns !IronRequestElement
        */
       generateRequest: function() {
+        this.$.ajax.params = this._concatParams();
+        //console.log(this.$.ajax.params);
         return this.$.ajax.generateRequest();
       }
     });
