@@ -12,6 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../paper-spinner/paper-spinner.html">
+<link rel="import" href="../event-infinite-scroll/event-infinite-scroll.html">
 <link rel="import" href="twitchtv-card.html">
 
 <!--
@@ -31,25 +33,45 @@ Example:
       :host {
         display: block;
         box-sizing: border-box;
+        /* height of spinner plus aditional margin */
+        /*margin-bottom: calc(16px + 28px + 16px);*/
         @apply(--layout-vertical);
+      }
+
+      #streams {
+        @apply(--layout-wrap);
       }
 
       twitchtv-card {
         margin: 16px;
       }
+
+      paper-spinner {
+        margin: 16px auto;
+      }
     </style>
     <iron-ajax
                id="ajax"
-               auto
                url="{{apiUrl}}"
                handle-as="json"
-               last-response="{{response}}"
+               on-response="_onResponse"
+               on-request="_onRequest"
+               on-error="_onError"
                debounce-duration="30"
-               params='[[_concatParams(limit, lang, game)]]'>
+               params='[[_concatParams(limit, lang, game, currentPage)]]'>
     </iron-ajax>
-    <template is="dom-repeat" items="[[response.streams]]">
-      <twitchtv-card data="[[item]]" width="[[width]]"></twitchtv-card>
-    </template>
+    <div id="streams">
+      <template is="dom-repeat" items="[[response.streams]]">
+        <twitchtv-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
+      </template>
+    </div>
+    <paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>
+    <event-infinite-scroll
+               id="scroll"
+               scroll="1000"
+               on-reach-bottom="_loadMore"
+               body="{{body}}">
+    </event-infinite-scroll>
   </template>
 
   <script>
@@ -63,10 +85,16 @@ Example:
        */
 
       /**
-       * Fired when a response is received.
+       * Fired when a response of a single card is received.
        *
        * @event streaming-list-response
        */
+
+       /**
+        * Fired when all requested responses has been received.
+        *
+        * @event streaming-list-loaded
+        */
 
       /**
        * Fired in request or response error.
@@ -85,12 +113,20 @@ Example:
         },
 
         /**
-         * `limit` Used to define the number of itens in the list
+         * `limit` Used to define the number of itens on each page
          */
         limit: {
           type: Number,
           notify: true,
-          value: 25
+          value: 10
+        },
+
+        /**
+         * `pages` Number of pages to maintain cached, can cause performance degradation
+         */
+        pages: {
+          type: Number,
+          value: 2
         },
 
         /**
@@ -121,44 +157,141 @@ Example:
         },
 
         /**
-        * `response` The data retrieved from the server
+        * `response` Cached data retrieved from the server
         */
         response: {
           type: Object,
           value: function(){
-            return {streams: []}
+            return {streams: []};
           },
           notify: true
-        }
+        },
 
+        /**
+         * `currentPage` Current page
+         */
+        currentPage: {
+          type: Number,
+          readOnly: true,
+          notify: true,
+          value: 0
+        },
+
+        /**
+         * `body` If true, the element will use document body as reference to scrolling,
+         *  otherwise the element will use parent node as reference to scrolling
+         */
+        body: {
+          type: Boolean,
+          value: false
+        },
       },
+
+      observers: [
+        'generateRequest(apiUrl, limit, lang, game, currentPage)'
+      ],
 
       listeners: {
-        'iron-ajax-request': '_onRequest',
-        'iron-ajax-response': '_onResponse',
-        'iron-ajax-error': '_onError'
+        'streaming-list-loaded': '_afterLoaded'
       },
 
-      ready: function(){
+      ready: function() {
         if(this.width) {
           this.className = 'layout horizontal wrap';
         }
       },
 
-      _concatParams: function(limit, lang, game) {
-        return {limit: limit, language: lang, game: game};
+      _concatParams: function(limit, lang, game, currentPage) {
+        return {
+          limit: limit,
+          language: lang,
+          game: game,
+          offset: currentPage * limit
+        };
       },
 
       _onRequest: function(event) {
+        this.$.spinnerBottom.active = true;
         this.fire('streaming-list-request', event);
       },
 
       _onResponse: function(event) {
+        //console.log(event.detail.response.streams);
+        var oldStreams = this.response.streams;
+
+        var response = event.detail.response;
+        this.set('response.streams', response.streams);
+
+        // set old streams concated with new streams
+        this.set('response.streams', oldStreams.concat(response.streams));
+
         this.fire('streaming-list-response', event);
       },
 
       _onError: function(event) {
         this.fire('streaming-list-error', event);
+      },
+
+      _loadMore: function(event) {
+        this.$.scroll.stopObserve();
+        this._setCurrentPage(this.currentPage + 1);
+      },
+
+      /**
+       * Fires loaded event when all cards has been loaded after the request
+       * @param  Event event loaded event of each card
+       * @return null
+       */
+      _cardLoaded: function(event) {
+        this.doneCards = this.doneCards || [];
+        this.doneCards.push(event);
+        //console.log(this.doneCards.length, 'of', this.limit);
+
+        if(this.doneCards.length >= this.limit){
+          //console.log('all cards loaded');
+          //console.log(this.response.streams);
+
+          // reset spinner
+          this.$.spinnerBottom.active = false;
+
+          this.fire('streaming-list-loaded', this.doneCards);
+          this.doneCards = [];
+        }
+      },
+
+      _afterLoaded: function(event) {
+        // Listen for scroll event-infinite-scroll
+        //console.log('observing scroll');
+        this.$.scroll.startObserve();
+
+        this._removeOldCards();
+      },
+
+      _removeOldCards: function(event) {
+        if(!this.pages) return;
+        if(this.response.streams.length > this.limit * this.pages) {
+          // First scroll, because we don't want a infinite loop
+          this._scrollMiddle();
+
+          var streams = this.response.streams.slice(
+            (this.response.streams.length - this.limit - 1) * - 1
+          );
+          //console.log(streams);
+          this.set('response.streams', streams);
+        }
+        //console.log(this.response.streams.length);
+      },
+
+      /**
+       * Scroll to middle of page
+       */
+      _scrollMiddle: function() {
+        if (this.body) {
+          var top = document.body.scrollHeight / 2,
+              left = window.pageX || document.documentElement.scrollLeft;
+          //console.log('scrolling to', left, top);
+          window.scrollTo(left, top);
+        }
       },
 
       /**
