@@ -62,29 +62,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('defines the "clientId" property', function() {
-      assert.equal(myEl.clientId, clientId);
+      flush(function(){
+        assert.equal(myEl.clientId, clientId);
+      });
     });
 
     test('defines the "limit" property', function() {
-      assert.equal(myEl.limit, 25);
+      flush(function(){
+        assert.equal(myEl.limit, 25);
+      });
     });
 
     test('defines the "width" property', function(){
-      assert.equal(myEl.width, null);
+      flush(function(){
+        assert.equal(myEl.width, null);
+      });
     })
 
     test('defines the "lang" property', function() {
-      assert.equal(myEl.lang, "en");
+      flush(function(){
+        assert.equal(myEl.lang, "en");
+      });
     });
 
     test('defines the "game" property', function() {
-      assert.equal(myEl.game, null);
+      flush(function(){
+        assert.equal(myEl.game, null);
+      })
     });
 
     test('defines the "response" property', function() {
-      assert.property(myEl, 'response');
-      assert.property(myEl.response, 'streams');
-      assert.lengthOf(myEl.response.streams, 0);
+      flush(function(){
+        assert.property(myEl, 'response');
+        assert.property(myEl.response, 'streams');
+        assert.lengthOf(myEl.response.streams, 0);
+      })
     });
 
     test('generateRequest is working', function(){
@@ -95,15 +107,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('iron-ajax should be correctly setted', function(){
-      assert.isTrue(myEl.$.ajax.auto);
-      assert.equal(myEl.$.ajax.url, apiUrl);
-      assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
-      assert.equal(myEl.$.ajax.handleAs, 'json');
-      assert.equal(myEl.$.ajax.debounceDuration, 30);
-      assert.deepEqual(myEl.$.ajax.params, {
-        limit: 25,
-        language: 'en',
-        game: null
+      flush(function(){
+        assert.isTrue(myEl.$.ajax.auto);
+        assert.equal(myEl.$.ajax.url, apiUrl);
+        assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
+        assert.equal(myEl.$.ajax.handleAs, 'json');
+        assert.equal(myEl.$.ajax.debounceDuration, 30);
+        assert.deepEqual(myEl.$.ajax.params, {
+          limit: 25,
+          language: 'en',
+          game: null
+        });
       });
     });
 
@@ -114,15 +128,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('the response event/property should be correctly fired/loaded', function(done){
+    test('the response event/property should be correctly fired/loaded', function(){
       var responsePromise = new Promise(function(resolve){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.generateRequest();
       });
 
-      responsePromise.then(function(){
+      return responsePromise.then(function(){
         assert.equal(myEl.response, response);
-        done();
       });
     });
 
@@ -133,21 +146,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('element should have the right twitchtv-card\'s', function(done){
+    test('element should have the right twitchtv-card\'s', function(){
       var responsePromise = new Promise(function(resolve, error){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.addEventListener('streaming-list-error', error);
         myEl.generateRequest();
       });
 
-      responsePromise.then(function(){
+      return responsePromise.then(function(){
           var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
           assert.lengthOf(cards, 25);
           cards.forEach(function(card, index){
             assert.equal(card.data, myEl.response.streams[index]);
             assert.equal(card.width, myEl.width);
           });
-          done();
       });
     });
   });
