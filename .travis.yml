@@ -11,7 +11,7 @@ addons:
     packages:
     - google-chrome-stable
 before_script:
-- npm install -g bower eslint eslint-plugin-html polylint web-component-tester web-component-tester-istanbul
+- npm install -g bower eslint eslint-plugin-html polylint web-component-tester@4.3.1 web-component-tester-istanbul
 - bower install
 - polylint
 - eslint **.{html,js}
