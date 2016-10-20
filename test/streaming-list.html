@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- You can use the document as a place to set up your fixtures. -->
   <test-fixture id="streaming-list-fixture">
     <template>
-      <streaming-list></streaming-list>
+      <streaming-list client-id="hackme"></streaming-list>
     </template>
   </test-fixture>
 
@@ -34,11 +34,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     var myEl,
     apiUrl,
+    clientId,
     response;
 
     setup(function() {
       myEl = fixture('streaming-list-fixture');
       apiUrl = 'https://api.twitch.tv/kraken/streams';
+      clientId = 'hackme';
       response = document.twitchRes;
 
       replace('iron-ajax').with('fake-iron-ajax');
@@ -57,6 +59,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('defines the "apiUrl" property', function() {
       assert.equal(myEl.apiUrl, apiUrl);
+    });
+
+    test('defines the "clientId" property', function() {
+      assert.equal(myEl.clientId, clientId);
     });
 
     test('defines the "limit" property', function() {
@@ -91,6 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     test('iron-ajax should be correctly setted', function(){
       assert.isTrue(myEl.$.ajax.auto);
       assert.equal(myEl.$.ajax.url, apiUrl);
+      assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
       assert.equal(myEl.$.ajax.handleAs, 'json');
       assert.equal(myEl.$.ajax.debounceDuration, 30);
       assert.deepEqual(myEl.$.ajax.params, {

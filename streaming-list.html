@@ -42,6 +42,7 @@ Example:
                id="ajax"
                auto
                url="{{apiUrl}}"
+               headers='[[_concatHeaders(clientId)]]'
                handle-as="json"
                last-response="{{response}}"
                debounce-duration="30"
@@ -83,6 +84,11 @@ Example:
           notify: true,
           value: "https://api.twitch.tv/kraken/streams"
         },
+
+        /**
+         * `clientId` Required Twitch.tv Client ID (register yout app at https://www.twitch.tv/settings/connections)
+         */
+        clientId: String,
 
         /**
          * `limit` Used to define the number of itens in the list
@@ -143,6 +149,12 @@ Example:
         if(this.width) {
           this.className = 'layout horizontal wrap';
         }
+      },
+
+      _concatHeaders: function(clientId) {
+        return {
+          'Client-ID': clientId
+        };
       },
 
       _concatParams: function(limit, lang, game) {
