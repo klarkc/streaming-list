@@ -4,8 +4,6 @@ streaming-list
 [![Travis][travis-image]][travis-url]
 [![codeclimate note][cc-image]][cc-url]
 [![coverage][cov-image]][cov-url]
-[![Waffle][waffle-image]][waffle-url]
-
 [travis-image]: https://img.shields.io/travis/klarkc/streaming-list/master.svg
 [travis-url]: https://travis-ci.org/klarkc/streaming-list
 [cc-image]: https://img.shields.io/codeclimate/github/klarkc/streaming-list.svg?maxAge=2592000
