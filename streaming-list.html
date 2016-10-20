@@ -66,8 +66,7 @@ Example:
     <event-infinite-scroll
                id="scroll"
                scrollOffset="60"
-               on-reach-bottom="_loadMore"
-               body="{{body}}">
+               on-reach-bottom="_loadMore">
     </event-infinite-scroll>
   </template>
 
@@ -172,16 +171,7 @@ Example:
           readOnly: true,
           notify: true,
           value: 0
-        },
-
-        /**
-         * `body` If true, the element will use document body as reference to scrolling,
-         *  otherwise the element will use parent node as reference to scrolling
-         */
-        body: {
-          type: Boolean,
-          value: false
-        },
+        }
       },
 
       observers: [
