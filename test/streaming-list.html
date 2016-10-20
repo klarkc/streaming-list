@@ -114,14 +114,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('the response event/property should be correctly fired/loaded', function(){
+    test('the response event/property should be correctly fired/loaded', function(done){
       var responsePromise = new Promise(function(resolve){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.generateRequest();
       });
 
-      return responsePromise.then(function(){
+      responsePromise.then(function(){
         assert.equal(myEl.response, response);
+        done();
       });
     });
 
@@ -132,22 +133,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('element should have the right twitchtv-card\'s', function(){
+    test('element should have the right twitchtv-card\'s', function(done){
       var responsePromise = new Promise(function(resolve, error){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.addEventListener('streaming-list-error', error);
         myEl.generateRequest();
       });
 
-      return responsePromise.then(function(){
-        flush(function(){
+      responsePromise.then(function(){
           var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
           assert.lengthOf(cards, 25);
-          cards.forEach(function(){
-            assert.equal(cards[i].data, myEl.response.streams[i]);
-            assert.equal(cards[i].width, myEl.width);
+          cards.forEach(function(card, index){
+            assert.equal(card.data, myEl.response.streams[index]);
+            assert.equal(card.width, myEl.width);
           });
-        });
+          done();
       });
     });
   });
