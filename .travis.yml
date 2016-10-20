@@ -11,9 +11,10 @@ addons:
     packages:
     - google-chrome-stable
 before_script:
-- npm install -g bower polylint web-component-tester web-component-tester-istanbul
+- npm install -g bower eslint eslint-plugin-html polylint web-component-tester web-component-tester-istanbul
 - bower install
 - polylint
+- eslint **.{html,js}
 script:
 - xvfb-run wct
 env:
