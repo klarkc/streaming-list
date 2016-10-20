@@ -2,18 +2,16 @@ streaming-list
 =
 
 [![Travis][travis-image]][travis-url]
-[![Codacy][codacy-image]][codacy-url]
-[![Coverage][coverage-image]][coverage-url]
+[![codeclimate note][cc-image]][cc-url]
+[![coverage][cov-image]][cov-url]
 [![Waffle][waffle-image]][waffle-url]
 
 [travis-image]: https://img.shields.io/travis/klarkc/streaming-list/master.svg
 [travis-url]: https://travis-ci.org/klarkc/streaming-list
-[codacy-image]: https://img.shields.io/codacy/67950dc659aa4f589efd881190b5a5a0.svg
-[codacy-url]: https://www.codacy.com/app/walker/streaming-list
-[coverage-image]: https://api.codacy.com/project/badge/coverage/67950dc659aa4f589efd881190b5a5a0
-[coverage-url]: https://www.codacy.com/app/walker/streaming-list
-[waffle-image]: https://img.shields.io/waffle/label/klarkc/streaming-list/help%20wanted.svg
-[waffle-url]: https://waffle.io/klarkc/streaming-list?label=help%20wanted
+[cc-image]: https://img.shields.io/codeclimate/github/klarkc/streaming-list.svg?maxAge=2592000
+[cc-url]: https://codeclimate.com/github/klarkc/streaming-list
+[cov-image]: https://img.shields.io/codeclimate/coverage/github/klarkc/streaming-list.svg?maxAge=2592000
+[cov-url]: https://codeclimate.com/github/klarkc/projects-service/coverage
 
 A webcomponent written with [Polymer](https://www.polymer-project.org/) for list [Twitch](https://www.twitch.tv/) and (in future) [Youtube](http://youtube.com/) streams. You will be able to filter the results by a specific game and define priority for a selected language.
 
