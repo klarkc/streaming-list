@@ -24,10 +24,16 @@
     "istanbul": {
       "dir": "./coverage",
       "reporters": ["text-summary", "lcov"],
-      "include": ["**/*.js"],
+      "include": [
+        "**.html",
+        "**.js"
+      ],
       "exclude": [
-        "/polymer/polymer.js",
-        "/platform/platform.js"
+        "index.html",
+        "demo/*",
+        "test/*",
+        "coverage/*",
+        "bower_components/*"
       ]
     }
   }
