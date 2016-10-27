@@ -135,7 +135,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('the response event/property should be correctly fired/loaded', function(){
+    test('the response event/property should be correctly fired/loaded', function(done){
       // Reason is that deepEqual in a big json file
       this.slow(1000);
 
@@ -144,9 +144,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         myEl.generateRequest();
       });
 
-      return responsePromise.then(function(){
+      responsePromise.then(function(){
+        flush(function(){
           assert.deepEqual(myEl.response, response);
+          done();
         });
+      });
     });
 
     test('streaming-list-error event should be working', function(){
@@ -161,20 +164,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
     });
 
-    test('element should have the right twitchtv-card\'s', function(){
+    test('element should have the right twitchtv-card\'s', function(done){
+      // Rendering is a tough job
+      this.slow(300);
+
       var responsePromise = new Promise(function(resolve, error){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.addEventListener('streaming-list-error', error);
         myEl.generateRequest();
       });
 
-      return responsePromise.then(function(){
+      responsePromise.then(function(){
+        flush(function(){
           var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
           assert.lengthOf(cards, 25);
           cards.forEach(function(card, index){
             assert.equal(card.data, myEl.response.streams[index]);
             assert.equal(card.width, myEl.width);
           });
+          done();
+        });
       });
     });
   });
