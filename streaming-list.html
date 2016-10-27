@@ -46,6 +46,9 @@ Example:
                handle-as="json"
                last-response="{{response}}"
                debounce-duration="30"
+               on-error="_onError"
+               on-request="_onRequest"
+               on-response="_onResponse"
                params='[[_concatParams(limit, lang, game)]]'>
     </iron-ajax>
     <template is="dom-repeat" items="[[response.streams]]">
@@ -139,12 +142,6 @@ Example:
 
       },
 
-      listeners: {
-        'iron-ajax-request': '_onRequest',
-        'iron-ajax-response': '_onResponse',
-        'iron-ajax-error': '_onError'
-      },
-
       ready: function(){
         if(this.width) {
           this.className = 'layout horizontal wrap';
@@ -162,6 +159,7 @@ Example:
       },
 
       _onRequest: function(event) {
+        console.log(event);
         this.fire('streaming-list-request', event);
       },
 
