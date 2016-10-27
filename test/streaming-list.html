@@ -35,26 +35,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var myEl,
     apiUrl,
     clientId,
+    server,
     response;
 
     setup(function() {
-      myEl = fixture('streaming-list-fixture');
       apiUrl = 'https://api.twitch.tv/kraken/streams';
       clientId = 'hackme';
       response = document.twitchRes;
 
-      replace('iron-ajax').with('fake-iron-ajax');
-      replace('twitchtv-card').with('fake-twitchtv-card');
-
       // Here we simulate the iron-ajax behavior
-      stub('iron-ajax', {
-        generateRequest: function() {
-          this.fire('iron-ajax-request');
-          if(this.url !== apiUrl) this.fire('iron-ajax-error');
-          this._setLastResponse(response);
-          this.fire('iron-ajax-response');
-        }
-      });
+      server = sinon.fakeServer.create();
+      server.respondWith(
+        'GET',
+        new RegExp(apiUrl + '.*'),
+        [
+          200,
+          {'Content-Type': 'application/json'},
+          JSON.stringify(response)
+        ]
+      );
+      server.autoRespond = true;
+
+      myEl = fixture('streaming-list-fixture');
+      replace('twitchtv-card').with('fake-twitchtv-card');
+    });
+
+    teardown(function(){
+      server.restore();
     });
 
     test('defines the "apiUrl" property', function() {
@@ -108,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('iron-ajax should be correctly setted', function(){
       flush(function(){
-        assert.isTrue(myEl.$.ajax.auto);
+        assert.isDefined(myEl.$.ajax.auto);
         assert.equal(myEl.$.ajax.url, apiUrl);
         assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
         assert.equal(myEl.$.ajax.handleAs, 'json');
@@ -129,21 +136,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('the response event/property should be correctly fired/loaded', function(){
+      // Reason is that deepEqual in a big json file
+      this.slow(1000);
+
       var responsePromise = new Promise(function(resolve){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.generateRequest();
       });
 
       return responsePromise.then(function(){
-        assert.equal(myEl.response, response);
-      });
+          assert.deepEqual(myEl.response, response);
+        });
     });
 
     test('streaming-list-error event should be working', function(){
-      return new Promise(function(resolve){
+      var errorPromise = new Promise(function(resolve){
         myEl.addEventListener('streaming-list-error', resolve);
         myEl.apiUrl = "http://poop/" + Math.random() * 1000;
+        myEl.generateRequest();
       });
+
+      return errorPromise.then(function(event){
+          assert.equal(event.detail.type, 'error');
+        });
     });
 
     test('element should have the right twitchtv-card\'s', function(){
