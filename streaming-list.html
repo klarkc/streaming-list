@@ -159,15 +159,15 @@ Example:
       },
 
       _onRequest: function(event) {
-        this.fire('streaming-list-request', event);
+        this.fire('streaming-list-request', event.detail);
       },
 
       _onResponse: function(event) {
-        this.fire('streaming-list-response', event);
+        this.fire('streaming-list-response', event.detail);
       },
 
       _onError: function(event) {
-        this.fire('streaming-list-error', event);
+        this.fire('streaming-list-error', event.detail);
       },
 
       /**

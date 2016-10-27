@@ -135,7 +135,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('the response event/property should be correctly fired/loaded', function(done){
+    test('the response event should be correctly fired', function(){
       // Reason is that deepEqual in a big json file
       this.slow(1000);
 
@@ -144,11 +144,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         myEl.generateRequest();
       });
 
-      responsePromise.then(function(){
-        flush(function(){
-          assert.deepEqual(myEl.response, response);
-          done();
-        });
+      return responsePromise.then(function(event){
+        assert.deepEqual(event.detail.response, response);
       });
     });
 
@@ -160,8 +157,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       return errorPromise.then(function(event){
-          assert.equal(event.detail.type, 'error');
-        });
+        assert.instanceOf(event.detail.error, Error);
+      });
     });
 
     test('element should have the right twitchtv-card\'s', function(done){
