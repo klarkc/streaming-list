@@ -163,6 +163,7 @@ Example:
       },
 
       _onResponse: function(event) {
+        this.notifyPath('response.streams');
         this.fire('streaming-list-response', event.detail);
       },
 
