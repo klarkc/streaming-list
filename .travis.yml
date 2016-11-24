@@ -4,12 +4,12 @@ dist: trusty
 sudo: required
 addons:
   firefox: 'latest'
-  sauce_connect: true
   apt:
     sources:
     - google-chrome
     packages:
     - google-chrome-stable
+  sauce_connect: true
 before_script:
 - npm install -g bower eslint eslint-plugin-html polylint web-component-tester web-component-tester-istanbul istanbul
 - bower install
