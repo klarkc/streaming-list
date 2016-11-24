@@ -57,6 +57,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       server.autoRespond = true;
 
       myEl = fixture('streaming-list-fixture');
+
+      // Disable auto request, to not call no-wanted events
+      myEl.$.ajax.auto = false;
+
       replace('twitchtv-card').with('fake-twitchtv-card');
     });
 
