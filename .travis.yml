@@ -11,12 +11,12 @@ addons:
     packages:
     - google-chrome-stable
 before_script:
-- npm install -g bower eslint eslint-plugin-html polylint web-component-tester@4.3.1 web-component-tester-istanbul istanbul
+- npm install -g bower eslint eslint-plugin-html polylint web-component-tester web-component-tester-istanbul istanbul
 - bower install
 - polylint
 - eslint **.{html,js}
 script:
-- xvfb-run wct
+- xvfb-run wct --skip-plugin istanbul
 env:
   global:
   - secure: UsZWS4nJ5QzFxiQShE2EOo4eS66g1BM9cwdNfz764jfGmCDJTUFMjWp5YRQrFl9Ml1/h3efI1ymXm91Od2NzktZ4J5bvskgquOGPdAEFf9T5PGW18AgLMlysaaBA/Jnr1UdinxDTx9P8/48F5f3LKnEkaAJ29MwlLmSpnlAeazVzbF5i7rNuzdK4DSxEBSadRY3BnPE8Y5BokYw4x3eqZj42zqKJcZ6jg6ArExvUE/FTii8IZZfpaoFn3Q7VIVXO6JDgyeExPU3brpkL9ha1y/PnBdov/6vae2K2XUbEJmv3QPZMhhMI0fh4dYhe63uMsFLnHQD1DGG6TVhuc+Jh/pneo4YhSqJ/B2T6owXq7lyqwK7G2xg3sDiWR7qB6hlkQhr2CQbD9ilGHNWqvdcNzbHrbtjvtdbBsRjFKyZKB1TiThCsCQHQvuWR8RRnhGhGlF77DwoT3e1taA5B2BFuM6u6sMQ6nZckRQ9dLEnTtEoWFYM8+bY9s0JcgKC9JKRgDqBIoaTiOIDKoCfVPMhwaFB+7/1ZlMZXk2VCwtl/bBwcLJAA8DcBT7FUjfFqAlyU3yNPVlxDrJ4xL87K28YHgpQRar3aXxsBVKxjIYV4GCT4Ef6V/YAPh7uyT0Pl4qbpfD0cQVbpLdVWn1kYIDCNxg6qGS4JXtAe1lGGQQtjdJQ=
