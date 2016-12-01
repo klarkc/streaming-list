@@ -1,15 +1,21 @@
-streaming-list
-=
+# streaming-list
 
 [![Travis][travis-image]][travis-url]
-[![codeclimate note][cc-image]][cc-url]
-[![coverage][cov-image]][cov-url]
+[![Codeclimate note][cc-image]][cc-url]
+[![Coverage][cov-image]][cov-url]
+[![Bower][bower-image]][bower-url]
+[![Published on webcomponents.org][webc-image]][webc-url]
+
 [travis-image]: https://img.shields.io/travis/klarkc/streaming-list/master.svg
 [travis-url]: https://travis-ci.org/klarkc/streaming-list
 [cc-image]: https://img.shields.io/codeclimate/github/klarkc/streaming-list.svg?maxAge=2592000
 [cc-url]: https://codeclimate.com/github/klarkc/streaming-list
 [cov-image]: https://img.shields.io/codeclimate/coverage/github/klarkc/streaming-list.svg?maxAge=2592000
 [cov-url]: https://codeclimate.com/github/klarkc/projects-service/coverage
+[bower-image]:  https://img.shields.io/bower/v/streaming-list.svg
+[bower-url]: https://github.com/klarkc/streaming-list/releases
+[webc-image]: https://img.shields.io/badge/webcomponents.org-published-blue.svg
+[webc-url]: https://beta.webcomponents.org/element/klarkc/streaming-list
 
 A webcomponent written with [Polymer](https://www.polymer-project.org/) for list [Twitch](https://www.twitch.tv/) and (in future) [Youtube](http://youtube.com/) streams. You will be able to filter the results by a specific game and define priority for a selected language.
 
