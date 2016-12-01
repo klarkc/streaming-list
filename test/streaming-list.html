@@ -118,6 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     test('the streaming-list-request event must be fired', function(){
       return new Promise(function(resolve){
           myEl.addEventListener('streaming-list-request', resolve);
+          myEl.generateRequest();
       });
     });
 
