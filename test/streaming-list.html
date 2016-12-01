@@ -98,12 +98,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.lengthOf(myEl.response.streams, 0);
     });
 
-    test('generateRequest is working', function(done){
-      var spy = myEl.$.ajax.generateRequest = sinon.spy();
-      flush(function(){
-        sinon.assert.calledOnce(spy);
-        done()
-      });
+    test('generateRequest is working', function(){
+      assert.deepEqual(myEl._concatParams(), myEl.$.ajax.params);
     });
 
     test('iron-ajax should be correctly setted', function(done){
