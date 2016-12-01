@@ -9,6 +9,7 @@ addons:
     - google-chrome
     packages:
     - google-chrome-stable
+    - default-jre
   sauce_connect: true
   code_climate:
   - repo_token: 91a5cd0f9f1f505b6f028186c6ed2e8ef950ae1810c7ca16f9b97b7a8a1948a9
