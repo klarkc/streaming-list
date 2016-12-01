@@ -77,7 +77,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('defines the "limit" property', function() {
-      assert.equal(myEl.limit, 25);
+      assert.equal(myEl.limit, 10);
     });
 
     test('defines the "width" property', function(){
@@ -92,13 +92,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.equal(myEl.game, null);
     });
 
-    test('defines the "response" property', function(done) {
-      flush(function(){
-        assert.property(myEl, 'response');
-        assert.property(myEl.response, 'streams');
-        assert.lengthOf(myEl.response.streams, 0);
-        done()
-      })
+    test('defines the "response" property', function() {
+      assert.property(myEl, 'response');
+      assert.property(myEl.response, 'streams');
+      assert.lengthOf(myEl.response.streams, 0);
     });
 
     test('generateRequest is working', function(done){
