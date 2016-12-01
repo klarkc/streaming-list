@@ -102,20 +102,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.deepEqual(myEl._concatParams(), myEl.$.ajax.params);
     });
 
-    test('iron-ajax should be correctly setted', function(done){
-      flush(function(){
-        assert.isDefined(myEl.$.ajax.auto);
-        assert.equal(myEl.$.ajax.url, apiUrl);
-        assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
-        assert.equal(myEl.$.ajax.handleAs, 'json');
-        assert.equal(myEl.$.ajax.debounceDuration, 30);
-        assert.deepEqual(myEl.$.ajax.params, {
-          limit: 25,
-          language: 'en',
-          game: null,
-          offset: 0
-        });
-        done();
+    test('iron-ajax should be correctly setted', function(){
+      assert.equal(myEl.$.ajax.url, apiUrl);
+      assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
+      assert.equal(myEl.$.ajax.handleAs, 'json');
+      assert.equal(myEl.$.ajax.debounceDuration, 30);
+      assert.deepEqual(myEl.$.ajax.params, {
+        limit: 10,
+        language: 'en',
+        game: null,
+        offset: 0
       });
     });
 
