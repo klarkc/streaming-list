@@ -216,14 +216,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('streaming-list-error event should be working', function(){
+    test('streaming-list-error should be triggered in a request error', function(){
+      var stubEvent = {detail: {}};
       var errorPromise = new Promise(function(resolve){
         myEl.addEventListener('streaming-list-error', resolve);
-        myEl.apiUrl = "http://poop/" + Math.random() * 1000;
+        myEl._onError(stubEvent);
       });
 
       return errorPromise.then(function(event){
-        assert.instanceOf(event.detail.error, Error);
+        assert.equal(event.detail, stubEvent.detail);
       });
     });
 
