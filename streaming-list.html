@@ -88,9 +88,9 @@ Example:
        */
 
        /**
-        * Fired when all requested responses has been received.
+        * Fired when all requested responses has been received and element is fully rendered.
         *
-        * @event streaming-list-loaded
+        * @event streaming-list-ready
         */
 
       /**
@@ -185,7 +185,7 @@ Example:
       ],
 
       listeners: {
-        'streaming-list-loaded': '_afterLoaded'
+        'streaming-list-ready': '_afterReady'
       },
 
       ready: function() {
@@ -254,17 +254,18 @@ Example:
           //console.log('all cards loaded');
           //console.log(this.response.streams);
 
+          // remove old cards
+          this._removeOldCards();
+
           // reset spinner
           this.$.spinnerBottom.active = false;
 
-          this.fire('streaming-list-loaded', this.doneCards);
+          this.fire('streaming-list-ready', this.doneCards);
           this.doneCards = [];
         }
       },
 
-      _afterLoaded: function(event) {
-        this._removeOldCards();
-
+      _afterReady: function(event) {
         // Listen for scroll event-infinite-scroll
         if(!this._scrollListening) {
           this.$.scroll.startObserve();
@@ -293,8 +294,6 @@ Example:
               left = window.pageX || document.documentElement.scrollLeft;
           console.log('scrolling to', left, top);
           window.scrollTo(left, top);
-        } else {
-
         }
       },
 
