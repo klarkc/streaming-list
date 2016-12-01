@@ -11,7 +11,7 @@
 [cc-image]: https://img.shields.io/codeclimate/github/klarkc/streaming-list.svg?maxAge=2592000
 [cc-url]: https://codeclimate.com/github/klarkc/streaming-list
 [cov-image]: https://img.shields.io/codeclimate/coverage/github/klarkc/streaming-list.svg?maxAge=2592000
-[cov-url]: https://codeclimate.com/github/klarkc/projects-service/coverage
+[cov-url]: https://codeclimate.com/github/klarkc/streaming-list/coverage
 [bower-image]:  https://img.shields.io/bower/v/streaming-list.svg
 [bower-url]: https://github.com/klarkc/streaming-list/releases
 [webc-image]: https://img.shields.io/badge/webcomponents.org-published-blue.svg
