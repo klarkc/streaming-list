@@ -150,7 +150,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             window.open.restore();
           });
 
-          test('when _onImageLoaded text must fit', function(done){
+          test.skip('when _onImageLoaded text must fit', function(done){
             sinon.stub(myEl.$.status, 'doFitMe', done);
             myEl._onImageLoaded();
             myEl.$.status.doFitMe.restore();
