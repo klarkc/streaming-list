@@ -72,39 +72,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.equal(myEl.apiUrl, apiUrl);
     });
 
-    test('defines the "clientId" property', function(done) {
-      flush(function(){
-        assert.equal(myEl.clientId, clientId);
-        done()
-      });
+    test('defines the "clientId" property', function() {
+      assert.equal(myEl.clientId, clientId);
     });
 
-    test('defines the "limit" property', function(done) {
-      flush(function(){
-        assert.equal(myEl.limit, 25);
-        done()
-      });
+    test('defines the "limit" property', function() {
+      assert.equal(myEl.limit, 25);
     });
 
-    test('defines the "width" property', function(done){
-      flush(function(){
-        assert.equal(myEl.width, null);
-        done()
-      });
+    test('defines the "width" property', function(){
+      assert.equal(myEl.width, null);
     })
 
-    test('defines the "lang" property', function(done) {
-      flush(function(){
-        assert.equal(myEl.lang, "en");
-        done()
-      });
+    test('defines the "lang" property', function() {
+      assert.equal(myEl.lang, "en");
     });
 
-    test('defines the "game" property', function(done) {
-      flush(function(){
-        assert.equal(myEl.game, null);
-        done()
-      })
+    test('defines the "game" property', function() {
+      assert.equal(myEl.game, null);
     });
 
     test('defines the "response" property', function(done) {
