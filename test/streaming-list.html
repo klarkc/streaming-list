@@ -62,6 +62,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       myEl.$.ajax.auto = false;
 
       replace('twitchtv-card').with('fake-twitchtv-card');
+      replace('paper-spinner').with('fake-paper-spinner');
+      stub('event-infinite-scroll', {
+        stopObserve: function(){
+          this.observing = false;
+        }
+      });
     });
 
     teardown(function(){
@@ -73,69 +79,127 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('defines the "clientId" property', function() {
-      flush(function(){
-        assert.equal(myEl.clientId, clientId);
-      });
+      assert.equal(myEl.clientId, clientId);
     });
 
     test('defines the "limit" property', function() {
-      flush(function(){
-        assert.equal(myEl.limit, 25);
-      });
+      assert.equal(myEl.limit, 10);
     });
 
     test('defines the "width" property', function(){
-      flush(function(){
-        assert.equal(myEl.width, null);
-      });
+      assert.equal(myEl.width, null);
     })
 
     test('defines the "lang" property', function() {
-      flush(function(){
-        assert.equal(myEl.lang, "en");
-      });
+      assert.equal(myEl.lang, "en");
     });
 
     test('defines the "game" property', function() {
-      flush(function(){
-        assert.equal(myEl.game, null);
-      })
+      assert.equal(myEl.game, null);
     });
 
     test('defines the "response" property', function() {
-      flush(function(){
-        assert.property(myEl, 'response');
-        assert.property(myEl.response, 'streams');
-        assert.lengthOf(myEl.response.streams, 0);
-      })
+      assert.property(myEl, 'response');
+      assert.property(myEl.response, 'streams');
+      assert.lengthOf(myEl.response.streams, 0);
     });
 
-    test('generateRequest is working', function(){
-      var spy = myEl.$.ajax.generateRequest = sinon.spy();
-      myEl.generateRequest();
+    test('defines the "currentPage" property', function(){
+      assert.equal(myEl.currentPage, 0);
+    });
 
+    test('_concatParams should return params object', function(){
+      assert.deepEqual(myEl.$.ajax.params, myEl._concatParams());
+    });
+
+    test('_concatHeaders should return headers object', function(){
+      assert.deepEqual(myEl.$.ajax.headers, myEl._concatHeaders(clientId));
+    });
+
+    test('_onRequest should activate spinner', function() {
+      myEl._onRequest({});
+      assert.isTrue(myEl.$.spinnerBottom.active);
+    });
+
+    test('_onRequest should dispatch streaming-list-request', function(){
+      return new Promise(function(resolve){
+        myEl.addEventListener('streaming-list-request', resolve);
+        myEl._onRequest({});
+      });
+    });
+
+    test('_loadMore should stop observe on the scroll', function(){
+      var spy = sinon.spy(myEl.$.scroll.stopObserve);
+      myEl._loadMore();
+      assert.isFalse(myEl._scrollListening);
+      assert.isFalse(myEl.$.scroll.observing);
+    });
+
+    test('_loadMore should set currentPage', function(){
+      myEl._loadMore();
+      assert.equal(1, myEl.currentPage);
+    });
+
+    test('_loadMore should generate a request', function() {
+      return new Promise(function(resolve){
+        myEl.addEventListener('streaming-list-request', resolve);
+        myEl._loadMore();
+      });
+    });
+
+    test('_cardLoaded should create and push in doneCards', function(){
+      var stubEvent = {};
+      myEl._cardLoaded(stubEvent);
+      assert.equal(stubEvent, myEl.doneCards.pop());
+    });
+
+    test('_cardLoaded should removeOldCards when limit is reached', function(){
+      var spy = myEl._removeOldCards = sinon.spy();
+
+      myEl.limit = 1;
+      myEl._cardLoaded({});
       sinon.assert.calledOnce(spy);
     });
 
+    test('_cardLoaded should disabled spinnerBottom when limit is reached', function(){
+      myEl.limit = 1;
+      myEl._cardLoaded({});
+      assert.isFalse(myEl.$.spinnerBottom.active);
+    });
+
+    test('_cardLoaded should fire streaming-list-ready when limit is reached', function(){
+      return new Promise(function(resolve){
+        myEl.addEventListener('streaming-list-ready', resolve);
+        myEl.limit = 1;
+        myEl._cardLoaded({});
+      });
+    });
+
+    test.skip('_scrollBottom should scroll to middle of the page', function(){
+      /* Pending implementation */
+    });
+
+    test('generateRequest is working', function(){
+      assert.deepEqual(myEl._concatParams(), myEl.$.ajax.params);
+    });
+
     test('iron-ajax should be correctly setted', function(){
-      flush(function(){
-        assert.isDefined(myEl.$.ajax.auto);
-        assert.equal(myEl.$.ajax.url, apiUrl);
-        assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
-        assert.equal(myEl.$.ajax.handleAs, 'json');
-        assert.equal(myEl.$.ajax.debounceDuration, 30);
-        assert.deepEqual(myEl.$.ajax.params, {
-          limit: 25,
-          language: 'en',
-          game: null
-        });
+      assert.equal(myEl.$.ajax.url, apiUrl);
+      assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
+      assert.equal(myEl.$.ajax.handleAs, 'json');
+      assert.equal(myEl.$.ajax.debounceDuration, 30);
+      assert.deepEqual(myEl.$.ajax.params, {
+        limit: 10,
+        language: 'en',
+        game: null,
+        offset: 0
       });
     });
 
     test('the streaming-list-request event must be fired', function(){
       return new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-request', resolve);
-        myEl.generateRequest();
+          myEl.addEventListener('streaming-list-request', resolve);
+          myEl.generateRequest();
       });
     });
 
@@ -153,15 +217,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('streaming-list-error event should be working', function(){
+    test('streaming-list-error should be triggered in a request error', function(){
+      var stubEvent = {detail: {}};
       var errorPromise = new Promise(function(resolve){
         myEl.addEventListener('streaming-list-error', resolve);
-        myEl.apiUrl = "http://poop/" + Math.random() * 1000;
-        myEl.generateRequest();
+        myEl._onError(stubEvent);
       });
 
       return errorPromise.then(function(event){
-        assert.instanceOf(event.detail.error, Error);
+        assert.equal(event.detail, stubEvent.detail);
       });
     });
 

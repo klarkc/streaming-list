@@ -39,7 +39,9 @@
     "textfit-div": "^0.1.0",
     "iron-icon": "1.0.10",
     "web-component-tester": "^5.0.0",
-    "promise-polyfill-2": "taylorhakes/promise-polyfill#^6.0.2"
+    "promise-polyfill-2": "taylorhakes/promise-polyfill#^6.0.2",
+    "event-infinite-scroll": "klarkc/event-infinite-scroll#master",
+    "paper-spinner": "^1.2.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

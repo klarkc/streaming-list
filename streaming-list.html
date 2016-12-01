@@ -12,6 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../paper-spinner/paper-spinner.html">
+<link rel="import" href="../event-infinite-scroll/event-infinite-scroll.html">
 <link rel="import" href="twitchtv-card.html">
 
 <!--
@@ -34,26 +36,39 @@ Example:
         @apply(--layout-vertical);
       }
 
+      #streams {
+        @apply(--layout-wrap);
+      }
+
       twitchtv-card {
         margin: 16px;
+      }
+
+      paper-spinner {
+        margin: 16px auto;
       }
     </style>
     <iron-ajax
                id="ajax"
-               auto
                url="{{apiUrl}}"
                headers='[[_concatHeaders(clientId)]]'
                handle-as="json"
-               last-response="{{response}}"
-               debounce-duration="30"
-               on-error="_onError"
-               on-request="_onRequest"
                on-response="_onResponse"
-               params='[[_concatParams(limit, lang, game)]]'>
+               on-request="_onRequest"
+               on-error="_onError"
+               debounce-duration="30">
     </iron-ajax>
-    <template is="dom-repeat" items="[[response.streams]]">
-      <twitchtv-card data="[[item]]" width="[[width]]"></twitchtv-card>
-    </template>
+    <div id="streams">
+      <template is="dom-repeat" items="[[response.streams]]">
+        <twitchtv-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
+      </template>
+    </div>
+    <paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>
+    <event-infinite-scroll
+               id="scroll"
+               scrollOffset="60"
+               on-reach-bottom="_loadMore">
+    </event-infinite-scroll>
   </template>
 
   <script>
@@ -67,10 +82,16 @@ Example:
        */
 
       /**
-       * Fired when a response is received.
+       * Fired when a response of a single card is received.
        *
        * @event streaming-list-response
        */
+
+       /**
+        * Fired when all requested responses has been received and element is fully rendered.
+        *
+        * @event streaming-list-ready
+        */
 
       /**
        * Fired in request or response error.
@@ -94,12 +115,20 @@ Example:
         clientId: String,
 
         /**
-         * `limit` Used to define the number of itens in the list
+         * `limit` Used to define the number of itens on each page
          */
         limit: {
           type: Number,
           notify: true,
-          value: 25
+          value: 10
+        },
+
+        /**
+         * `pages` Number of pages to maintain cached, can cause performance degradation
+         */
+        pages: {
+          type: Number,
+          value: 2
         },
 
         /**
@@ -130,22 +159,48 @@ Example:
         },
 
         /**
-        * `response` The data retrieved from the server
+        * `response` Cached data retrieved from the server
         */
         response: {
           type: Object,
           value: function(){
-            return {streams: []}
+            return {streams: []};
           },
           notify: true
-        }
+        },
 
+        /**
+         * `currentPage` Current page
+         */
+        currentPage: {
+          type: Number,
+          readOnly: true,
+          notify: true,
+          value: 0
+        }
       },
 
-      ready: function(){
+      observers: [
+        'generateRequest(apiUrl, limit, lang, game, clientId)'
+      ],
+
+      listeners: {
+        'streaming-list-ready': '_afterReady'
+      },
+
+      ready: function() {
         if(this.width) {
           this.className = 'layout horizontal wrap';
         }
+      },
+
+      _concatParams: function() {
+        return {
+          limit: this.limit,
+          language: this.lang,
+          game: this.game,
+          offset: (this.currentPage * this.limit) || 0
+        };
       },
 
       _concatHeaders: function(clientId) {
@@ -154,16 +209,21 @@ Example:
         };
       },
 
-      _concatParams: function(limit, lang, game) {
-        return {limit: limit, language: lang, game: game};
-      },
-
       _onRequest: function(event) {
-        this.fire('streaming-list-request', event.detail);
+        this.$.spinnerBottom.active = true;
+        this.fire('streaming-list-request', event);
       },
 
       _onResponse: function(event) {
-        this.notifyPath('response.streams');
+        //console.log(event.detail.response.streams);
+        var oldStreams = this.response.streams;
+
+        var response = event.detail.response;
+        //this.set('response.streams', response.streams);
+
+        // set old streams concated with new streams
+        this.set('response.streams', oldStreams.concat(response.streams));
+
         this.fire('streaming-list-response', event.detail);
       },
 
@@ -171,11 +231,81 @@ Example:
         this.fire('streaming-list-error', event.detail);
       },
 
+      _loadMore: function(event) {
+        this.$.scroll.stopObserve();
+        this._scrollListening = false;
+
+        // currentPage is readOnly, all readOnly have _setProp method
+        this._setCurrentPage(this.currentPage + 1);
+        this.generateRequest();
+      },
+
+      /**
+       * Fires loaded event when all cards has been loaded after the request
+       * @param  Event event loaded event of each card
+       * @return null
+       */
+      _cardLoaded: function(event) {
+        this.doneCards = this.doneCards || [];
+        this.doneCards.push(event);
+        //console.log(this.doneCards.length, 'of', this.limit);
+
+        if(this.doneCards.length >= this.limit){
+          //console.log('all cards loaded');
+          //console.log(this.response.streams);
+
+          // remove old cards
+          this._removeOldCards();
+
+          // reset spinner
+          this.$.spinnerBottom.active = false;
+
+          this.fire('streaming-list-ready', this.doneCards);
+          this.doneCards = [];
+        }
+      },
+
+      _afterReady: function(event) {
+        // Listen for scroll event-infinite-scroll
+        if(!this._scrollListening) {
+          this.$.scroll.startObserve();
+          this._scrollListening = true;
+        }
+      },
+
+      _removeOldCards: function(event) {
+        /* Pending implementation */
+        /*
+        if(!this.pages) return;
+        if(this.response.streams.length > this.limit * this.pages) {
+          //this.splice('response.streams', 0, this.limit);
+
+          // Scroll to bottom - offset -1
+          //this._scrollUp();
+        }
+        //console.log(this.response.streams.length);
+        */
+      },
+
+      /**
+       * Scroll to middle of page
+       */
+      _scrollBottom: function() {
+        if (this.body) {
+          var top = document.body.scrollHeight,
+              left = window.pageX || document.documentElement.scrollLeft;
+          console.log('scrolling to', left, top);
+          window.scrollTo(left, top);
+        }
+      },
+
       /**
        * Performs an AJAX iron-ajax-request to the streaming server
        * @returns {!IronRequestElement} Returns !IronRequestElement
        */
       generateRequest: function() {
+        this.$.ajax.params = this._concatParams();
+        //console.log(this.$.ajax.params);
         return this.$.ajax.generateRequest();
       }
     });
