@@ -177,7 +177,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       responsePromise.then(function(){
           flush(function(){
             var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
-            assert.lengthOf(cards, 25);
             cards.forEach(function(card, index){
               assert.equal(card.data, myEl.response.streams[index]);
               assert.equal(card.width, myEl.width);
