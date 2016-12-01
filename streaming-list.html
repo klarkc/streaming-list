@@ -51,6 +51,7 @@ Example:
     <iron-ajax
                id="ajax"
                url="{{apiUrl}}"
+               headers='[[_concatHeaders(clientId)]]'
                handle-as="json"
                on-response="_onResponse"
                on-request="_onRequest"
@@ -107,6 +108,11 @@ Example:
           notify: true,
           value: "https://api.twitch.tv/kraken/streams"
         },
+
+        /**
+         * `clientId` Required Twitch.tv Client ID (register yout app at https://www.twitch.tv/settings/connections)
+         */
+        clientId: String,
 
         /**
          * `limit` Used to define the number of itens on each page
@@ -197,6 +203,12 @@ Example:
         };
       },
 
+      _concatHeaders: function(clientId) {
+        return {
+          'Client-ID': clientId
+        };
+      },
+
       _onRequest: function(event) {
         this.$.spinnerBottom.active = true;
         this.fire('streaming-list-request', event);
@@ -207,7 +219,7 @@ Example:
         var oldStreams = this.response.streams;
 
         var response = event.detail.response;
-        this.set('response.streams', response.streams);
+        //this.set('response.streams', response.streams);
 
         // set old streams concated with new streams
         this.set('response.streams', oldStreams.concat(response.streams));
@@ -216,7 +228,7 @@ Example:
       },
 
       _onError: function(event) {
-        this.fire('streaming-list-error', event);
+        this.fire('streaming-list-error', event.detail);
       },
 
       _loadMore: function(event) {

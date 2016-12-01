@@ -3,8 +3,8 @@
 @license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+The compvare set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The compvare set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- You can use the document as a place to set up your fixtures. -->
   <test-fixture id="streaming-list-fixture">
     <template>
-      <streaming-list></streaming-list>
+      <streaming-list client-id="hackme"></streaming-list>
     </template>
   </test-fixture>
 
@@ -34,69 +34,101 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     var myEl,
     apiUrl,
+    clientId,
+    server,
     response;
 
     setup(function() {
-      myEl = fixture('streaming-list-fixture');
       apiUrl = 'https://api.twitch.tv/kraken/streams';
+      clientId = 'hackme';
       response = document.twitchRes;
 
-      replace('iron-ajax').with('fake-iron-ajax');
-      replace('twitchtv-card').with('fake-twitchtv-card');
-
       // Here we simulate the iron-ajax behavior
-      stub('iron-ajax', {
-        generateRequest: function() {
-          this.fire('iron-ajax-request');
-          if(this.url !== apiUrl) this.fire('iron-ajax-error');
-          this._setLastResponse(response);
-          this.fire('iron-ajax-response');
-        }
-      });
+      server = sinon.fakeServer.create();
+      server.respondWith(
+        'GET',
+        new RegExp(apiUrl + '.*'),
+        [
+          200,
+          {'Content-Type': 'application/json'},
+          JSON.stringify(response)
+        ]
+      );
+      server.autoRespond = true;
+
+      myEl = fixture('streaming-list-fixture');
+
+      // Disable auto request, to not call no-wanted events
+      myEl.$.ajax.auto = false;
+
+      replace('twitchtv-card').with('fake-twitchtv-card');
+    });
+
+    teardown(function(){
+      server.restore();
     });
 
     test('defines the "apiUrl" property', function() {
       assert.equal(myEl.apiUrl, apiUrl);
     });
 
+    test('defines the "clientId" property', function() {
+      flush(function(){
+        assert.equal(myEl.clientId, clientId);
+      });
+    });
+
     test('defines the "limit" property', function() {
-      assert.equal(myEl.limit, 25);
+      flush(function(){
+        assert.equal(myEl.limit, 25);
+      });
     });
 
     test('defines the "width" property', function(){
-      assert.equal(myEl.width, null);
+      flush(function(){
+        assert.equal(myEl.width, null);
+      });
     })
 
     test('defines the "lang" property', function() {
-      assert.equal(myEl.lang, "en");
+      flush(function(){
+        assert.equal(myEl.lang, "en");
+      });
     });
 
     test('defines the "game" property', function() {
-      assert.equal(myEl.game, null);
+      flush(function(){
+        assert.equal(myEl.game, null);
+      })
     });
 
     test('defines the "response" property', function() {
-      assert.property(myEl, 'response');
-      assert.property(myEl.response, 'streams');
-      assert.lengthOf(myEl.response.streams, 0);
+      flush(function(){
+        assert.property(myEl, 'response');
+        assert.property(myEl.response, 'streams');
+        assert.lengthOf(myEl.response.streams, 0);
+      })
     });
 
     test('generateRequest is working', function(){
-      let spy = myEl.$.ajax.generateRequest = sinon.spy();
+      var spy = myEl.$.ajax.generateRequest = sinon.spy();
       myEl.generateRequest();
 
       sinon.assert.calledOnce(spy);
     });
 
     test('iron-ajax should be correctly setted', function(){
-      assert.isTrue(myEl.$.ajax.auto);
-      assert.equal(myEl.$.ajax.url, apiUrl);
-      assert.equal(myEl.$.ajax.handleAs, 'json');
-      assert.equal(myEl.$.ajax.debounceDuration, 30);
-      assert.deepEqual(myEl.$.ajax.params, {
-        limit: 25,
-        language: 'en',
-        game: null
+      flush(function(){
+        assert.isDefined(myEl.$.ajax.auto);
+        assert.equal(myEl.$.ajax.url, apiUrl);
+        assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
+        assert.equal(myEl.$.ajax.handleAs, 'json');
+        assert.equal(myEl.$.ajax.debounceDuration, 30);
+        assert.deepEqual(myEl.$.ajax.params, {
+          limit: 25,
+          language: 'en',
+          game: null
+        });
       });
     });
 
@@ -107,40 +139,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('the response event/property should be correctly fired/loaded', function(){
-      let responsePromise = new Promise(function(resolve){
+    test('the response event should be correctly fired', function(){
+      // Reason is that deepEqual in a big json file
+      this.slow(1000);
+
+      var responsePromise = new Promise(function(resolve){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.generateRequest();
       });
 
-      return responsePromise.then(function(){
-        assert.equal(myEl.response, response);
+      return responsePromise.then(function(event){
+        assert.deepEqual(event.detail.response, response);
       });
     });
 
     test('streaming-list-error event should be working', function(){
-      return new Promise(function(resolve){
+      var errorPromise = new Promise(function(resolve){
         myEl.addEventListener('streaming-list-error', resolve);
         myEl.apiUrl = "http://poop/" + Math.random() * 1000;
+        myEl.generateRequest();
+      });
+
+      return errorPromise.then(function(event){
+        assert.instanceOf(event.detail.error, Error);
       });
     });
 
-    test('element should have the right twitchtv-card\'s', function(){
-      let responsePromise = new Promise(function(resolve, error){
+    test('element should have the right twitchtv-card\'s', function(done){
+      // Rendering is a tough job
+      this.slow(300);
+
+      var responsePromise = new Promise(function(resolve, error){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.addEventListener('streaming-list-error', error);
         myEl.generateRequest();
       });
-
-      return responsePromise.then(function(){
-        flush(function(){
-          let cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
-          assert.lengthOf(cards, 25);
-          for(let i in cards) {
-            assert.equal(cards[i].data, myEl.response.streams[i]);
-            assert.equal(cards[i].width, myEl.width);
-          }
-        });
+      responsePromise.then(function(){
+          flush(function(){
+            var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
+            assert.lengthOf(cards, 25);
+            cards.forEach(function(card, index){
+              assert.equal(card.data, myEl.response.streams[index]);
+              assert.equal(card.width, myEl.width);
+            });
+            done();
+          });
       });
     });
   });

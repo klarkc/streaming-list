@@ -20,6 +20,21 @@
           "version": "9"
         }
       ]
+    },
+    "istanbul": {
+      "dir": "./coverage",
+      "reporters": ["text-summary", "lcov"],
+      "include": [
+        "**.html",
+        "**.js"
+      ],
+      "exclude": [
+        "index.html",
+        "demo/*",
+        "test/*",
+        "coverage/*",
+        "bower_components/*"
+      ]
     }
   }
 }
