@@ -12,6 +12,9 @@ addons:
   sauce_connect: true
   code_climate:
   - repo_token: 91a5cd0f9f1f505b6f028186c6ed2e8ef950ae1810c7ca16f9b97b7a8a1948a9
+before_install:
+- source /opt/jdk_switcher/jdk_switcher.sh
+- jdk_switcher use oraclejdk8
 before_script:
 - npm install -g bower eslint eslint-plugin-html polylint web-component-tester web-component-tester-istanbul istanbul
 - bower install
