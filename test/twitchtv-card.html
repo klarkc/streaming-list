@@ -55,8 +55,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.equal(myEl.data.viewers, null);
           });
 
-          test('defines the "width" property', function() {
-            assert.equal(myEl.width, 0);
+          test('defines the "width" property', function(done) {
+            flush(function(){
+              assert.equal(myEl.width, 0);
+              done();
+            });
           });
 
           test('defines the "animationConfig" property', function(){
