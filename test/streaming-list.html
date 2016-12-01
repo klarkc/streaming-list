@@ -236,7 +236,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var responsePromise = new Promise(function(resolve, error){
         myEl.addEventListener('streaming-list-response', resolve);
         myEl.addEventListener('streaming-list-error', error);
-        myElement.generateRequest();
+        myEl.generateRequest();
       });
       responsePromise.then(function(){
           flush(function(){
