@@ -235,6 +235,7 @@ Example:
         this.$.scroll.stopObserve();
         this._scrollListening = false;
 
+        // currentPage is readOnly, all readOnly have _setProp method
         this._setCurrentPage(this.currentPage + 1);
         this.generateRequest();
       },
