@@ -224,7 +224,7 @@ Example:
         // set old streams concated with new streams
         this.set('response.streams', oldStreams.concat(response.streams));
 
-        this.fire('streaming-list-response', event);
+        this.fire('streaming-list-response', event.detail);
       },
 
       _onError: function(event) {
