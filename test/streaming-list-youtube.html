@@ -196,11 +196,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.equal(myEl.$.ajax.handleAs, 'json');
       assert.equal(myEl.$.ajax.debounceDuration, 30);
       assert.deepEqual(myEl.$.ajax.params, {
-        key: key,
-        limit: 10,
-        language: 'en',
-        game: null,
-        offset: 0
+        part: 'snippet',
+        eventType: 'live',
+        type: 'video',
+        videoCategoryId: 20, // Gaming category
+        relevanceLanguage: 'en',
+        maxResults: 10,
+        q: null
       });
     });
 
