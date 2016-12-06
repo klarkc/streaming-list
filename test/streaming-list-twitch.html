@@ -117,7 +117,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('_concatParams should return params object', function(){
-      assert.deepEqual(myEl.$.ajax.params, myEl._concatParams());
+      assert.deepEqual({
+        limit: 10,
+        language: 'en',
+        game: null,
+        offset: 0
+      }, myEl._concatParams());
     });
 
     test('_concatHeaders should return headers object', function(){

@@ -201,8 +201,7 @@ Example:
       },
 
       observers: [
-        'generateRequest(service, twitchApiUrl, limit, lang, game, clientId)',
-        'generateRequest(service, youtubeApiUrl, limit, lang, game, key)'
+        'generateRequest(service, twitchApiUrl, youtubeApiUrl, limit, lang, game, clientId, key)'
       ],
 
       listeners: {
@@ -286,7 +285,6 @@ Example:
 
         // currentPage is readOnly, all readOnly have _setProp method
         this._setCurrentPage(this.currentPage + 1);
-        this.generateRequest();
       },
 
       /**
