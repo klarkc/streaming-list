@@ -117,7 +117,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('_concatParams should return params object', function(){
-      assert.deepEqual(myEl.$.ajax.params, myEl._concatParams());
+      assert.deepEqual({
+        part: 'snippet',
+        eventType: 'live',
+        maxResults: myEl.limit,
+        order: 'viewCount',
+        q: myEl.game,
+        relevanceLanguage: myEl.lang,
+        type: 'video',
+        videoCategoryId: 20, // Gaming category
+        key: myEl.key
+      }, myEl._concatParams());
     });
 
     test('_concatHeaders should return headers object', function(){
@@ -195,15 +205,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.equal(myEl.$.ajax.url, apiUrl);
       assert.equal(myEl.$.ajax.handleAs, 'json');
       assert.equal(myEl.$.ajax.debounceDuration, 30);
-      assert.deepEqual(myEl.$.ajax.params, {
-        part: 'snippet',
-        eventType: 'live',
-        type: 'video',
-        videoCategoryId: 20, // Gaming category
-        relevanceLanguage: 'en',
-        maxResults: 10,
-        q: null
-      });
+      assert.deepEqual(myEl.$.ajax.params, myEl._concatParams());
     });
 
     test('the streaming-list-request event must be fired', function(){
