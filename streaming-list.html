@@ -130,7 +130,7 @@ Example:
         clientId: String,
 
         /**
-         * `key` OAuth2 key, required for youtube service (register your app at https://console.cloud.google.com/appengine)
+         * `key` API Key, required for youtube service (register your app at https://console.cloud.google.com/appengine)
          */
         key: String,
 
@@ -235,11 +235,13 @@ Example:
           return {
             part: 'snippet',
             eventType: 'live',
+            maxResults: this.limit,
+            order: 'viewCount',
+            q: this.game,
+            relevanceLanguage: this.lang,
             type: 'video',
             videoCategoryId: 20, // Gaming category
-            relevanceLanguage: this.lang,
-            maxResults: this.limit,
-            q: this.game
+            key: this.key
           };
         }
 
