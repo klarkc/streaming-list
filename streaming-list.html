@@ -246,10 +246,14 @@ Example:
         throw Error('missing or wrong service');
       },
 
-      _concatHeaders: function(clientId) {
-        return {
-          'Client-ID': clientId
-        };
+      _concatHeaders: function() {
+        if (this.service === 'twitch') {
+          return {
+            'Client-ID': this.clientId
+          };
+        }
+
+        return {};
       },
 
       _onRequest: function(event) {

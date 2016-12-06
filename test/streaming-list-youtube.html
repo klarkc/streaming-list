@@ -121,7 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('_concatHeaders should return headers object', function(){
-      assert.deepEqual(myEl.$.ajax.headers, myEl._concatHeaders(key));
+      assert.deepEqual(myEl.$.ajax.headers, myEl._concatHeaders());
     });
 
     test('_onRequest should activate spinner', function() {
