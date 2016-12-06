@@ -50,7 +50,7 @@ Example:
     </style>
     <iron-ajax
                id="ajax"
-               url="{{twitchApiUrl}}"
+               url="{{_getApiUrl(service, twitchApiUrl, youtubeApiUrl)}}"
                headers='[[_concatHeaders(clientId)]]'
                handle-as="json"
                on-response="_onResponse"
@@ -184,7 +184,7 @@ Example:
         response: {
           type: Object,
           value: function(){
-            return {streams: []};
+            return {streams: [], items: []};
           },
           notify: true
         },
@@ -201,7 +201,7 @@ Example:
       },
 
       observers: [
-        'generateRequest(twitchApiUrl, limit, lang, game, clientId)'
+        'generateRequest(service, twitchApiUrl, youtubeApiUrl, limit, lang, game, clientId)'
       ],
 
       listeners: {
@@ -214,13 +214,35 @@ Example:
         }
       },
 
+      _getApiUrl: function() {
+        if(this.service === 'twitch') return this.twitchApiUrl;
+        if(this.service === 'youtube') return this.youtubeApiUrl;
+        throw Error('missing or wrong service');
+      },
+
       _concatParams: function() {
-        return {
-          limit: this.limit,
-          language: this.lang,
-          game: this.game,
-          offset: (this.currentPage * this.limit) || 0
-        };
+        if(this.service === 'twitch') {
+          return {
+            limit: this.limit,
+            language: this.lang,
+            game: this.game,
+            offset: (this.currentPage * this.limit) || 0
+          };
+        }
+
+        if(this.service === 'youtube') {
+          return {
+            part: 'snippet',
+            eventType: 'live',
+            type: 'video',
+            videoCategoryId: 20, // Gaming category
+            relevanceLanguage: this.lang,
+            maxResults: this.limit,
+            q: this.game
+          };
+        }
+
+        throw Error('missing or wrong service');
       },
 
       _concatHeaders: function(clientId) {
@@ -324,6 +346,7 @@ Example:
        * @returns {!IronRequestElement} Returns !IronRequestElement
        */
       generateRequest: function() {
+        console.log('generating');
         this.$.ajax.params = this._concatParams();
         //console.log(this.$.ajax.params);
         return this.$.ajax.generateRequest();

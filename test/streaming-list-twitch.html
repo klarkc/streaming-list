@@ -112,6 +112,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.equal(myEl.currentPage, 0);
     });
 
+    test('_getApiUrl should a valid api URL', function(){
+      assert.equal(myEl._getApiUrl(), apiUrl);
+    });
+
     test('_concatParams should return params object', function(){
       assert.deepEqual(myEl.$.ajax.params, myEl._concatParams());
     });

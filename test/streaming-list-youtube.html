@@ -15,7 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
-  <script src="twitch-res.js"></script>
+  <script src="youtube-res.js"></script>
 
   <!-- Step 1: import the element to test -->
   <link rel="import" href="../streaming-list.html">
@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- You can use the document as a place to set up your fixtures. -->
   <test-fixture id="streaming-list-fixture">
     <template>
-      <streaming-list client-id="hackme"></streaming-list>
+      <streaming-list key="hackme" service="youtube"></streaming-list>
     </template>
   </test-fixture>
 
@@ -34,14 +34,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     var myEl,
     apiUrl,
-    clientId,
+    key,
     server,
     response;
 
     setup(function() {
-      apiUrl = 'https://api.twitch.tv/kraken/streams';
-      clientId = 'hackme';
-      response = document.twitchRes;
+      apiUrl = 'https://www.googleapis.com/youtube/v3/search';
+      key = 'hackme';
+      response = document.youtubeRes;
 
       // Here we simulate the iron-ajax behavior
       server = sinon.fakeServer.create();
@@ -61,7 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // Disable auto request, to not call no-wanted events
       myEl.$.ajax.auto = false;
 
-      replace('twitchtv-card').with('fake-twitchtv-card');
+      replace('youtube-card').with('fake-youtube-card');
       replace('paper-spinner').with('fake-paper-spinner');
       stub('event-infinite-scroll', {
         stopObserve: function(){
@@ -74,12 +74,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       server.restore();
     });
 
-    test('defines the "apiUrl" property', function() {
-      assert.equal(myEl.apiUrl, apiUrl);
+    test('defines the "service" property', function() {
+      assert.equal(myEl.service, 'youtube');
     });
 
-    test('defines the "clientId" property', function() {
-      assert.equal(myEl.clientId, clientId);
+    test('defines the "youtubeApiUrl" property', function() {
+      assert.equal(myEl.youtubeApiUrl, apiUrl);
+    });
+
+    test('defines the "key" property', function() {
+      assert.equal(myEl.key, key);
     });
 
     test('defines the "limit" property', function() {
@@ -100,12 +104,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('defines the "response" property', function() {
       assert.property(myEl, 'response');
-      assert.property(myEl.response, 'streams');
-      assert.lengthOf(myEl.response.streams, 0);
+      assert.property(myEl.response, 'items');
+      assert.lengthOf(myEl.response.items, 0);
     });
 
     test('defines the "currentPage" property', function(){
       assert.equal(myEl.currentPage, 0);
+    });
+
+    test('_getApiUrl should a valid api URL', function(){
+      assert.equal(myEl._getApiUrl(), apiUrl);
     });
 
     test('_concatParams should return params object', function(){
@@ -113,7 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('_concatHeaders should return headers object', function(){
-      assert.deepEqual(myEl.$.ajax.headers, myEl._concatHeaders(clientId));
+      assert.deepEqual(myEl.$.ajax.headers, myEl._concatHeaders(key));
     });
 
     test('_onRequest should activate spinner', function() {
@@ -185,10 +193,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('iron-ajax should be correctly setted', function(){
       assert.equal(myEl.$.ajax.url, apiUrl);
-      assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
       assert.equal(myEl.$.ajax.handleAs, 'json');
       assert.equal(myEl.$.ajax.debounceDuration, 30);
       assert.deepEqual(myEl.$.ajax.params, {
+        key: key,
         limit: 10,
         language: 'en',
         game: null,
@@ -229,7 +237,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('element should have the right twitchtv-card\'s', function(done){
+    test('element should have the right youtube-card\'s', function(done){
       // Rendering is a tough job
       this.slow(300);
 
@@ -240,9 +248,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
       responsePromise.then(function(){
           flush(function(){
-            var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
+            var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-youtube-card');
             cards.forEach(function(card, index){
-              assert.equal(card.data, myEl.response.streams[index]);
+              assert.equal(card.data, myEl.response.items[index]);
               assert.equal(card.width, myEl.width);
             });
             done();
