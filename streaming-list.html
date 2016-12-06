@@ -34,6 +34,10 @@ Example:
         display: block;
         box-sizing: border-box;
         @apply(--layout-vertical);
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
       }
 
       #streams {
@@ -285,6 +289,7 @@ Example:
 
         // currentPage is readOnly, all readOnly have _setProp method
         this._setCurrentPage(this.currentPage + 1);
+        this.generateRequest();
       },
 
       /**
