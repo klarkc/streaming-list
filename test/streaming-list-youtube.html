@@ -108,10 +108,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.lengthOf(myEl.response.items, 0);
     });
 
-    test('defines the "currentPage" property', function(){
-      assert.equal(myEl.currentPage, 0);
-    });
-
     test('_getApiUrl should a valid api URL', function(){
       assert.equal(myEl._getApiUrl(), apiUrl);
     });
@@ -151,11 +147,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       myEl._loadMore();
       assert.isFalse(myEl._scrollListening);
       assert.isFalse(myEl.$.scroll.observing);
-    });
-
-    test('_loadMore should set currentPage', function(){
-      myEl._loadMore();
-      assert.equal(1, myEl.currentPage);
     });
 
     test('_loadMore should generate a request', function() {
@@ -241,7 +232,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('element should have the right youtube-card\'s', function(done){
+    test('element should have the right number of youtube-card\'s', function(done){
       // Rendering is a tough job
       this.slow(300);
 
