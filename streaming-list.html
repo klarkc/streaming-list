@@ -346,7 +346,6 @@ Example:
        * @returns {!IronRequestElement} Returns !IronRequestElement
        */
       generateRequest: function() {
-        console.log('generating');
         this.$.ajax.params = this._concatParams();
         //console.log(this.$.ajax.params);
         return this.$.ajax.generateRequest();
