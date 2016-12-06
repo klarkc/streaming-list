@@ -50,7 +50,7 @@ Example:
     </style>
     <iron-ajax
                id="ajax"
-               url="{{apiUrl}}"
+               url="{{twitchApiUrl}}"
                headers='[[_concatHeaders(clientId)]]'
                handle-as="json"
                on-response="_onResponse"
@@ -101,18 +101,38 @@ Example:
 
       properties: {
         /**
-         * `apiUrl` indicates the URL of twitch API to list streams
+         * `twitchApiUrl` indicates the URL of twitch API to list streams
          */
-        apiUrl: {
+        twitchApiUrl: {
           type: String,
-          notify: true,
           value: "https://api.twitch.tv/kraken/streams"
         },
 
         /**
-         * `clientId` Required Twitch.tv Client ID (register yout app at https://www.twitch.tv/settings/connections)
+         * `youtubeApiUrl` indicates the URL of youtube API to list streams
+         */
+        youtubeApiUrl: {
+          type: String,
+          value: "https://www.googleapis.com/youtube/v3/search"
+        },
+
+        /**
+         * `service` indicates the service to fetch data, can be the string youtube or twitch
+         */
+        service: {
+          type: String,
+          value: "twitch"
+        },
+
+        /**
+         * `clientId` Client-ID, required for twitch service (register your app at https://www.twitch.tv/settings/connections)
          */
         clientId: String,
+
+        /**
+         * `key` OAuth2 key, required for youtube service (register your app at https://console.cloud.google.com/appengine)
+         */
+        key: String,
 
         /**
          * `limit` Used to define the number of itens on each page
@@ -181,7 +201,7 @@ Example:
       },
 
       observers: [
-        'generateRequest(apiUrl, limit, lang, game, clientId)'
+        'generateRequest(twitchApiUrl, limit, lang, game, clientId)'
       ],
 
       listeners: {
