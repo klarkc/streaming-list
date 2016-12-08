@@ -79,6 +79,14 @@ Example:
           type: Number,
           value: null,
           observer: '_updateWidth'
+        },
+
+        /**
+         * `game` Game title (to generate links)
+         */
+        game: {
+          type: String,
+          value: null
         }
       },
       _updateWidth: function() {
