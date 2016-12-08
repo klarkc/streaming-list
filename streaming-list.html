@@ -45,7 +45,7 @@ Example:
         @apply(--layout-wrap);
       }
 
-      twitchtv-card {
+      twitchtv-card, youtube-card {
         margin: 16px;
       }
 
@@ -68,7 +68,7 @@ Example:
         <twitchtv-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
       </template>
       <template is="dom-repeat" items="[[response.items]]">
-        <youtube-card game="[[game]]" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></youtube-card>
+        <youtube-card game="[[game]]" lang="[[lang]]" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></youtube-card>
       </template>
     </div>
     <paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>
