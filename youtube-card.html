@@ -87,6 +87,18 @@ Example:
         game: {
           type: String,
           value: null
+        },
+
+        /**
+         * `animationConfig` Animation configuration (See Polymer docs for details)
+         */
+        animationConfig: {
+          value: function() {
+            return {
+              name: 'fade-in-animation',
+              node: this.$.card
+            }
+          }
         }
       },
       _updateWidth: function() {
