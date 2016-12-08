@@ -77,6 +77,11 @@ Example:
   <script>
     Polymer({
       is: "youtube-card",
+      /**
+       * Fired when the card is fully loaded (including image).
+       *
+       * @event loaded
+       */
       properties: {
         /**
          * `data` JSON Object representing source data (look Twitch.TV api for details)
