@@ -92,7 +92,13 @@ Example:
        */
 
        /**
-        * Fired when all requested responses has been received and element is fully rendered.
+        * Fired when all cards are fully rendered (including images).
+        *
+        * @event streaming-list-rendered
+        */
+
+       /**
+        * Fired when application are full rendered, all observers are in place and when the component is ready.
         *
         * @event streaming-list-ready
         */
@@ -131,12 +137,18 @@ Example:
         /**
          * `clientId` Client-ID, required for twitch service (register your app at https://www.twitch.tv/settings/connections)
          */
-        clientId: String,
+        clientId: {
+          type: String,
+          value: null
+        },
 
         /**
          * `key` API Key, required for youtube service (register your app at https://console.cloud.google.com/appengine)
          */
-        key: String,
+        key: {
+          type: String,
+          value: null
+        },
 
         /**
          * `limit` Used to define the number of itens on each page
@@ -209,7 +221,7 @@ Example:
       ],
 
       listeners: {
-        'streaming-list-ready': '_afterReady'
+        'streaming-list-rendered': '_observeScroll'
       },
 
       ready: function() {
@@ -263,11 +275,11 @@ Example:
 
       _onRequest: function(event) {
         this.$.spinnerBottom.active = true;
-        this.fire('streaming-list-request', event);
+        this.fire('streaming-list-request', event.detail);
       },
 
       _onResponse: function(event) {
-        //console.log(event.detail.response.streams);
+        //console.log(event.detail.response);
         var oldStreams = this.response.streams;
 
         var response = event.detail.response;
@@ -312,17 +324,19 @@ Example:
           // reset spinner
           this.$.spinnerBottom.active = false;
 
-          this.fire('streaming-list-ready', this.doneCards);
+          this.fire('streaming-list-rendered', this.doneCards);
           this.doneCards = [];
         }
       },
 
-      _afterReady: function(event) {
+      _observeScroll: function(event) {
         // Listen for scroll event-infinite-scroll
         if(!this._scrollListening) {
           this.$.scroll.startObserve();
           this._scrollListening = true;
         }
+
+        this.fire('streaming-list-ready');
       },
 
       _removeOldCards: function(event) {
@@ -352,12 +366,28 @@ Example:
       },
 
       /**
+       * Reset state of the application (pagination and cards)
+       */
+      _resetState: function() {
+        //console.log('reseting state');
+        this.$.scroll.stopObserve();
+        this._scrollListening = false;
+
+        this.set('response.streams', []);
+        this.set('response.items', []);
+        this._setCurrentPage(0);
+      },
+
+      /**
        * Performs an AJAX iron-ajax-request to the streaming server
        * @returns {!IronRequestElement} Returns !IronRequestElement
        */
       generateRequest: function() {
+        // Clear application state before, if generateRequest has arguments (observer)
+        if (arguments.length > 0) this._resetState();
+
         this.$.ajax.params = this._concatParams();
-        //console.log(this.$.ajax.params);
+        //console.trace(this.$.ajax.params);
         return this.$.ajax.generateRequest();
       }
     });

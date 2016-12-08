@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <script src="params.js"></script>
   <script src="twitch-res.js"></script>
 
   <!-- Step 1: import the element to test -->
@@ -30,7 +31,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </test-fixture>
 
   <script>
-  suite('<streaming-list>', function() {
+  var dom = document.params.dom || 'shady';
+  suite('Specific twitch tests (' + dom + ' DOM)', function() {
 
     var myEl,
     apiUrl,
@@ -59,10 +61,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       myEl = fixture('streaming-list-fixture');
 
       // Disable auto request, to not call no-wanted events
-      myEl.$.ajax.auto = false;
+      //myEl.$.ajax.auto = false;
 
       replace('twitchtv-card').with('fake-twitchtv-card');
       replace('paper-spinner').with('fake-paper-spinner');
+
       stub('event-infinite-scroll', {
         stopObserve: function(){
           this.observing = false;
@@ -74,32 +77,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       server.restore();
     });
 
-    test('defines the "service" property', function() {
-      assert.equal(myEl.service, 'twitch');
-    });
-
     test('defines the "twitchApiUrl" property', function() {
       assert.equal(myEl.twitchApiUrl, apiUrl);
     });
 
     test('defines the "clientId" property', function() {
       assert.equal(myEl.clientId, clientId);
-    });
-
-    test('defines the "limit" property', function() {
-      assert.equal(myEl.limit, 10);
-    });
-
-    test('defines the "width" property', function(){
-      assert.equal(myEl.width, null);
-    })
-
-    test('defines the "lang" property', function() {
-      assert.equal(myEl.lang, "en");
-    });
-
-    test('defines the "game" property', function() {
-      assert.equal(myEl.game, null);
     });
 
     test('defines the "response" property', function() {
@@ -129,74 +112,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.deepEqual(myEl.$.ajax.headers, myEl._concatHeaders());
     });
 
-    test('_onRequest should activate spinner', function() {
-      myEl._onRequest({});
-      assert.isTrue(myEl.$.spinnerBottom.active);
-    });
-
-    test('_onRequest should dispatch streaming-list-request', function(){
-      return new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-request', resolve);
-        myEl._onRequest({});
-      });
-    });
-
-    test('_loadMore should stop observe on the scroll', function(){
-      var spy = sinon.spy(myEl.$.scroll.stopObserve);
-      myEl._loadMore();
-      assert.isFalse(myEl._scrollListening);
-      assert.isFalse(myEl.$.scroll.observing);
-    });
-
-    test('_loadMore should set currentPage', function(){
-      myEl._loadMore();
-      assert.equal(1, myEl.currentPage);
-    });
-
-    test('_loadMore should generate a request', function() {
-      return new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-request', resolve);
-        myEl._loadMore();
-      });
-    });
-
-    test('_cardLoaded should create and push in doneCards', function(){
-      var stubEvent = {};
-      myEl._cardLoaded(stubEvent);
-      assert.equal(stubEvent, myEl.doneCards.pop());
-    });
-
-    test('_cardLoaded should removeOldCards when limit is reached', function(){
-      var spy = myEl._removeOldCards = sinon.spy();
-
-      myEl.limit = 1;
-      myEl._cardLoaded({});
-      sinon.assert.calledOnce(spy);
-    });
-
-    test('_cardLoaded should disabled spinnerBottom when limit is reached', function(){
-      myEl.limit = 1;
-      myEl._cardLoaded({});
-      assert.isFalse(myEl.$.spinnerBottom.active);
-    });
-
-    test('_cardLoaded should fire streaming-list-ready when limit is reached', function(){
-      return new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-ready', resolve);
-        myEl.limit = 1;
-        myEl._cardLoaded({});
-      });
-    });
-
-    test.skip('_scrollBottom should scroll to middle of the page', function(){
-      /* Pending implementation */
-    });
-
-    test('generateRequest is working', function(){
-      assert.deepEqual(myEl._concatParams(), myEl.$.ajax.params);
-    });
-
     test('iron-ajax should be correctly setted', function(){
+      // already requested at this point
       assert.equal(myEl.$.ajax.url, apiUrl);
       assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
       assert.equal(myEl.$.ajax.handleAs, 'json');
@@ -209,58 +126,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('the streaming-list-request event must be fired', function(){
-      return new Promise(function(resolve){
-          myEl.addEventListener('streaming-list-request', resolve);
-          myEl.generateRequest();
-      });
-    });
-
-    test('the response event should be correctly fired', function(){
-      // Reason is that deepEqual in a big json file
-      this.slow(1000);
-
-      var responsePromise = new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-response', resolve);
-        myEl.generateRequest();
-      });
-
-      return responsePromise.then(function(event){
-        assert.deepEqual(event.detail.response, response);
-      });
-    });
-
-    test('streaming-list-error should be triggered in a request error', function(){
-      var stubEvent = {detail: {}};
-      var errorPromise = new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-error', resolve);
-        myEl._onError(stubEvent);
-      });
-
-      return errorPromise.then(function(event){
-        assert.equal(event.detail, stubEvent.detail);
-      });
-    });
-
     test('element should have the right twitchtv-card\'s', function(done){
-      // Rendering is a tough job
-      this.slow(300);
+      // rendering, a tough job
+      this.slow(200);
 
       var responsePromise = new Promise(function(resolve, error){
-        myEl.addEventListener('streaming-list-response', resolve);
+        myEl.addEventListener('streaming-list-rendered', resolve);
         myEl.addEventListener('streaming-list-error', error);
-        myEl.generateRequest();
       });
+
       responsePromise.then(function(){
-          flush(function(){
-            var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
-            cards.forEach(function(card, index){
-              assert.equal(card.data, myEl.response.streams[index]);
-              assert.equal(card.width, myEl.width);
-            });
-            done();
-          });
+        var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
+        cards.forEach(function(card, index){
+          assert.equal(card.data, myEl.response.streams[index]);
+          assert.equal(card.width, myEl.width);
+        });
       });
+
+      flush(done); // Call observers first
     });
   });
   </script>
