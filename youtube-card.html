@@ -9,8 +9,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-icons/hardware-icons.html">
 <link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="card-style.html">
 <link rel="import" href="flag-behavior.html">
 
 <!--
@@ -30,27 +33,7 @@ Example:
 
 <dom-module id="youtube-card">
   <template>
-    <style>
-    :host {
-      display: block;
-      box-sizing: border-box;
-      position: relative;
-    }
-
-    #card {
-      display: block;
-      visibility: hidden;
-      cursor: pointer;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-
-    #card.loaded {
-      visibility: visible;
-    }
-
+    <style include="card-style">
     .card-image iron-image {
       width: 100%;
       --iron-image-width: 100%;
@@ -68,6 +51,18 @@ Example:
                               src="[[_getImageSrc(width, data.snippet.thumbnails)]]"
                               >
                   </iron-image>
+                </div>
+                <div class="card-header">
+                </div>
+                <div class="card-content">
+                  <div class="details">
+                    <div class="heading">
+                    </div>
+                    <div class="game">
+                      <iron-icon icon="hardware:videogame-asset"></iron-icon>
+                      <span id="game" title$="More [[game]] streams">[[game]]</span>
+                    </div>
+                  </div>
                 </div>
     </paper-card>
   </template>
