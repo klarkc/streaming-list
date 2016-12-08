@@ -37,6 +37,7 @@ Example:
                 <div class="card-image">
                   <iron-image
                               id="image"
+                              src="[[_getImageSrc(width, data.snippet.thumbnails)]]"
                               >
                   </iron-image>
                 </div>
@@ -76,8 +77,28 @@ Example:
          */
         width: {
           type: Number,
-          value: null
+          value: null,
+          observer: '_updateWidth'
         }
+      },
+      _updateWidth: function() {
+        if(!this.width) {
+          this.width = this.clientWidth;
+        } else {
+          this.style.display = 'inline-block';
+        }
+
+        this.style.width = this.width + 'px';
+      },
+      _getImageSrc: function() {
+        var min = this.data.snippet.thumbnails.default;
+        var med = this.data.snippet.thumbnails.medium;
+        var max = this.data.snippet.thumbnails.high;
+
+        if (this.width <= min.width * 1.10) return min.url;
+        if (this.width <= med.width * 1.10) return med.url;
+
+        return max.url;
       }
     });
   </script>
