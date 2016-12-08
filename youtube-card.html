@@ -157,6 +157,16 @@ Example:
           cut += '...';
         }
         return cut;
+      },
+      _formatLogo: function (image) {
+        if(image) {
+          return image;
+        } else {
+          return "../youtube_icon.svg";
+        }
+      },
+      _gameUrl: function (game) {
+        return 'https://gaming.youtube.com/results?search_query=' + encodeURI(game);
       }
     });
   </script>
