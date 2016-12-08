@@ -1,0 +1,259 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The compvare set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The compvare set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="params.js"></script>
+    <script src="youtube-res.js"></script>
+    <script src="../iso-639-1_flags.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../youtube-card.html">
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <test-fixture id="youtube-card-fixture">
+      <template>
+        <youtube-card></youtube-card>
+      </template>
+    </test-fixture>
+
+    <script>
+      var dom = document.params.dom || 'shady';
+      suite('<youtube-card> (' + dom + ' DOM)', function() {
+
+        var myEl,
+            stream;
+
+        setup(function() {
+          myEl = fixture('youtube-card-fixture');
+
+          stream = document.youtubeRes.items[0];
+        });
+
+        suite('default properties and behavior', function(){
+          test('defines the "data" property', function() {
+            assert.typeOf(myEl.data, 'object');
+
+            assert.typeOf(myEl.data.id, 'object');
+            assert.property(myEl.data.id, 'videoId');
+
+            assert.typeOf(myEl.data.snippet, 'object');
+            assert.property(myEl.data.snippet, 'channelTitle');
+            assert.property(myEl.data.snippet, 'channelId');
+            assert.property(myEl.data.snippet, 'title');
+            assert.typeOf(myEl.data.snippet.thumbnails, 'object');
+            assert.typeOf(myEl.data.snippet.thumbnails.default, 'object');
+            assert.property(myEl.data.snippet.thumbnails.default, 'url');
+            assert.property(myEl.data.snippet.thumbnails.default, 'width');
+            assert.property(myEl.data.snippet.thumbnails.default, 'height');
+            assert.typeOf(myEl.data.snippet.thumbnails.medium, 'object');
+            assert.property(myEl.data.snippet.thumbnails.medium, 'url');
+            assert.property(myEl.data.snippet.thumbnails.medium, 'width');
+            assert.property(myEl.data.snippet.thumbnails.medium, 'height');
+            assert.typeOf(myEl.data.snippet.thumbnails.high, 'object');
+            assert.property(myEl.data.snippet.thumbnails.high, 'url');
+            assert.property(myEl.data.snippet.thumbnails.high, 'width');
+            assert.property(myEl.data.snippet.thumbnails.high, 'height');
+          });
+
+          test('defines the "width" property', function(done) {
+            flush(function(){
+              assert.equal(myEl.width, 0);
+              done();
+            });
+          });
+
+          test('defines the "game" property', function() {
+              assert.property(myEl, 'game');
+          });
+
+          test('defines the "animationConfig" property', function(){
+            assert.property(myEl, 'animationConfig');
+            assert.property(myEl.animationConfig, 'node');
+            assert.typeOf(myEl.animationConfig.name, 'string');
+          });
+
+          test('card must be invisible', function(){
+            var style = window.getComputedStyle(myEl.$.card);
+            assert.equal(style.visibility, 'hidden');
+          });
+
+          test('width must be defined to pixels', function(){
+            myEl.width = 300;
+            assert.equal(myEl.style.width, '300px');
+          });
+
+          test('_formatLanguage must set language', function(){
+            assert.equal(myEl._formatLanguage(null), null);
+            assert.equal(myEl._formatLanguage('pt-BR'), "Portuguese");
+            assert.equal(myEl._formatLanguage('en'), "English");
+            assert.equal(myEl._formatLanguage('qwd12d12'), null);
+            assert.equal(myEl._formatLanguage('en', true), "flag-icon flag-icon-us");
+          });
+
+          test('_formatFlag must set flag', function(){
+            assert.equal(myEl._formatFlag('en'), "flag-icon flag-icon-us");
+          });
+
+          test('_formatViewers must format numeral', function(){
+            assert.equal(myEl._formatViewers(100000), '100k viewers');
+            assert.equal(myEl._formatViewers(100000000), '100m viewers');
+            assert.equal(myEl._formatViewers(0), '0 viewers');
+          });
+
+          test('_formatStatus must cut the status text correctly', function(){
+            assert.lengthOf(
+              myEl._formatStatus(Array(82).join('x')),
+              83
+            );
+            assert.lengthOf(
+              myEl._formatStatus(Array(80).join('x')),
+              79
+            );
+          });
+
+          test('_formatLogo must return something', function(){
+            assert.equal(myEl._formatLogo('xxx'), 'xxx');
+            assert.equal(myEl._formatLogo(null), '../youtube_icon.svg');
+          });
+
+          test('_gameUrl must encodeURI for game', function(){
+            assert.equal(
+              myEl._gameUrl('test'),
+              encodeURI('https://gaming.youtube.com/results?search_query=test')
+            );
+          });
+
+          test('when _onTap, a window to the channel must be open', function(done){
+            sinon.stub(window, 'open', function(url, target){
+              assert.equal(url, 'test');
+              assert.equal(target, '_blank');
+              done();
+            });
+            myEl.channelUrl = 'test';
+            myEl.$.card.fire('tap');
+            window.open.restore();
+          });
+
+          test('when _onTap in a game, a window to the game directory must be open', function(done){
+            var gameUrl = 'https://gaming.youtube.com/results?search_query=test';
+            sinon.stub(window, 'open', function(url, target){
+              assert.equal(url, gameUrl);
+              assert.equal(target, '_blank');
+              done();
+            });
+            myEl.game = 'test';
+            myEl.$.card.fire('tap', {}, {node: myEl.$.game});
+            window.open.restore();
+          });
+
+          test.skip('when _onImageLoaded text must fit', function(done){
+            sinon.stub(myEl.$.status, 'doFitMe', done);
+            myEl._onImageLoaded();
+            myEl.$.status.doFitMe.restore();
+          });
+
+          test('when _onImageLoaded class must be added and animation played', function(){
+            myEl.$.card.classList.add('loaded');
+            myEl.$.image.loaded = false;
+            myEl._onImageLoaded();
+            assert.equal(myEl.$.card.classList.contains('loaded'), true);
+          });
+
+        });
+
+        suite('on data changed', function(){
+          var dataPromise;
+
+          setup(function(){
+            dataPromise = new Promise(function(resolve){
+              myEl.addEventListener('data-changed', resolve);
+              myEl.data = stream;
+            });
+          });
+
+          test('generate one data changed event', function(){
+            return dataPromise;
+          });
+
+          test('image must be loaded with high size from 60% of the original width', function(){
+            return dataPromise.then(function(){
+              myEl.width = 480 * 0.60; // 60%
+              var url = stream.snippet.thumbnails.high;
+              assert.equal(myEl.$.image.src, url)
+            });
+          });
+
+          test('image must be loaded with high size up to 110% of the original width', function(){
+            return dataPromise.then(function(){
+              myEl.width = 480 * 1.10; // 110%
+              var url = stream.snippet.thumbnails.high;
+              assert.equal(myEl.$.image.src, url)
+            });
+          });
+
+          test('image must be loaded with medium size from 60% of the original width', function(){
+            return dataPromise.then(function(){
+              myEl.width = 320 * 0.60; // 60%
+              var url = stream.snippet.thumbnails.medium;
+              assert.equal(myEl.$.image.src, url)
+            });
+          });
+
+          test('image must be loaded with medium size up to 110% of the original width', function(){
+            return dataPromise.then(function(){
+              myEl.width = 320 * 1.10; // 110%
+              var url = stream.snippet.thumbnails.medium;
+              assert.equal(myEl.$.image.src, url)
+            });
+          });
+
+          test('image must be loaded with default size from 60% of the original width', function(){
+            return dataPromise.then(function(){
+              myEl.width = 120 * 0.60; // 60%
+              var url = stream.snippet.thumbnails.medium;
+              assert.equal(myEl.$.image.src, url)
+            });
+          });
+
+          test('image must be loaded with default size up to 110% of the original width', function(){
+            return dataPromise.then(function(){
+              myEl.width = 120 * 1.10; // 110%
+              var url = stream.snippet.thumbnails.medium;
+              assert.equal(myEl.$.image.src, url)
+            });
+          });
+
+          test('card should render streaming title', function(done){
+            flush(function(){
+              assert.equal(myEl.$.title.text, stream.snippet.title);
+              done();
+            });
+          });
+
+          test('card should render channel title', function(done){
+            flush(function(){
+              assert.equal(myEl.$.channelTitle.text, stream.snippet.channelTitle);
+              assert.equal(myEl.$.channelLogo.src, '../youtube_icon.svg');
+            });
+          });
+        });
+      });
+    </script>
+
+  </body>
+</html>
