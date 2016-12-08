@@ -99,13 +99,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.equal(myEl._formatViewers(0), '0 viewers');
           });
 
-          test('_formatStatus must cut the status text correctly', function(){
+          test('_formatTitle must cut the status text correctly', function(){
             assert.lengthOf(
-              myEl._formatStatus(Array(82).join('x')),
+              myEl._formatTitle(Array(82).join('x')),
               83
             );
             assert.lengthOf(
-              myEl._formatStatus(Array(80).join('x')),
+              myEl._formatTitle(Array(80).join('x')),
               79
             );
           });
