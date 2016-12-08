@@ -209,6 +209,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             flush(function(){
               assert.equal(myEl.$.channelTitle.text, stream.snippet.channelTitle);
               assert.equal(myEl.$.channelLogo.src, '../youtube_icon.svg');
+              done();
             });
           });
         });
