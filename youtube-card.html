@@ -64,6 +64,7 @@ Example:
                   <div class="details">
                     <div class="heading">
                       <textfit-div id="channelTitle" text="[[data.snippet.channelTitle]]" ignore-errors="true" manual-fire></textfit-div>
+                      <span id="flag" class$="[[formatFlag(lang)]]" title$="[[formatLanguage(lang)]]"></span>
                     </div>
                     <div class="game">
                       <iron-icon icon="hardware:videogame-asset"></iron-icon>
@@ -115,6 +116,14 @@ Example:
          * `game` Game title (to generate links)
          */
         game: {
+          type: String,
+          value: null
+        },
+
+        /**
+         * `lang` Language filter (to generate flag)
+         */
+        lang: {
           type: String,
           value: null
         },
