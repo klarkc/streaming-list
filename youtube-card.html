@@ -184,11 +184,17 @@ Example:
         return 'https://gaming.youtube.com/results?search_query=' + encodeURI(game);
       },
       _onTap: function (event) {
-        if(Polymer.dom(event).localTarget === this.$.game) {
-          window.open(this._gameUrl(this.game), '_blank');
-          return;
+        var target = Polymer.dom(event).localTarget;
+        var url = 'https://gaming.youtube.com/watch?v=' + this.data.id.videoId;
+
+        if (target === this.$.game) {
+          url = this._gameUrl(this.game);
         }
-        var url = 'https://gaming.youtube.com/channel/' + this.data.snippet.channelId;
+
+        if (target === this.$.channelTitle || target === this.$.channelLogo) {
+          url = 'https://gaming.youtube.com/channel/' + this.data.snippet.channelId;
+        }
+
         window.open(url, '_blank');
       },
       _onImageLoaded: function(event) {

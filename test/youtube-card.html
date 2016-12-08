@@ -122,18 +122,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             );
           });
 
-          test('when _onTap, a window to the channel must be open', function(done){
+          test('when tap on card, a window to the stream should open', function(done){
+            sinon.stub(window, 'open', function(url, target){
+              assert.equal(url, 'https://gaming.youtube.com/watch?v=test');
+              assert.equal(target, '_blank');
+              done();
+            });
+            myEl.data.id.videoId = 'test';
+            myEl.$.card.fire('tap');
+            window.open.restore();
+          });
+
+          test('when tap on channelLogo, a window to the channel must be open', function(done){
             sinon.stub(window, 'open', function(url, target){
               assert.equal(url, 'https://gaming.youtube.com/channel/test');
               assert.equal(target, '_blank');
               done();
             });
             myEl.data.snippet.channelId = 'test';
-            myEl.$.card.fire('tap');
+            myEl.$.card.fire('tap', {}, {node: myEl.$.channelLogo});
             window.open.restore();
           });
 
-          test('when _onTap in a game, a window to the game directory must be open', function(done){
+          test('when tap on channel name, a window to the channel must be open', function(done){
+            sinon.stub(window, 'open', function(url, target){
+              assert.equal(url, 'https://gaming.youtube.com/channel/test');
+              assert.equal(target, '_blank');
+              done();
+            });
+            myEl.data.snippet.channelId = 'test';
+            myEl.$.card.fire('tap', {}, {node: myEl.$.channelTitle});
+            window.open.restore();
+          });
+
+          test('when tap in a game, a window to the game directory must be open', function(done){
             var gameUrl = 'https://gaming.youtube.com/results?search_query=test';
             sinon.stub(window, 'open', function(url, target){
               assert.equal(url, gameUrl);
