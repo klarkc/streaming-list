@@ -35,14 +35,9 @@ Example:
 -->
 
 <dom-module id="youtube-card">
+  <link rel="import" type="css" href="../flag-icon-css/css/flag-icon.min.css">
   <template>
-    <style include="card-style">
-    .card-image iron-image {
-      width: 100%;
-      --iron-image-width: 100%;
-      pointer-events: none;
-    }
-    </style>
+    <style include="card-style"></style>
     <paper-card
                 on-tap="_onTap"
                 animated-shadow="true"
