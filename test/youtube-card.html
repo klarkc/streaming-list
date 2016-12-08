@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- You can use the document as a place to set up your fixtures. -->
     <test-fixture id="youtube-card-fixture">
       <template>
-        <youtube-card lang='en'></youtube-card>
+        <youtube-card></youtube-card>
       </template>
     </test-fixture>
 
@@ -205,7 +205,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
           });
 
-          test('card should render channel title', function(done){
+          test('card should render channel title', function(done) {
             flush(function(){
               assert.equal(myEl.$.channelTitle.text, stream.snippet.channelTitle);
               assert.equal(myEl.$.channelLogo.src, '../youtube_icon.svg');
@@ -213,7 +213,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
           });
 
+          test('card should render game name', function(done) {
+            myEl.set('game', 'test');
+            flush(function(){
+              assert.equal(myEl.$.game.textContent, 'test');
+              done();
+            });
+          });
+
           test('card should render a flag', function(done){
+            myEl.set('lang', 'en');
             flush(function(){
               assert.include(myEl.$.flag.getAttribute('class'), 'flag-icon-us');
               done();
