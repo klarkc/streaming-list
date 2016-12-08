@@ -91,18 +91,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             );
           });
 
-          test('_formatLanguage must set language', function(){
-            assert.equal(myEl._formatLanguage(null), null);
-            assert.equal(myEl._formatLanguage('pt-BR'), "Portuguese");
-            assert.equal(myEl._formatLanguage('en'), "English");
-            assert.equal(myEl._formatLanguage('qwd12d12'), null);
-            assert.equal(myEl._formatLanguage('en', true), "flag-icon flag-icon-us");
-          });
-
-          test('_formatFlag must set flag', function(){
-            assert.equal(myEl._formatFlag('en'), "flag-icon flag-icon-us");
-          });
-
           test('_formatViewers must format numeral', function(){
             assert.equal(myEl._formatViewers(100000), '100k viewers');
             assert.equal(myEl._formatViewers(100000000), '100m viewers');
