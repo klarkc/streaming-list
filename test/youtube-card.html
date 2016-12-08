@@ -40,7 +40,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         setup(function() {
           myEl = fixture('youtube-card-fixture');
-
           stream = document.youtubeRes.items[0];
         });
 
@@ -59,15 +58,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.typeOf(myEl.data.snippet.thumbnails.default, 'object');
             assert.property(myEl.data.snippet.thumbnails.default, 'url');
             assert.property(myEl.data.snippet.thumbnails.default, 'width');
-            assert.property(myEl.data.snippet.thumbnails.default, 'height');
             assert.typeOf(myEl.data.snippet.thumbnails.medium, 'object');
             assert.property(myEl.data.snippet.thumbnails.medium, 'url');
             assert.property(myEl.data.snippet.thumbnails.medium, 'width');
-            assert.property(myEl.data.snippet.thumbnails.medium, 'height');
             assert.typeOf(myEl.data.snippet.thumbnails.high, 'object');
             assert.property(myEl.data.snippet.thumbnails.high, 'url');
             assert.property(myEl.data.snippet.thumbnails.high, 'width');
-            assert.property(myEl.data.snippet.thumbnails.high, 'height');
           });
 
           test('defines the "width" property', function(done) {

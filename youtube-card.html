@@ -44,7 +44,41 @@ Example:
   </template>
   <script>
     Polymer({
-      is: "youtube-card"
+      is: "youtube-card",
+      properties: {
+        /**
+         * `data` JSON Object representing source data (look Twitch.TV api for details)
+         */
+        data: {
+          type: Object,
+          notify: true,
+          value: function(){
+            return {
+              id: {
+                videoId: null
+              },
+              snippet: {
+               channelId: null,
+               title: null,
+               thumbnails: {
+                default: {url: null, width: null},
+                medium: {url: null, width: null},
+                high: {url: null, width: null}
+               },
+               channelTitle: null
+              }
+            };
+          }
+        },
+
+        /**
+         * `width` If you define width (in pixels) the card size will be fixed with the given width, this number is also used to load the preview image closest to the given width
+         */
+        width: {
+          type: Number,
+          value: null
+        }
+      }
     });
   </script>
 </dom-module>
