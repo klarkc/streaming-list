@@ -29,6 +29,33 @@ Example:
 
 <dom-module id="youtube-card">
   <template>
+    <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    #card {
+      display: block;
+      visibility: hidden;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    #card.loaded {
+      visibility: visible;
+    }
+
+    .card-image iron-image {
+      width: 100%;
+      --iron-image-width: 100%;
+      pointer-events: none;
+    }
+    </style>
     <paper-card
                 on-tap="_onTap"
                 animated-shadow="true"
