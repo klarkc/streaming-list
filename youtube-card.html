@@ -162,6 +162,14 @@ Example:
       },
       _gameUrl: function (game) {
         return 'https://gaming.youtube.com/results?search_query=' + encodeURI(game);
+      },
+      _onTap: function (event) {
+        if(Polymer.dom(event).localTarget === this.$.game) {
+          window.open(this._gameUrl(this.game), '_blank');
+          return;
+        }
+        var url = 'https://gaming.youtube.com/channel/' + this.data.snippet.channelId;
+        window.open(url, '_blank');
       }
     });
   </script>

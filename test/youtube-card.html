@@ -124,11 +124,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           test('when _onTap, a window to the channel must be open', function(done){
             sinon.stub(window, 'open', function(url, target){
-              assert.equal(url, 'test');
+              assert.equal(url, 'https://gaming.youtube.com/channel/test');
               assert.equal(target, '_blank');
               done();
             });
-            myEl.channelUrl = 'test';
+            myEl.data.snippet.channelId = 'test';
             myEl.$.card.fire('tap');
             window.open.restore();
           });
