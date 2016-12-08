@@ -140,6 +140,9 @@ Example:
           }
         }
       },
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
       behaviors: [
         Polymer.NeonAnimationRunnerBehavior,
         document.StreamingList.FlagBehavior
@@ -199,6 +202,16 @@ Example:
           this.$.card.classList.add('loaded');
           this.playAnimation();
         }
+      },
+      _onNeonAnimationFinish: function(event) {
+        // simulate delay (only for testing)
+        /*
+        setTimeout(function(){
+          this.fire('loaded', this);
+        }.bind(this), Math.round(Math.random() * 2000));
+        */
+
+        this.fire('loaded', this);
       }
     });
   </script>

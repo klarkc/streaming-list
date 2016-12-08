@@ -157,7 +157,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             myEl._onImageLoaded();
             assert.equal(myEl.$.card.classList.contains('loaded'), true);
           });
-
         });
 
         suite('on data changed', function(){
@@ -231,6 +230,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           test.skip('card should render the number of viewers', function(done) {
             // Please implement this D:
+          });
+
+          test('card should fire loaded after finish animation', function(done) {
+            myEl.addEventListener('loaded', function(event){
+              assert.equal(event.type, 'loaded');
+              done();
+            });
+            myEl.fire('neon-animation-finish');
           });
         });
       });
