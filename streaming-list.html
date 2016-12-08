@@ -34,6 +34,10 @@ Example:
         display: block;
         box-sizing: border-box;
         @apply(--layout-vertical);
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
       }
 
       #streams {
@@ -50,7 +54,7 @@ Example:
     </style>
     <iron-ajax
                id="ajax"
-               url="{{apiUrl}}"
+               url="{{_getApiUrl(service, twitchApiUrl, youtubeApiUrl)}}"
                headers='[[_concatHeaders(clientId)]]'
                handle-as="json"
                on-response="_onResponse"
@@ -88,7 +92,13 @@ Example:
        */
 
        /**
-        * Fired when all requested responses has been received and element is fully rendered.
+        * Fired when all cards are fully rendered (including images).
+        *
+        * @event streaming-list-rendered
+        */
+
+       /**
+        * Fired when application are full rendered, all observers are in place and when the component is ready.
         *
         * @event streaming-list-ready
         */
@@ -101,18 +111,44 @@ Example:
 
       properties: {
         /**
-         * `apiUrl` indicates the URL of twitch API to list streams
+         * `twitchApiUrl` indicates the URL of twitch API to list streams
          */
-        apiUrl: {
+        twitchApiUrl: {
           type: String,
-          notify: true,
           value: "https://api.twitch.tv/kraken/streams"
         },
 
         /**
-         * `clientId` Required Twitch.tv Client ID (register yout app at https://www.twitch.tv/settings/connections)
+         * `youtubeApiUrl` indicates the URL of youtube API to list streams
          */
-        clientId: String,
+        youtubeApiUrl: {
+          type: String,
+          value: "https://www.googleapis.com/youtube/v3/search"
+        },
+
+        /**
+         * `service` indicates the service to fetch data, can be the string youtube or twitch
+         */
+        service: {
+          type: String,
+          value: "twitch"
+        },
+
+        /**
+         * `clientId` Client-ID, required for twitch service (register your app at https://www.twitch.tv/settings/connections)
+         */
+        clientId: {
+          type: String,
+          value: null
+        },
+
+        /**
+         * `key` API Key, required for youtube service (register your app at https://console.cloud.google.com/appengine)
+         */
+        key: {
+          type: String,
+          value: null
+        },
 
         /**
          * `limit` Used to define the number of itens on each page
@@ -164,7 +200,7 @@ Example:
         response: {
           type: Object,
           value: function(){
-            return {streams: []};
+            return {streams: [], items: []};
           },
           notify: true
         },
@@ -181,11 +217,11 @@ Example:
       },
 
       observers: [
-        'generateRequest(apiUrl, limit, lang, game, clientId)'
+        'generateRequest(service, twitchApiUrl, youtubeApiUrl, limit, lang, game, clientId, key)'
       ],
 
       listeners: {
-        'streaming-list-ready': '_afterReady'
+        'streaming-list-rendered': '_observeScroll'
       },
 
       ready: function() {
@@ -194,28 +230,56 @@ Example:
         }
       },
 
-      _concatParams: function() {
-        return {
-          limit: this.limit,
-          language: this.lang,
-          game: this.game,
-          offset: (this.currentPage * this.limit) || 0
-        };
+      _getApiUrl: function() {
+        if(this.service === 'twitch') return this.twitchApiUrl;
+        if(this.service === 'youtube') return this.youtubeApiUrl;
+        throw Error('missing or wrong service');
       },
 
-      _concatHeaders: function(clientId) {
-        return {
-          'Client-ID': clientId
-        };
+      _concatParams: function() {
+        if(this.service === 'twitch') {
+          return {
+            limit: this.limit,
+            language: this.lang,
+            game: this.game,
+            offset: (this.currentPage * this.limit) || 0
+          };
+        }
+
+        if(this.service === 'youtube') {
+          return {
+            part: 'snippet',
+            eventType: 'live',
+            maxResults: this.limit,
+            order: 'viewCount',
+            q: this.game,
+            relevanceLanguage: this.lang,
+            type: 'video',
+            videoCategoryId: 20, // Gaming category
+            key: this.key
+          };
+        }
+
+        throw Error('missing or wrong service');
+      },
+
+      _concatHeaders: function() {
+        if (this.service === 'twitch') {
+          return {
+            'Client-ID': this.clientId
+          };
+        }
+
+        return {};
       },
 
       _onRequest: function(event) {
         this.$.spinnerBottom.active = true;
-        this.fire('streaming-list-request', event);
+        this.fire('streaming-list-request', event.detail);
       },
 
       _onResponse: function(event) {
-        //console.log(event.detail.response.streams);
+        //console.log(event.detail.response);
         var oldStreams = this.response.streams;
 
         var response = event.detail.response;
@@ -260,17 +324,19 @@ Example:
           // reset spinner
           this.$.spinnerBottom.active = false;
 
-          this.fire('streaming-list-ready', this.doneCards);
+          this.fire('streaming-list-rendered', this.doneCards);
           this.doneCards = [];
         }
       },
 
-      _afterReady: function(event) {
+      _observeScroll: function(event) {
         // Listen for scroll event-infinite-scroll
         if(!this._scrollListening) {
           this.$.scroll.startObserve();
           this._scrollListening = true;
         }
+
+        this.fire('streaming-list-ready');
       },
 
       _removeOldCards: function(event) {
@@ -300,12 +366,28 @@ Example:
       },
 
       /**
+       * Reset state of the application (pagination and cards)
+       */
+      _resetState: function() {
+        //console.log('reseting state');
+        this.$.scroll.stopObserve();
+        this._scrollListening = false;
+
+        this.set('response.streams', []);
+        this.set('response.items', []);
+        this._setCurrentPage(0);
+      },
+
+      /**
        * Performs an AJAX iron-ajax-request to the streaming server
        * @returns {!IronRequestElement} Returns !IronRequestElement
        */
       generateRequest: function() {
+        // Clear application state before, if generateRequest has arguments (observer)
+        if (arguments.length > 0) this._resetState();
+
         this.$.ajax.params = this._concatParams();
-        //console.log(this.$.ajax.params);
+        //console.trace(this.$.ajax.params);
         return this.$.ajax.generateRequest();
       }
     });

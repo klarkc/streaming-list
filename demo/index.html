@@ -15,10 +15,80 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <title>streaming-list Demo</title>
     <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="import" href="../streaming-list.html">
+    <link rel="import" href="../../paper-input/paper-input.html">
+    <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+    <link rel="import" href="../../paper-listbox/paper-listbox.html">
+    <link rel="import" href="../../paper-item/paper-item.html">
   </head>
   <body unresolved>
+    <dom-module id="demo-app">
+      <template>
+        <style>
+          paper-input, paper-dropdown-menu {
+            display: inline-block;
+          }
+        </style>
+        <p>Feel free to change the settings below.</p>
+        <paper-dropdown-menu label="Service">
+          <paper-listbox
+            class="dropdown-content"
+            attr-for-selected="value"
+            selected="{{service}}"
+          >
+            <paper-item value="twitch">Twitch.tv</paper-item>
+            <paper-item value="youtube">Youtube</paper-item>
+          </paper-listbox>
+        </paper-dropdown-menu>
+        <paper-input label="Game" value="{{game}}" type="text"></paper-input>
+        <paper-input label="Language" value="{{language}}" max-length=2 type="text"></paper-input>
+        <paper-input label="Width" value="{{size}}" type="number"></paper-input>
 
-    <p>An example of <code>&lt;streaming-list lang="pt" width="320"&gt;</code>:</p>
-    <streaming-list lang="pt" width="320" client-id="573me5izesw34qm13u7j1h8km5fnpwz"></streaming-list>
+        <p>An example of <code>&lt;streaming-list lang="{{language}}" width="{{size}}" service="{{service}}" game="{{game}}"&gt;</code>:</p>
+        <streaming-list
+          lang="{{language}}"
+          width="{{size}}"
+          client-id="{{clientId}}"
+          key="{{key}}"
+          service="{{service}}"
+          game="{{game}}"
+        >
+        </streaming-list>
+      </template>
+      <script>
+      HTMLImports.whenReady(function(){
+        Polymer({
+          is: 'demo-app',
+          properties: {
+            game: {
+              type: String,
+              value: "League of Legends"
+            },
+            language: {
+              type: String,
+              value: "en"
+            },
+            size: {
+              type: Number,
+              value: 320
+            },
+            service: {
+              type: String,
+              value: "twitch"
+            },
+            clientId: {
+              type: String,
+              value: "573me5izesw34qm13u7j1h8km5fnpwz"
+            },
+            key: {
+              type: String,
+              value: "AIzaSyDMAAk08_eOgNAj12gQ3wb3liY0KJgb5kI"
+            }
+          }
+        });
+      });
+      </script>
+    </dom-module>
+
+    <demo-app></demo-app>
   </body>
 </html>

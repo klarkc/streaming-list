@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
+    <script src="params.js"></script>
     <script src="twitch-res.js"></script>
     <script src="../iso-639-1_flags.js"></script>
 
@@ -31,7 +32,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
-      suite('<twitchtv-card>', function() {
+      var dom = document.params.dom || 'shady';
+      suite('<twitchtv-card> (' + dom + ' DOM)', function() {
 
         var myEl,
             stream;

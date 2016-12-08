@@ -1,0 +1,152 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The compvare set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The compvare set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="params.js"></script>
+  <script src="youtube-res.js"></script>
+
+  <!-- Step 1: import the element to test -->
+  <link rel="import" href="../streaming-list.html">
+</head>
+<body>
+
+  <!-- You can use the document as a place to set up your fixtures. -->
+  <test-fixture id="streaming-list-fixture">
+    <template>
+      <streaming-list key="hackme" service="youtube"></streaming-list>
+    </template>
+  </test-fixture>
+
+  <script>
+  var dom = document.params.dom || 'shady';
+  suite('Specific youtube tests (' + dom + ' DOM)', function() {
+
+    var myEl,
+    apiUrl,
+    key,
+    server,
+    response;
+
+    setup(function() {
+      apiUrl = 'https://www.googleapis.com/youtube/v3/search';
+      key = 'hackme';
+      response = document.youtubeRes;
+
+      // Here we simulate the iron-ajax behavior
+      server = sinon.fakeServer.create();
+      server.respondWith(
+        'GET',
+        new RegExp(apiUrl + '.*'),
+        [
+          200,
+          {'Content-Type': 'application/json'},
+          JSON.stringify(response)
+        ]
+      );
+      server.autoRespond = true;
+
+      myEl = fixture('streaming-list-fixture');
+
+      // Disable auto request, to not call no-wanted events
+      myEl.$.ajax.auto = false;
+
+      replace('youtube-card').with('fake-youtube-card');
+      replace('paper-spinner').with('fake-paper-spinner');
+      stub('event-infinite-scroll', {
+        stopObserve: function(){
+          this.observing = false;
+        }
+      });
+    });
+
+    teardown(function(){
+      server.restore();
+    });
+
+    test('defines the "youtubeApiUrl" property', function() {
+      assert.equal(myEl.youtubeApiUrl, apiUrl);
+    });
+
+    test('defines the "key" property', function() {
+      assert.equal(myEl.key, key);
+    });
+
+    test('defines the "response" property', function() {
+      assert.property(myEl, 'response');
+      assert.property(myEl.response, 'items');
+      assert.lengthOf(myEl.response.items, 0);
+    });
+
+    test('_getApiUrl should a valid api URL', function(){
+      assert.equal(myEl._getApiUrl(), apiUrl);
+    });
+
+    test('_concatParams should return params object', function(){
+      assert.deepEqual({
+        part: 'snippet',
+        eventType: 'live',
+        maxResults: myEl.limit,
+        order: 'viewCount',
+        q: myEl.game,
+        relevanceLanguage: myEl.lang,
+        type: 'video',
+        videoCategoryId: 20, // Gaming category
+        key: myEl.key
+      }, myEl._concatParams());
+    });
+
+    test('iron-ajax should be correctly setted', function(){
+      // already requested at this point
+      assert.equal(myEl.$.ajax.url, apiUrl);
+      assert.equal(myEl.$.ajax.handleAs, 'json');
+      assert.equal(myEl.$.ajax.debounceDuration, 30);
+      assert.deepEqual(myEl.$.ajax.params, {
+        part: 'snippet',
+        eventType: 'live',
+        maxResults: 10,
+        order: 'viewCount',
+        q: null,
+        relevanceLanguage: 'en',
+        type: 'video',
+        videoCategoryId: 20, // Gaming category
+        key: key
+      });
+    });
+
+    test('element should have the right youtube-card\'s', function(done){
+      // rendering, a tough job
+      this.slow(200);
+
+      var responsePromise = new Promise(function(resolve, error){
+        myEl.addEventListener('streaming-list-rendered', resolve);
+        myEl.addEventListener('streaming-list-error', error);
+      });
+
+      responsePromise.then(function(){
+        var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-youtube-card');
+        cards.forEach(function(card, index){
+          assert.equal(card.data, myEl.response.items[index]);
+          assert.equal(card.width, myEl.width);
+        });
+      });
+
+      flush(done); // Call observers first
+    });
+  });
+  </script>
+
+</body>
+</html>

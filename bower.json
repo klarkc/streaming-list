@@ -41,7 +41,11 @@
     "web-component-tester": "^5.0.0",
     "promise-polyfill-2": "taylorhakes/promise-polyfill#^6.0.2",
     "event-infinite-scroll": "klarkc/event-infinite-scroll#master",
-    "paper-spinner": "^1.2.0"
+    "paper-spinner": "^1.2.0",
+    "paper-input": "^1.1.22",
+    "paper-dropdown-menu": "^1.4.3",
+    "paper-item": "^1.2.1",
+    "paper-listbox": "^1.1.2"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

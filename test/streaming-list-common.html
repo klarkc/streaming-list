@@ -15,6 +15,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <script src="params.js"></script>
+  <script src="youtube-res.js"></script>
   <script src="twitch-res.js"></script>
 
   <!-- Step 1: import the element to test -->
@@ -23,28 +25,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
 
   <!-- You can use the document as a place to set up your fixtures. -->
-  <test-fixture id="streaming-list-fixture">
+  <test-fixture id="streaming-list-fixture-twitch">
     <template>
-      <streaming-list client-id="hackme"></streaming-list>
+      <streaming-list client-id="hackme" service="twitch"></streaming-list>
     </template>
   </test-fixture>
 
+  <test-fixture id="streaming-list-fixture-youtube">
+    <template>
+      <streaming-list key="hackme" service="youtube"></streaming-list>
+    </template>
+  </test-fixture>
   <script>
-  suite('<streaming-list>', function() {
-
-    var myEl,
-    apiUrl,
-    clientId,
-    server,
-    response;
+  var service = document.params.service;
+  var dom = document.params.dom || 'shady';
+  suite('Common tests with ' + service + ' (' + dom + ' DOM)', function() {
+    var myEl, apiUrl, response, server;
 
     setup(function() {
-      apiUrl = 'https://api.twitch.tv/kraken/streams';
-      clientId = 'hackme';
-      response = document.twitchRes;
+
+      if (service === 'youtube') {
+        myEl = fixture('streaming-list-fixture-youtube');
+        apiUrl = 'https://www.googleapis.com/youtube/v3/search';
+        response = document.youtubeRes;
+
+        replace('youtube-card').with('fake-youtube-card');
+      } else if (service ==='twitch') {
+        myEl = fixture('streaming-list-fixture-twitch');
+        apiUrl = 'https://api.twitch.tv/kraken/streams';
+        response = document.twitchRes;
+
+        replace('twitchtv-card').with('fake-twitchtv-card');
+      } else {
+        throw Error('please define service with service argument (Ex: ?service=youtube)');
+      }
 
       // Here we simulate the iron-ajax behavior
       server = sinon.fakeServer.create();
+      server.autoRespond = true;
       server.respondWith(
         'GET',
         new RegExp(apiUrl + '.*'),
@@ -54,14 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           JSON.stringify(response)
         ]
       );
-      server.autoRespond = true;
 
-      myEl = fixture('streaming-list-fixture');
-
-      // Disable auto request, to not call no-wanted events
-      myEl.$.ajax.auto = false;
-
-      replace('twitchtv-card').with('fake-twitchtv-card');
       replace('paper-spinner').with('fake-paper-spinner');
       stub('event-infinite-scroll', {
         stopObserve: function(){
@@ -74,12 +85,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       server.restore();
     });
 
-    test('defines the "apiUrl" property', function() {
-      assert.equal(myEl.apiUrl, apiUrl);
-    });
-
-    test('defines the "clientId" property', function() {
-      assert.equal(myEl.clientId, clientId);
+    test('defines the "service" property', function() {
+      assert.equal(myEl.service, service);
     });
 
     test('defines the "limit" property', function() {
@@ -88,7 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('defines the "width" property', function(){
       assert.equal(myEl.width, null);
-    })
+    });
 
     test('defines the "lang" property', function() {
       assert.equal(myEl.lang, "en");
@@ -96,24 +103,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('defines the "game" property', function() {
       assert.equal(myEl.game, null);
-    });
-
-    test('defines the "response" property', function() {
-      assert.property(myEl, 'response');
-      assert.property(myEl.response, 'streams');
-      assert.lengthOf(myEl.response.streams, 0);
-    });
-
-    test('defines the "currentPage" property', function(){
-      assert.equal(myEl.currentPage, 0);
-    });
-
-    test('_concatParams should return params object', function(){
-      assert.deepEqual(myEl.$.ajax.params, myEl._concatParams());
-    });
-
-    test('_concatHeaders should return headers object', function(){
-      assert.deepEqual(myEl.$.ajax.headers, myEl._concatHeaders(clientId));
     });
 
     test('_onRequest should activate spinner', function() {
@@ -169,7 +158,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('_cardLoaded should fire streaming-list-ready when limit is reached', function(){
       return new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-ready', resolve);
+        myEl.addEventListener('streaming-list-rendered', resolve);
         myEl.limit = 1;
         myEl._cardLoaded({});
       });
@@ -179,42 +168,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /* Pending implementation */
     });
 
-    test('generateRequest is working', function(){
-      assert.deepEqual(myEl._concatParams(), myEl.$.ajax.params);
-    });
-
-    test('iron-ajax should be correctly setted', function(){
-      assert.equal(myEl.$.ajax.url, apiUrl);
-      assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
-      assert.equal(myEl.$.ajax.handleAs, 'json');
-      assert.equal(myEl.$.ajax.debounceDuration, 30);
-      assert.deepEqual(myEl.$.ajax.params, {
-        limit: 10,
-        language: 'en',
-        game: null,
-        offset: 0
-      });
-    });
-
-    test('the streaming-list-request event must be fired', function(){
-      return new Promise(function(resolve){
-          myEl.addEventListener('streaming-list-request', resolve);
-          myEl.generateRequest();
-      });
-    });
-
-    test('the response event should be correctly fired', function(){
-      // Reason is that deepEqual in a big json file
-      this.slow(1000);
-
-      var responsePromise = new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-response', resolve);
-        myEl.generateRequest();
-      });
-
-      return responsePromise.then(function(event){
+    test('the response event should be correctly fired', function(done){
+      myEl.addEventListener('streaming-list-response', function(event){
         assert.deepEqual(event.detail.response, response);
       });
+
+      flush(done); // Call all observers to the test
     });
 
     test('streaming-list-error should be triggered in a request error', function(){
@@ -229,28 +188,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    test('element should have the right twitchtv-card\'s', function(done){
-      // Rendering is a tough job
-      this.slow(300);
-
-      var responsePromise = new Promise(function(resolve, error){
-        myEl.addEventListener('streaming-list-response', resolve);
-        myEl.addEventListener('streaming-list-error', error);
+    test('generateRequest should fire a streaming-list-request event', function(){
+      return new Promise(function(resolve){
+        myEl.addEventListener('streaming-list-request', resolve);
         myEl.generateRequest();
       });
-      responsePromise.then(function(){
-          flush(function(){
-            var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
-            cards.forEach(function(card, index){
-              assert.equal(card.data, myEl.response.streams[index]);
-              assert.equal(card.width, myEl.width);
-            });
-            done();
-          });
-      });
     });
-  });
-  </script>
+
+    test('generateRequest without arguments should not reset application state', function(done){
+      myEl._scrollListening = true;
+      myEl.response.items = [{}];
+      myEl.response.streams = [{}];
+      myEl._setCurrentPage(1);
+
+      myEl.addEventListener('streaming-list-request', function(){
+        assert.isTrue(myEl._scrollListening);
+        assert.equal(1, myEl.currentPage);
+        assert.equal(1, myEl.response.items.length);
+        assert.equal(1, myEl.response.streams.length);
+        done();
+      });
+
+      myEl.generateRequest();
+    });
+
+    test('generateRequest with arguments should reset application state', function(done){
+      myEl.addEventListener('streaming-list-request', function(){
+        assert.isFalse(myEl._scrollListening);
+        assert.equal(0, myEl.currentPage);
+        assert.equal(0, myEl.response.items.length);
+        assert.equal(0, myEl.response.streams.length);
+        done();
+      });
+
+      myEl.generateRequest(true);
+    });
+});
+</script>
 
 </body>
 </html>
