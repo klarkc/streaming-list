@@ -140,9 +140,7 @@ Example:
 
       observers: [
         '_loadImage(data, width)',
-        '_onWidthChanged(width)',
-        '_fitStatus(data.channel.status)',
-        '_fitTitle(data.channel.display_name)'
+        '_onWidthChanged(width)'
       ],
 
       behaviors: [
@@ -192,8 +190,8 @@ Example:
       },
 
       _onImageLoaded: function(event) {
-        // this.$.status.doFitMe(); NOTE: Causing bug width data-biding (fitting an ancient status)
-
+        this.$.status.doFitMe();
+        this.$.title.doFitMe();
         // Only play animation if element was not loaded before AND there is a IMAGE loaded
         if(!this.$.card.classList.contains('loaded')
           && this.$.image.loaded
@@ -239,14 +237,6 @@ Example:
         // url += '?' + Math.random();
 
         this.$.image.src = url;
-      },
-
-      _fitStatus: function() {
-        this.$.status.doFitMe();
-      },
-
-      _fitTitle: function() {
-        this.$.title.doFitMe();
       }
     });
   </script>
