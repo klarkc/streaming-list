@@ -131,7 +131,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             window.open.restore();
           });
 
-          test('when _onTap in a game, a window to the game directory must be open', function(done){
+          test('when _onTap in a game, a window to the game directory must be open', function(done) {
             var gameUrl = 'https://www.twitch.tv/directory/game/test';
             sinon.stub(window, 'open', function(url, target){
               assert.equal(url, gameUrl);
@@ -144,12 +144,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
 
           test.skip('when _onImageLoaded text must fit', function(done){
-            sinon.stub(myEl.$.status, 'doFitMe', done);
+            sinon.spy(myEl.$.status, 'doFitMe');
             myEl._onImageLoaded();
             myEl.$.status.doFitMe.restore();
           });
 
-          test('when _onImageLoaded class must be added and animation played', function(){
+          test('when _onImageLoaded class must be added and animation played', function() {
             myEl.$.card.classList.add('loaded');
             myEl.$.image.loaded = false;
             myEl._onImageLoaded();

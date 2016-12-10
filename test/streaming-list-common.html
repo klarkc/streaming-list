@@ -112,11 +112,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.isTrue(myEl.$.spinnerBottom.active);
     });
 
-    test('_onRequest should dispatch streaming-list-request', function(){
-      return new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-request', resolve);
-        myEl._onRequest({});
+    test('_onRequest should dispatch streaming-list-request', function(done){
+      var detail = {};
+      myEl.addEventListener('streaming-list-request', function(evt) {
+        assert.equal(evt.detail, detail);
+        done();
       });
+      myEl._onRequest({detail});
     });
 
     test('_loadMore should stop observe on the scroll', function(){
@@ -131,16 +133,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('_loadMore should generate a request', function() {
-      return new Promise(function(resolve){
+      return new Promise(function(resolve, reject){
         myEl.addEventListener('streaming-list-request', resolve);
+        myEl.addEventListener('streaming-list-error', function(evt) {
+          reject(evt.detail.error || evt.detail);
+        });
         myEl._loadMore();
       });
     });
 
     test('_cardLoaded should create and push in doneCards', function(){
-      var stubEvent = {};
+      var stubEvent = {detail: {}};
       myEl._cardLoaded(stubEvent);
-      assert.equal(stubEvent, myEl.doneCards.pop());
+      assert.equal(stubEvent.detail, myEl.doneCards.pop());
     });
 
     test('_cardLoaded should removeOldCards when limit is reached', function(){
@@ -157,12 +162,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.isFalse(myEl.$.spinnerBottom.active);
     });
 
-    test('_cardLoaded should fire streaming-list-ready when limit is reached', function(){
-      return new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-rendered', resolve);
-        myEl.limit = 1;
-        myEl._cardLoaded({});
+    test('_cardLoaded should fire streaming-list-rendered when limit is reached', function(done){
+      var detail = {};
+      myEl.addEventListener('streaming-list-rendered', function(evt) {
+        assert.equal(1, evt.detail.length);
+        assert.equal(detail, evt.detail[0]);
+        done();
       });
+      myEl.addEventListener('streaming-list-error', function(evt) {
+        done(evt.detail.error || evt.detail);
+      });
+      myEl.limit = 1;
+      myEl._cardLoaded({detail: detail});
     });
 
     test.skip('_scrollBottom should scroll to middle of the page', function(){
@@ -170,28 +181,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('the response event should be correctly fired', function(done){
-      myEl.addEventListener('streaming-list-response', function(event){
-        assert.deepEqual(event.detail.response, response);
+      myEl.addEventListener('streaming-list-response', function(evt){
+        assert.deepEqual(evt.detail.response, response);
       });
 
       flush(done); // Call all observers to the test
     });
 
-    test('streaming-list-error should be triggered in a request error', function(){
+    test('streaming-list-error should be triggered in a request error', function(done){
       var stubEvent = {detail: {}};
-      var errorPromise = new Promise(function(resolve){
-        myEl.addEventListener('streaming-list-error', resolve);
-        myEl._onError(stubEvent);
+      myEl.addEventListener('streaming-list-error', function(evt) {
+        assert.equal(evt.detail, stubEvent.detail);
+        done();
       });
-
-      return errorPromise.then(function(event){
-        assert.equal(event.detail, stubEvent.detail);
-      });
+      myEl._onError(stubEvent);
     });
 
     test('generateRequest should fire a streaming-list-request event', function(){
-      return new Promise(function(resolve){
+      return new Promise(function(resolve, reject){
         myEl.addEventListener('streaming-list-request', resolve);
+        myEl.addEventListener('streaming-list-error', function(evt) {
+          reject(evt.detail.error || evt.detail);
+        });
         myEl.generateRequest();
       });
     });
@@ -210,6 +221,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         done();
       });
 
+      myEl.addEventListener('streaming-list-error', function(evt) {
+        done(evt.detail.error || evt.detail);
+      });
+
       myEl.generateRequest();
     });
 
@@ -220,6 +235,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(0, myEl.response.items.length);
         assert.equal(0, myEl.response.streams.length);
         done();
+      });
+
+      myEl.addEventListener('streaming-list-error', function(evt) {
+        done(evt.detail.error || evt.detail);
       });
 
       myEl.generateRequest(true);
