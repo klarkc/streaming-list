@@ -55,7 +55,7 @@ Example:
     </style>
     <iron-ajax
                id="ajax"
-               url="{{_getApiUrl(service, twitchApiUrl, youtubeApiUrl)}}"
+               url="[[_getApiUrl(service, twitchApiUrl, youtubeApiUrl)]]"
                headers='[[_concatHeaders(clientId)]]'
                handle-as="json"
                on-response="_onResponse"
@@ -321,7 +321,7 @@ Example:
        */
       _cardLoaded: function(event) {
         this.doneCards = this.doneCards || [];
-        this.doneCards.push(event);
+        this.doneCards.push(event.detail);
         //console.log(this.doneCards.length, 'of', this.limit);
 
         if(this.doneCards.length >= this.limit){
