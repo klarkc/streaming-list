@@ -200,7 +200,8 @@ Example:
         window.open(url, '_blank');
       },
       _onImageLoaded: function(event) {
-        // this.$.status.doFitMe(); NOTE: Causing bug width data-biding (fitting an ancient status)
+        this.$.title.doFitMe();
+        this.$.channelTitle.doFitMe();
 
         // Only play animation if element was not loaded before AND there is a IMAGE loaded
         if(!this.$.card.classList.contains('loaded')
