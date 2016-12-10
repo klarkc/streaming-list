@@ -39,23 +39,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
   var service = document.params.service;
   var dom = document.params.dom || 'shady';
-  suite('Common tests with ' + service + ' (' + dom + ' DOM)', function() {
+  suite('<streaming-list> Common tests with ' + service + ' (' + dom + ' DOM)', function() {
     var myEl, apiUrl, response, server;
 
-    setup(function() {
-
+    suiteSetup(function() {
       if (service === 'youtube') {
-        myEl = fixture('streaming-list-fixture-youtube');
-        apiUrl = 'https://www.googleapis.com/youtube/v3/search';
         response = document.youtubeRes;
-
-        replace('youtube-card').with('fake-youtube-card');
-      } else if (service ==='twitch') {
-        myEl = fixture('streaming-list-fixture-twitch');
+        apiUrl = 'https://www.googleapis.com/youtube/v3/search';
+      } else if(service === 'twitch') {
         apiUrl = 'https://api.twitch.tv/kraken/streams';
         response = document.twitchRes;
-
-        replace('twitchtv-card').with('fake-twitchtv-card');
       } else {
         throw Error('please define service with service argument (Ex: ?service=youtube)');
       }
@@ -64,24 +57,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       server = sinon.fakeServer.create();
       server.autoRespond = true;
       server.respondWith(
-        'GET',
         new RegExp(apiUrl + '.*'),
-        [
-          200,
-          {'Content-Type': 'application/json'},
-          JSON.stringify(response)
-        ]
-      );
-
-      replace('paper-spinner').with('fake-paper-spinner');
-      stub('event-infinite-scroll', {
-        stopObserve: function(){
-          this.observing = false;
+        function (xhr) {
+          xhr.respond(
+            200,
+            {'Content-Type': 'application/json' },
+            JSON.stringify(response)
+          );
         }
-      });
+      );
     });
 
-    teardown(function(){
+    setup(function() {
+      if (service === 'youtube') {
+        myEl = fixture('streaming-list-fixture-youtube');
+        replace('youtube-card').with('fake-youtube-card');
+      }
+
+      if (service ==='twitch') {
+        myEl = fixture('streaming-list-fixture-twitch');
+        replace('twitchtv-card').with('fake-twitchtv-card');
+      }
+
+      replace('paper-spinner').with('fake-paper-spinner');
+      replace('event-infinite-scroll').with('fake-event-infinite-scroll');
+    });
+
+    suiteTeardown(function(){
       server.restore();
     });
 
@@ -121,7 +123,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var spy = sinon.spy(myEl.$.scroll.stopObserve);
       myEl._loadMore();
       assert.isFalse(myEl._scrollListening);
-      assert.isFalse(myEl.$.scroll.observing);
     });
 
     test('_loadMore should set currentPage', function(){
