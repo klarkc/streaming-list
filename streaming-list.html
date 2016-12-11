@@ -67,6 +67,7 @@ Example:
         <twitchtv-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
       </template>
     </div>
+    <p id="noResults"></p>
     <paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>
     <event-infinite-scroll
                id="scroll"
@@ -275,6 +276,7 @@ Example:
 
       _onRequest: function(event) {
         this.$.spinnerBottom.active = true;
+        this.$.noResults.innerHTML = "";
         this.fire('streaming-list-request', event.detail);
       },
 
@@ -284,6 +286,12 @@ Example:
 
         var response = event.detail.response;
         //this.set('response.streams', response.streams);
+
+        // deactivates spinner and show message if no more results are found
+        if(response.streams.length < this.limit) {
+          this.$.spinnerBottom.active = false;
+          this.$.noResults.innerHTML = "No more results";
+        }
 
         // set old streams concated with new streams
         this.set('response.streams', oldStreams.concat(response.streams));
