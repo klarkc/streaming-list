@@ -288,9 +288,19 @@ Example:
         //this.set('response.streams', response.streams);
 
         // deactivates spinner and show message if no more results are found
-        if(response.streams.length < this.limit) {
-          this.$.spinnerBottom.active = false;
-          this.$.noResults.innerHTML = "No more results";
+        // twitch.tv response
+        if(response.hasOwnProperty('streams')) {
+          if(response.streams.length < this.limit) {
+            this.$.spinnerBottom.active = false;
+            this.$.noResults.innerHTML = "No more results";
+          }
+        }
+        // youtube response
+        else if(response.hasOwnProperty('items')){
+          if(response.items.length < this.limit) {
+            this.$.spinnerBottom.active = false;
+            this.$.noResults.innerHTML = "No more results";
+          }
         }
 
         // set old streams concated with new streams
