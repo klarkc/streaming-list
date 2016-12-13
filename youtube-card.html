@@ -163,9 +163,13 @@ Example:
         var max = this.data.snippet.thumbnails.high;
         var src;
 
-        if (this.width <= min.width * 1.10) src = min.url;
-        if (this.width <= med.width * 1.10) src = med.url;
-        console.log(src);
+        if (this.width <= min.width * 1.10) {
+          src = min.url;
+        } else if (this.width <= med.width * 1.10) {
+          src = med.url;
+        } else {
+          src = max.url;
+        }
         if (src) this.$.image.src = src;
       },
       _formatTitle: function (title) {
