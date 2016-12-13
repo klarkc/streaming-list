@@ -12,19 +12,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../iron-icons/hardware-icons.html">
-<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../paper-behaviors/paper-button-behavior.html">
 <link rel="import" href="../paper-behaviors/paper-ripple-behavior.html">
-<link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../textfit-div/textfit-div.html">
+<link rel="import" href="card-style.html">
+<link rel="import" href="flag-behavior.html">
 
 <script src="../numeral/min/numeral.min.js"></script>
-<script src="iso-639-1_flags.js"></script>
 
 <!--
 A card for a specific object returned from twitch.tv api.
@@ -40,110 +39,7 @@ Example:
 <dom-module id="twitchtv-card">
   <link rel="import" type="css" href="../flag-icon-css/css/flag-icon.min.css">
   <template>
-    <style>
-      :host {
-        display: block;
-        box-sizing: border-box;
-        position: relative;
-      }
-
-      #card {
-        display: block;
-        visibility: hidden;
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      #card.loaded {
-        visibility: visible;
-      }
-
-      :host::shadow #card:hover {
-        @apply(--shadow-elevation-4dp);
-      }
-
-      #card .card-header {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: calc(100% - 32px);
-        height: calc(57% - 32px);
-        padding: 16px;
-        color: var(--twitchtv-card-header-color, #fff);
-        text-shadow: 2px 2px 8px #000;
-
-        @apply(--twitchtv-card-header);
-      }
-
-      #card .card-content {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
-      }
-
-      #card .card-content > .vertical {
-        padding: 8px;
-        white-space: nowrap;
-        overflow: hidden;
-      }
-
-      #card .card-content .vertical {
-        @apply(--layout-flex);
-        @apply(--layout-vertical);
-      }
-
-      #card::shadow .game,
-      #card::shadow .title,
-      #card::shadow .viewers {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        -o-text-overflow: ellipsis;
-        -ms-text-overflow: ellipsis;
-      }
-
-      #card .card-content .title {
-        @apply(--paper-font-headline);
-      }
-
-      .game,
-      .viewers {
-        color: var(--paper-grey-600);
-        margin-left: 4px;
-      }
-
-      .game {
-        color: var(--paper-grey-600);
-        text-decoration: none;
-      }
-
-      .game:hover {
-        color: var(--paper-grey-800);
-      }
-
-      paper-icon-button {
-        width: 64px;
-        height: 64px;
-      }
-
-      paper-icon-button::shadow img {
-        border-radius: 50%;
-      }
-
-      .flag-icon {
-        border-bottom: solid 1px;
-        border-color: #DDD;
-        margin: auto 0;
-        background-color: #DDD;
-      }
-
-      .card-image iron-image {
-        width: 100%;
-        --iron-image-width: 100%;
-        pointer-events: none;
-      }
-    </style>
+    <style include="card-style"></style>
     <paper-card
                 class="white"
                 on-tap="_onTap"
@@ -162,18 +58,18 @@ Example:
       </div>
       <div class="card-content">
         <paper-icon-button src="[[_formatLogo(data.channel.logo)]]" title$="Go to [[data.channel.display_name]] channel"></paper-icon-button>
-        <div class="vertical">
-          <div class="layout horizontal">
-            <textfit-div id="title" class="title flex" text="[[data.channel.display_name]]" ignore-errors="true" manual-fire></textfit-div>
-            <span class$="[[_formatFlag(data.channel.language)]]" title$="[[_formatLanguage(data.channel.language)]]"></span>
+        <div class="details">
+          <div class="heading">
+            <textfit-div id="title" text="[[data.channel.display_name]]" ignore-errors="true" manual-fire></textfit-div>
+            <span class$="[[formatFlag(data.channel.language)]]" title$="[[formatLanguage(data.channel.language)]]"></span>
           </div>
-          <div class="layout horizontal center">
-            <iron-icon class="game" icon="hardware:videogame-asset"></iron-icon>
-            <span class="game" id="game" title$="More [[data.channel.game]] streams">[[data.channel.game]]</span>
+          <div class="game">
+            <iron-icon icon="hardware:videogame-asset"></iron-icon>
+            <span id="game" title$="More [[data.channel.game]] streams">[[data.channel.game]]</span>
           </div>
-          <div class="layout horizontal center">
-            <iron-icon class="viewers" icon="icons:visibility"></iron-icon>
-            <span class="viewers">[[_formatViewers(data.viewers)]]</span>
+          <div class="viewers">
+            <iron-icon icon="icons:visibility"></iron-icon>
+            <span id="viewers">[[_formatViewers(data.viewers)]]</span>
           </div>
         </div>
       </div>
@@ -244,13 +140,12 @@ Example:
 
       observers: [
         '_loadImage(data, width)',
-        '_onWidthChanged(width)',
-        '_fitStatus(data.channel.status)',
-        '_fitTitle(data.channel.display_name)'
+        '_onWidthChanged(width)'
       ],
 
       behaviors: [
-        Polymer.NeonAnimationRunnerBehavior
+        Polymer.NeonAnimationRunnerBehavior,
+        document.StreamingList.FlagBehavior
       ],
 
       _concatParams: function (limit, lang, game) {
@@ -259,30 +154,6 @@ Example:
           language: lang,
           game: game
         });
-      },
-
-      _formatLanguage: function (language, isFlag) {
-        if(!language) return;
-
-        language = language.replace(/\-.*$/, '');
-        var filtered = languages.filter(function (data) {
-          return data.code === language;
-        });
-
-        if (filtered.length < 1 || !filtered[0].flag) {
-          console.log('[streaming-list] Flag not found for language code', language, 'please report to upstream opening an issue');
-          return null;
-        }
-
-        if (isFlag) {
-          return 'flag-icon flag-icon-' + filtered[0].flag;
-        }
-
-        return filtered[0].name;
-      },
-
-      _formatFlag: function (language) {
-        return this._formatLanguage(language, true);
       },
 
       _formatViewers: function (views) {
@@ -319,8 +190,8 @@ Example:
       },
 
       _onImageLoaded: function(event) {
-        // this.$.status.doFitMe(); NOTE: Causing bug width data-biding (fitting an ancient status)
-
+        this.$.status.doFitMe();
+        this.$.title.doFitMe();
         // Only play animation if element was not loaded before AND there is a IMAGE loaded
         if(!this.$.card.classList.contains('loaded')
           && this.$.image.loaded
@@ -366,14 +237,6 @@ Example:
         // url += '?' + Math.random();
 
         this.$.image.src = url;
-      },
-
-      _fitStatus: function() {
-        this.$.status.doFitMe();
-      },
-
-      _fitTitle: function() {
-        this.$.title.doFitMe();
       }
     });
   </script>

@@ -40,24 +40,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     server,
     response;
 
-    setup(function() {
+    suiteSetup(function() {
       apiUrl = 'https://www.googleapis.com/youtube/v3/search';
-      key = 'hackme';
       response = document.youtubeRes;
 
       // Here we simulate the iron-ajax behavior
       server = sinon.fakeServer.create();
       server.respondWith(
-        'GET',
         new RegExp(apiUrl + '.*'),
-        [
-          200,
-          {'Content-Type': 'application/json'},
-          JSON.stringify(response)
-        ]
+        function (xhr) {
+          xhr.respond(
+            200,
+            {'Content-Type': 'application/json' },
+            JSON.stringify(response)
+          );
+        }
       );
       server.autoRespond = true;
+    });
 
+    setup(function() {
+      key = 'hackme';
       myEl = fixture('streaming-list-fixture');
 
       // Disable auto request, to not call no-wanted events
@@ -65,14 +68,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       replace('youtube-card').with('fake-youtube-card');
       replace('paper-spinner').with('fake-paper-spinner');
-      stub('event-infinite-scroll', {
-        stopObserve: function(){
-          this.observing = false;
-        }
-      });
+      replace('event-infinite-scroll').with('fake-event-infinite-scroll');
     });
 
-    teardown(function(){
+    suiteTeardown(function(){
       server.restore();
     });
 
@@ -130,9 +129,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // rendering, a tough job
       this.slow(200);
 
-      var responsePromise = new Promise(function(resolve, error){
+      var responsePromise = new Promise(function(resolve, reject){
         myEl.addEventListener('streaming-list-rendered', resolve);
-        myEl.addEventListener('streaming-list-error', error);
+        myEl.addEventListener('streaming-list-error', function(evt) {
+          reject(evt.detail.error || evt.detail);
+        });
       });
 
       responsePromise.then(function(){
@@ -141,7 +142,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assert.equal(card.data, myEl.response.items[index]);
           assert.equal(card.width, myEl.width);
         });
-      });
+      }).catch(done);
 
       flush(done); // Call observers first
     });

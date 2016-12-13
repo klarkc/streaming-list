@@ -1,0 +1,231 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-icons/hardware-icons.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../textfit-div/textfit-div.html">
+<link rel="import" href="card-style.html">
+<link rel="import" href="flag-behavior.html">
+
+<!--
+A card for a specific object returned from Youtube V3 api.
+
+Example:
+
+    <youtube-card
+      data="[[data_to_be_rendered]]"
+      game="Name of the Game"
+      >
+    </youtube-card>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="youtube-card">
+  <link rel="import" type="css" href="../flag-icon-css/css/flag-icon.min.css">
+  <template>
+    <style include="card-style"></style>
+    <paper-card
+                on-tap="_onTap"
+                animated-shadow="true"
+                id="card"
+                >
+                <div class="card-image">
+                  <iron-image id="image" on-loaded-changed="_onImageLoaded"></iron-image>
+                </div>
+                <div class="card-header">
+                  <textfit-div id="title" min-font-size="10" max-font-size="28" text="[[data.snippet.title]]" manual-fire></textfit-div>
+                </div>
+                <div class="card-content">
+                  <paper-icon-button id="channelLogo" src="[[_formatLogo()]]" title$="Go to [[data.snippet.channelTitle]] channel"></paper-icon-button>
+                  <div class="details">
+                    <div class="heading">
+                      <textfit-div id="channelTitle" text="[[data.snippet.channelTitle]]" ignore-errors="true" manual-fire></textfit-div>
+                      <span id="flag" class$="[[formatFlag(lang)]]" title$="[[formatLanguage(lang)]]"></span>
+                    </div>
+                    <div class="game">
+                      <iron-icon icon="hardware:videogame-asset"></iron-icon>
+                      <span id="game" title$="More [[game]] streams">[[game]]</span>
+                    </div>
+                  </div>
+                </div>
+                <paper-ripple recenters should-keep-animating="true"></paper-ripple>
+    </paper-card>
+  </template>
+  <script>
+    Polymer({
+      is: "youtube-card",
+      /**
+       * Fired when the card is fully loaded (including image).
+       *
+       * @event loaded
+       */
+      properties: {
+        /**
+         * `data` JSON Object representing source data (look Twitch.TV api for details)
+         */
+        data: {
+          type: Object,
+          notify: true,
+          value: function(){
+            return {
+              id: {
+                videoId: null
+              },
+              snippet: {
+               channelId: null,
+               title: null,
+               thumbnails: {
+                default: {url: null, width: null},
+                medium: {url: null, width: null},
+                high: {url: null, width: null}
+               },
+               channelTitle: null
+              }
+            };
+          }
+        },
+
+        /**
+         * `width` If you define width (in pixels) the card size will be fixed with the given width, this number is also used to load the preview image closest to the given width
+         */
+        width: {
+          type: Number,
+          value: null,
+          observer: '_updateWidth'
+        },
+
+        /**
+         * `game` Game title (to generate links)
+         */
+        game: {
+          type: String,
+          value: null
+        },
+
+        /**
+         * `lang` Language filter (to generate flag)
+         */
+        lang: {
+          type: String,
+          value: null
+        },
+
+        /**
+         * `animationConfig` Animation configuration (See Polymer docs for details)
+         */
+        animationConfig: {
+          value: function() {
+            return {
+              name: 'fade-in-animation',
+              node: this.$.card
+            }
+          }
+        }
+      },
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      observers: [
+        '_setImageSrc(width, data.snippet.thumbnails)'
+      ],
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior,
+        document.StreamingList.FlagBehavior
+      ],
+      _updateWidth: function() {
+        if(!this.width) {
+          this.width = this.clientWidth;
+        } else {
+          this.style.display = 'inline-block';
+        }
+
+        this.style.width = this.width + 'px';
+      },
+      _setImageSrc: function() {
+        var min = this.data.snippet.thumbnails.default;
+        var med = this.data.snippet.thumbnails.medium;
+        var max = this.data.snippet.thumbnails.high;
+        var src;
+
+        if (this.width <= min.width * 1.10) {
+          src = min.url;
+        } else if (this.width <= med.width * 1.10) {
+          src = med.url;
+        } else {
+          src = max.url;
+        }
+        if (src) this.$.image.src = src;
+      },
+      _formatTitle: function (title) {
+        var cut = title.substr(0, 80)
+        if (title.length > cut.length) {
+          cut += '...';
+        }
+        return cut;
+      },
+      _formatLogo: function (image) {
+        if(image) {
+          return image;
+        } else {
+          return "../youtube_icon.svg";
+        }
+      },
+      _gameUrl: function (game) {
+        return 'https://gaming.youtube.com/results?search_query=' + encodeURI(game);
+      },
+      _onTap: function (event) {
+        var target = Polymer.dom(event).localTarget;
+        var url = 'https://gaming.youtube.com/watch?v=' + this.data.id.videoId;
+
+        if (target === this.$.game) {
+          url = this._gameUrl(this.game);
+        }
+
+        if (target === this.$.channelTitle || target === this.$.channelLogo) {
+          url = 'https://gaming.youtube.com/channel/' + this.data.snippet.channelId;
+        }
+
+        window.open(url, '_blank');
+      },
+      _onImageLoaded: function(event) {
+        this.$.title.doFitMe();
+        this.$.channelTitle.doFitMe();
+
+        // Only play animation if element was not loaded before AND there is a IMAGE loaded
+        if(!this.$.card.classList.contains('loaded')
+          && this.$.image.loaded
+        ) {
+          // console.log('Found a image, animating', event.target);
+          this.$.card.classList.add('loaded');
+          this.playAnimation();
+        }
+      },
+      _onNeonAnimationFinish: function(event) {
+        // simulate delay (only for testing)
+        /*
+        setTimeout(function(){
+          this.fire('loaded', this);
+        }.bind(this), Math.round(Math.random() * 2000));
+        */
+
+        this.fire('loaded', this);
+      }
+    });
+  </script>
+</dom-module>
