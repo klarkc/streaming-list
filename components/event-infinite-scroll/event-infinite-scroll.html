@@ -1,0 +1,201 @@
+<!--
+Element providing infinite scroll to track the parentNode on reaching bottom and end.
+It will raise event when it reaches.
+##### Example
+
+    <event-infinite-scroll
+        auto-start
+        scroll-offset="500"
+        loading-delay="1000"
+        on-reach-bottom="{{reachBottom}}"
+        on-reach-top="{{reachTop}}">
+    </event-infinite-scroll>
+
+@element event-infinite-scroll
+@blurb Element providing infinite scroll to track the parentNode on reaching bottom and end.
+@status alpha
+@homepage http://chadliu23.github.io/event-infinite-scroll
+@demo demo/index.html
+-->
+<link rel="import" href="../polymer/polymer.html">
+<dom-module id="event-infinite-scroll">
+
+    <template></template>
+    <script>
+    Polymer({
+        is: "event-infinite-scroll",
+        /**
+         * Fired when reach bottom.
+         *
+         * @event reach-bottom
+         */
+
+        /**
+         * Fired when reach top.
+         *
+         * @event reach-top
+         */
+
+        properties: {
+            /**
+             * track scroll on ready
+             * otherwise you can call observer when ever you want
+             *
+             * @boolean autoStart
+             */
+            autoStart: {
+                type: Boolean,
+                value: false
+            },
+
+            /**
+             * Track whole document body instead of parentNode
+             */
+            body: {
+                type: Boolean,
+                value: false
+            },
+
+            /**
+             * The offset is used for triggering the notifications
+             * before the real top/bottom is reached
+             *
+             * @int scrollOffset
+             */
+            scrollOffset: {
+                type: Number,
+                value: 200,
+                reflectToAttribute: true
+            },
+
+            /**
+             * You can set your item loading delay time when scroll infinite
+             *
+             * @int loadingDelay (in milliseconds)
+             */
+            loadingDelay: {
+                type: Number,
+                value: 0,
+                reflectToAttribute: true
+            }
+        },
+
+        observers: [
+            '_startScroll(autoStart, body)'
+        ],
+
+        observerStatus: true,
+        observer: null,
+
+        /**
+         * Triggered when the autoStart status is changed
+         *
+         * @readyOnStart [boolean] autoStart
+         */
+        _startScroll: function( autoStart, body ) {
+            if ( autoStart && body ) {
+                this.startObserve();
+            }
+        },
+
+        startObserve: function () {
+            var eventTarget = this.parentNode;
+            if(this.body) {
+              eventTarget = document;
+            }
+
+            this._scrollListener = function () {
+                this.scrolled();
+            }.bind( this );
+
+            this._mousewheelListener = function () {
+                this.scrolledWheel();
+            }.bind( this );
+
+            eventTarget.addEventListener( "scroll",  this._scrollListener);
+            eventTarget.addEventListener( "mousewheel", this._mousewheelListener);
+
+            var self = this;
+
+            this.observer = new MutationObserver( function () {
+                window.setTimeout( function () {
+                    if ( ! self.observerStatus ) {
+                        this.observer.disconnect();
+                        return;
+                    }
+
+                    this.scrolled();
+                }.bind( this ), 10 );
+            }.bind( this ) );
+
+            this.observer.observe( eventTarget, {
+                childList:     true,
+                subtree:       true,
+                characterData: true
+            });
+        },
+
+        stopObserve: function () {
+            var eventTarget = this.parentNode;
+            if(this.body) {
+                eventTarget = document;
+            }
+
+            eventTarget.removeEventListener("scroll", this._scrollListener);
+            eventTarget.removeEventListener("mousewheel", this._mousewheelListener);
+
+            if (this.observer) {
+                this.observer.disconnect();
+            }
+        },
+
+        scrolledWheel: function () {
+            var target = this.parentNode;
+            if(this.body) {
+              target = document.body;
+            }
+
+            if ( target.scrollHeight == target.clientHeight ) {
+                this.scrolled();
+            }
+        },
+
+        scrolled: function () {
+            if ( this._isReachBottom() ) {
+                // fire the reach-bottom after with delay if loadingDelay is set
+                this.async( function () {
+                    this.fire( "reach-bottom" );
+                }, this.loadingDelay );
+            }
+
+            else if ( this._isReachTop() ) {
+                // fire the reach-top after with delay if loadingDelay is set
+                this.async( function () {
+                    this.fire( "reach-top" );
+                }, this.loadingDelay );
+            }
+        },
+
+        _isReachTop: function () {
+            var target = this.parentNode;
+            if(this.body) {
+                target = document.body;
+            }
+
+            return ( target.scrollTop <= this.scrollOffset );
+        },
+
+        _isReachBottom: function () {
+            var target = this.parentNode;
+            if(this.body) {
+                target = document.body;
+            }
+
+            var scrollBottom = target.scrollTop + target.clientHeight;
+            var belowView = target.scrollHeight - scrollBottom;
+            return ( belowView <= this.scrollOffset );
+        }
+    });
+    </script>
+
+</dom-module>

@@ -1,0 +1,32 @@
+<script src="iso-639-1_flags.js"></script>
+<script>
+document.StreamingList = document.StreamingList || {};
+/**
+ * @polymerBehavior FlagBehavior
+ */
+document.StreamingList.FlagBehavior = {
+  formatLanguage: function (language, isFlag) {
+    if(!language) return;
+
+    language = language.replace(/\-.*$/, '');
+    var filtered = languages.filter(function (data) {
+      return data.code === language;
+    });
+
+    if (filtered.length < 1 || !filtered[0].flag) {
+      console.log('[streaming-list] Flag not found for language code', language, 'please report to upstream opening an issue');
+      return null;
+    }
+
+    if (isFlag) {
+      return 'flag-icon flag-icon-' + filtered[0].flag;
+    }
+
+    return filtered[0].name;
+  },
+
+  formatFlag: function (language) {
+    return this.formatLanguage(language, true);
+  }
+}
+</script>

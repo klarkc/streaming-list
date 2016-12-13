@@ -1,0 +1,243 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-icons/hardware-icons.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../paper-behaviors/paper-button-behavior.html">
+<link rel="import" href="../paper-behaviors/paper-ripple-behavior.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../textfit-div/textfit-div.html">
+<link rel="import" href="card-style.html">
+<link rel="import" href="flag-behavior.html">
+
+<script src="../numeral/min/numeral.min.js"></script>
+
+<!--
+A card for a specific object returned from twitch.tv api.
+
+Example:
+
+    <twitchtv-card data="[[data_to_be_rendered]]"></twitchtv-card>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="twitchtv-card">
+  <link rel="import" type="css" href="../flag-icon-css/css/flag-icon.min.css">
+  <template>
+    <style include="card-style"></style>
+    <paper-card
+                class="white"
+                on-tap="_onTap"
+                animated-shadow="true"
+                id="card"
+                >
+      <div class="card-image">
+        <iron-image
+                    id="image"
+                    on-loaded-changed="_onImageLoaded"
+                    >
+        </iron-image>
+      </div>
+      <div class="card-header">
+        <textfit-div id="status" min-font-size="10" max-font-size="28" text="[[data.channel.status]]" manual-fire></textfit-div>
+      </div>
+      <div class="card-content">
+        <paper-icon-button src="[[_formatLogo(data.channel.logo)]]" title$="Go to [[data.channel.display_name]] channel"></paper-icon-button>
+        <div class="details">
+          <div class="heading">
+            <textfit-div id="title" text="[[data.channel.display_name]]" ignore-errors="true" manual-fire></textfit-div>
+            <span class$="[[formatFlag(data.channel.language)]]" title$="[[formatLanguage(data.channel.language)]]"></span>
+          </div>
+          <div class="game">
+            <iron-icon icon="hardware:videogame-asset"></iron-icon>
+            <span id="game" title$="More [[data.channel.game]] streams">[[data.channel.game]]</span>
+          </div>
+          <div class="viewers">
+            <iron-icon icon="icons:visibility"></iron-icon>
+            <span id="viewers">[[_formatViewers(data.viewers)]]</span>
+          </div>
+        </div>
+      </div>
+      <paper-ripple recenters should-keep-animating="true"></paper-ripple>
+    </paper-card>
+  </template>
+  <script>
+    Polymer({
+      is: "twitchtv-card",
+      /**
+       * Fired when the card is fully loaded (including image).
+       *
+       * @event loaded
+       */
+      /**
+       * Fired when the data was changed.
+       *
+       * @event data-changed
+       */
+      properties: {
+        /**
+         * `data` JSON Object representing source data (look Twitch.TV api for details)
+         */
+        data: {
+          type: Object,
+          notify: true,
+          value: function(){
+            return {
+              channel: {
+                status: null,
+                logo: null,
+                display_name: null,
+                language: null,
+                game: null
+              },
+              viewers: null,
+              preview: {
+                template: null
+              }
+            }
+          }
+        },
+
+        /**
+         * `width` If you define width (in pixels) the card size will be fixed with the given width, this number is also used to load the preview image closest to the given width
+         */
+        width: {
+          type: Number,
+          value: null
+        },
+
+        /**
+         * `animationConfig` Animation configuration (See Polymer docs for details)
+         */
+        animationConfig: {
+          value: function() {
+            return {
+              name: 'fade-in-animation',
+              node: this.$.card
+            }
+          }
+        }
+      },
+
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+
+      observers: [
+        '_loadImage(data, width)',
+        '_onWidthChanged(width)'
+      ],
+
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior,
+        document.StreamingList.FlagBehavior
+      ],
+
+      _concatParams: function (limit, lang, game) {
+        return JSON.stringify({
+          limit: limit,
+          language: lang,
+          game: game
+        });
+      },
+
+      _formatViewers: function (views) {
+        return numeral(views).format('0a') + ' viewers';
+      },
+
+      _formatStatus: function (status) {
+        var cut = status.substr(0, 80)
+        if (status.length > cut.length) {
+          cut += '...';
+        }
+        return cut;
+      },
+
+      _formatLogo: function (image) {
+        if(image) {
+          return image;
+        } else {
+          return "../twitch_icon.svg";
+        }
+      },
+
+      _gameUrl: function (game) {
+        return 'https://www.twitch.tv/directory/game/' + encodeURI(game);
+      },
+
+      _onTap: function (event) {
+        if(Polymer.dom(event).localTarget === this.$.game) {
+          window.open(this._gameUrl(this.data.channel.game), '_blank');
+          return;
+        }
+
+        window.open(this.data.channel.url, '_blank');
+      },
+
+      _onImageLoaded: function(event) {
+        this.$.status.doFitMe();
+        this.$.title.doFitMe();
+        // Only play animation if element was not loaded before AND there is a IMAGE loaded
+        if(!this.$.card.classList.contains('loaded')
+          && this.$.image.loaded
+        ) {
+          // console.log('Found a image, animating', event.target);
+          this.$.card.classList.add('loaded');
+          this.playAnimation();
+        }
+      },
+
+      _onNeonAnimationFinish: function(event) {
+        // simulate delay (only for testing)
+        /*
+        setTimeout(function(){
+          this.fire('loaded', this);
+        }.bind(this), Math.round(Math.random() * 2000));
+        */
+
+        this.fire('loaded', this);
+      },
+
+      _onWidthChanged: function(event) {
+        if(!this.width) {
+          this.width = this.clientWidth;
+        } else {
+          this.style.display = 'inline-block';
+        }
+
+        this.style.width = this.width + 'px';
+        this._loadImage();
+      },
+
+      _loadImage: function() {
+        var url,
+            // Get width form client width
+            width = this.width || this.$.card.clientWidth;
+        if(!this.width || !this.data.preview.template) return;
+
+        url = this.data.preview.template.replace('{width}', width);
+        // Calcules height using 16:9 aspect ratio
+        url = url.replace('{height}', Math.round(width / (16/9)));
+        // Debug
+        // url += '?' + Math.random();
+
+        this.$.image.src = url;
+      }
+    });
+  </script>
+</dom-module>
