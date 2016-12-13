@@ -118,7 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(evt.detail, detail);
         done();
       });
-      myEl._onRequest({detail});
+      myEl._onRequest({detail: detail});
     });
 
     test('_loadMore should stop observe on the scroll', function(){
