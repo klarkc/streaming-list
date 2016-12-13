@@ -289,31 +289,25 @@ Example:
         var oldStreams;
         var response = event.detail.response;
 
-        // deactivates spinner and show message if no more results are found
-        // twitch.tv response
-        if(response.hasOwnProperty('streams')) {
+        // set old streams concated with new streams
+        if (this.service === 'twitch') {
+          oldStreams = this.response.streams;
+          this.set('response.streams', oldStreams.concat(response.streams));
+          // deactivates spinner and show message if no more results are found
           if(response.streams.length < this.limit) {
             this.$.spinnerBottom.active = false;
             this.$.noResults.innerHTML = "No more results";
           }
         }
-        // youtube response
-        else if(response.hasOwnProperty('items')){
-          if(response.items.length < this.limit) {
-            this.$.spinnerBottom.active = false;
-            this.$.noResults.innerHTML = "No more results";
-          }
-        }
-
-        // set old streams concated with new streams
-        if (this.service === 'twitch') {
-          oldStreams = this.response.streams;
-          this.set('response.streams', oldStreams.concat(response.streams));
-        }
 
         if (this.service === 'youtube') {
           oldStreams = this.response.items;
           this.set('response.items', oldStreams.concat(response.items));
+          // deactivates spinner and show message if no more results are found
+          if(response.items.length < this.limit) {
+            this.$.spinnerBottom.active = false;
+            this.$.noResults.innerHTML = "No more results";
+          }
         }
 
         this.fire('streaming-list-response', event.detail);
