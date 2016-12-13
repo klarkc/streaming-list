@@ -142,7 +142,7 @@ Example:
         'neon-animation-finish': '_onNeonAnimationFinish'
       },
       observers: [
-        '_setImageSrc(width, data)'
+        '_setImageSrc(width, data.snippet.thumbnails)'
       ],
       behaviors: [
         Polymer.NeonAnimationRunnerBehavior,
@@ -165,7 +165,7 @@ Example:
 
         if (this.width <= min.width * 1.10) src = min.url;
         if (this.width <= med.width * 1.10) src = med.url;
-
+        console.log(src);
         if (src) this.$.image.src = src;
       },
       _formatTitle: function (title) {
