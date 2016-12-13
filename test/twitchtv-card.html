@@ -91,18 +91,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             );
           });
 
-          test('_formatLanguage must set language', function(){
-            assert.equal(myEl._formatLanguage(null), null);
-            assert.equal(myEl._formatLanguage('pt-BR'), "Portuguese");
-            assert.equal(myEl._formatLanguage('en'), "English");
-            assert.equal(myEl._formatLanguage('qwd12d12'), null);
-            assert.equal(myEl._formatLanguage('en', true), "flag-icon flag-icon-us");
-          });
-
-          test('_formatFlag must set flag', function(){
-            assert.equal(myEl._formatFlag('en'), "flag-icon flag-icon-us");
-          });
-
           test('_formatViewers must format numeral', function(){
             assert.equal(myEl._formatViewers(100000), '100k viewers');
             assert.equal(myEl._formatViewers(100000000), '100m viewers');
@@ -143,7 +131,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             window.open.restore();
           });
 
-          test('when _onTap in a game, a window to the game directory must be open', function(done){
+          test('when _onTap in a game, a window to the game directory must be open', function(done) {
             var gameUrl = 'https://www.twitch.tv/directory/game/test';
             sinon.stub(window, 'open', function(url, target){
               assert.equal(url, gameUrl);
@@ -156,12 +144,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
 
           test.skip('when _onImageLoaded text must fit', function(done){
-            sinon.stub(myEl.$.status, 'doFitMe', done);
+            sinon.spy(myEl.$.status, 'doFitMe');
             myEl._onImageLoaded();
             myEl.$.status.doFitMe.restore();
           });
 
-          test('when _onImageLoaded class must be added and animation played', function(){
+          test('when _onImageLoaded class must be added and animation played', function() {
             myEl.$.card.classList.add('loaded');
             myEl.$.image.loaded = false;
             myEl._onImageLoaded();

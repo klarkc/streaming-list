@@ -33,7 +33,26 @@ The demo and API is [available here](http://klarkc.github.io/streaming-list/).
 - [x] Microsoft Edge
 - [x] Internet Explorer >= 11
 
-## Dependencies
+## How to use this web-component
+
+```bash
+$ bower install streaming-list
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://polygit2.appspot.com/components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="bower_components/streaming-list.html">
+  </head>
+  <body>
+    <streaming-list></streaming-list>
+  </body>
+</html>
+```
+
+## Dev Dependencies
 
 Element dependencies are managed via [Bower](http://bower.io/). You can
 install that via:

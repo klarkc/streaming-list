@@ -10,11 +10,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
-<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../paper-spinner/paper-spinner.html">
 <link rel="import" href="../event-infinite-scroll/event-infinite-scroll.html">
 <link rel="import" href="twitchtv-card.html">
+<link rel="import" href="youtube-card.html">
 
 <!--
 A webcomponent written with Polymer to list Twitch and (in future) Youtube streams. You will be able to filter the results by a specific game and define priority for a selected language.
@@ -44,7 +45,7 @@ Example:
         @apply(--layout-wrap);
       }
 
-      twitchtv-card {
+      twitchtv-card, youtube-card {
         margin: 16px;
       }
 
@@ -54,7 +55,7 @@ Example:
     </style>
     <iron-ajax
                id="ajax"
-               url="{{_getApiUrl(service, twitchApiUrl, youtubeApiUrl)}}"
+               url="[[_getApiUrl(service, twitchApiUrl, youtubeApiUrl)]]"
                headers='[[_concatHeaders(clientId)]]'
                handle-as="json"
                on-response="_onResponse"
@@ -65,6 +66,9 @@ Example:
     <div id="streams">
       <template is="dom-repeat" items="[[response.streams]]">
         <twitchtv-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
+      </template>
+      <template is="dom-repeat" items="[[response.items]]">
+        <youtube-card game="[[game]]" lang="[[lang]]" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></youtube-card>
       </template>
     </div>
     <p id="noResults"></p>
@@ -282,10 +286,8 @@ Example:
 
       _onResponse: function(event) {
         //console.log(event.detail.response);
-        var oldStreams = this.response.streams;
-
+        var oldStreams;
         var response = event.detail.response;
-        //this.set('response.streams', response.streams);
 
         // deactivates spinner and show message if no more results are found
         // twitch.tv response
@@ -304,7 +306,15 @@ Example:
         }
 
         // set old streams concated with new streams
-        this.set('response.streams', oldStreams.concat(response.streams));
+        if (this.service === 'twitch') {
+          oldStreams = this.response.streams;
+          this.set('response.streams', oldStreams.concat(response.streams));
+        }
+
+        if (this.service === 'youtube') {
+          oldStreams = this.response.items;
+          this.set('response.items', oldStreams.concat(response.items));
+        }
 
         this.fire('streaming-list-response', event.detail);
       },
@@ -329,7 +339,7 @@ Example:
        */
       _cardLoaded: function(event) {
         this.doneCards = this.doneCards || [];
-        this.doneCards.push(event);
+        this.doneCards.push(event.detail);
         //console.log(this.doneCards.length, 'of', this.limit);
 
         if(this.doneCards.length >= this.limit){

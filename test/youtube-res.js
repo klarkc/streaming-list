@@ -22,17 +22,17 @@ document.youtubeRes = {
     "description": "Featuring stunning pre-recorded video we taken a close up look of the suns surface , witnessing its power and awesome force. See the Full Video Here: ...",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/Jiq7EbzUMrw/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/Jiq7EbzUMrw/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/Jiq7EbzUMrw/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }
@@ -55,17 +55,17 @@ document.youtubeRes = {
     "description": "Live video of Earth from space - as seen from the Nasa ISS live stream aboard the International Space Station. The International Space Station - ISS - circles the ...",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/qzMQza8xZCc/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/qzMQza8xZCc/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/qzMQza8xZCc/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }
@@ -88,17 +88,17 @@ document.youtubeRes = {
     "description": "If there is nothing going on, you can rewind the stream up to 4 hours to see action. Is there something we should know about? Do you have a question for us?",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/YPv9yKC76hE/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/YPv9yKC76hE/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/YPv9yKC76hE/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }
@@ -121,17 +121,17 @@ document.youtubeRes = {
     "description": "24/7 Stream: Earth from Space ♥ NASA #SpaceTalk Live Chat - Rotate ISS HD Camera - #NoCGI #NoGreenScreen is presented. Earth from the ISS HDEV ...",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/SF7FUU7CThs/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/SF7FUU7CThs/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/SF7FUU7CThs/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }
@@ -154,17 +154,17 @@ document.youtubeRes = {
     "description": "Explore Multicam views, comment and post snapshots at http://explore.org Love Oceans - Subscribe http://goo.gl/hv2WXa http://explore.org - Facebook ...",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/a-gJoO9A6so/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/a-gJoO9A6so/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/a-gJoO9A6so/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }
@@ -187,17 +187,17 @@ document.youtubeRes = {
     "description": "NEVER MISS AN ORCA ENCOUNTER! Sign up here for SMS alerts when Orca's arrive on camera: https://goo.gl/U5KQBt Explore Multicam views, comment and ...",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/wJUwiWwKUNc/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/wJUwiWwKUNc/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/wJUwiWwKUNc/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }
@@ -220,17 +220,17 @@ document.youtubeRes = {
     "description": "",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/gymPFiPE88I/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/gymPFiPE88I/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/gymPFiPE88I/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }
@@ -253,17 +253,17 @@ document.youtubeRes = {
     "description": "Incredible Gopro video footage from 2013 showing Russian cosmonauts carrying out a spacewalk and repairs to the ISS (International Space Station). Working ...",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/3Ruruhg6q1w/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/3Ruruhg6q1w/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/3Ruruhg6q1w/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }
@@ -286,17 +286,17 @@ document.youtubeRes = {
     "description": "Thanks to Perky-Pet for helping to make the Ontario FeederWatch Cam possible! The FeederWatch cam is located in a residential neighborhood in ...",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/JfXiBkL9U5s/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/JfXiBkL9U5s/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/JfXiBkL9U5s/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }
@@ -319,17 +319,17 @@ document.youtubeRes = {
     "description": "NASA TV airs a variety of regularly scheduled, pre-recorded educational and public relations programming 24 hours a day on its various channels. Programs ...",
     "thumbnails": {
      "default": {
-      "url": "https://i.ytimg.com/vi/UdmHHpAsMVw/default_live.jpg",
+      "url": "http://lorempixel.com/120/90/",
       "width": 120,
       "height": 90
      },
      "medium": {
-      "url": "https://i.ytimg.com/vi/UdmHHpAsMVw/mqdefault_live.jpg",
+      "url": "http://lorempixel.com/320/180/",
       "width": 320,
       "height": 180
      },
      "high": {
-      "url": "https://i.ytimg.com/vi/UdmHHpAsMVw/hqdefault_live.jpg",
+      "url": "http://lorempixel.com/480/360/",
       "width": 480,
       "height": 360
      }

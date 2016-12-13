@@ -1,0 +1,64 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The compvare set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The compvare set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="params.js"></script>
+    <script src="../iso-639-1_flags.js"></script>
+
+    <link rel="import" href="../../polymer/polymer.html">
+    <link rel="import" href="../flag-behavior.html">
+  </head>
+  <body>
+    <test-fixture id="my-element-fixture">
+      <template>
+        <my-element></my-element>
+      </template>
+    </test-fixture>
+    <script>
+      var dom = document.params.dom || 'shady';
+
+      // Fake Element
+      HTMLImports.whenReady(function(){
+        console.log('creating my-element');
+        Polymer({
+          is: 'my-element',
+          behaviors: [document.StreamingList.FlagBehavior]
+        });
+      });
+
+      suite('FlagBehavior (' + dom + ' DOM)', function() {
+        var myEl;
+
+        setup(function() {
+          myEl = fixture('my-element-fixture');
+        });
+
+        test('formatLanguage must set language', function() {
+          assert.equal(myEl.formatLanguage(null), null);
+          assert.equal(myEl.formatLanguage('pt-BR'), "Portuguese");
+          assert.equal(myEl.formatLanguage('en'), "English");
+          assert.equal(myEl.formatLanguage('qwd12d12'), null);
+          assert.equal(myEl.formatLanguage('en', true), "flag-icon flag-icon-us");
+        });
+
+        test('formatFlag must set flag', function(){
+          assert.equal(myEl.formatFlag('en'), "flag-icon flag-icon-us");
+        });
+      });
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,119 @@
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+
+<dom-module id="card-style">
+  <template>
+    <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    #card {
+      display: block;
+      visibility: hidden;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    #card.loaded {
+      visibility: visible;
+    }
+
+    :host::shadow #card:hover {
+      @apply(--shadow-elevation-4dp);
+    }
+
+    #card .card-image iron-image {
+      width: 100%;
+      --iron-image-width: 100%;
+      pointer-events: none;
+    }
+
+    #card .card-header {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: calc(100% - 32px);
+      height: calc(57% - 32px);
+      padding: 16px;
+      color: var(--twitchtv-card-header-color, #fff);
+      text-shadow: 2px 2px 8px #000;
+
+      @apply(--twitchtv-card-header);
+    }
+
+    #card .card-content {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+
+    #card paper-icon-button {
+      width: 64px;
+      height: 64px;
+    }
+
+    #card paper-icon-button::shadow img {
+      border-radius: 50%;
+    }
+
+    #card .details {
+      padding: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      @apply(--layout-vertical);
+      @apply(--layout-flex);
+    }
+
+    #card .details .heading {
+      @apply(--layout-horizontal);
+    }
+
+    #card .details .heading textfit-div {
+      @apply(--paper-font-headline);
+      @apply(--layout-flex);
+    }
+
+    #card .details .heading .flag-icon {
+      border-bottom: solid 1px;
+      border-color: #DDD;
+      margin: auto 0;
+      background-color: #DDD;
+    }
+
+    #card .details .game {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+
+    #card .details .game:hover {
+      color: var(--paper-grey-800);
+    }
+
+    #card .details .game #game,
+    #card .details .game #viewers,
+    {
+      margin-left: 4px;
+    }
+
+    #card .details .game,
+    #card .details .viewers {
+      text-decoration: none;
+      color: var(--paper-grey-600);
+    }
+
+    #card::shadow .details .game #game,
+    #card::shadow .details .heading textfit-div,
+    #card::shadow .details .viewers #viewers {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -o-text-overflow: ellipsis;
+      -ms-text-overflow: ellipsis;
+    }
+    </style>
+  </template>
+</dom-module>
