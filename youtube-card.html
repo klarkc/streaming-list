@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../textfit-div/textfit-div.html">
 <link rel="import" href="card-style.html">
 <link rel="import" href="flag-behavior.html">
@@ -45,12 +46,7 @@ Example:
                 id="card"
                 >
                 <div class="card-image">
-                  <iron-image
-                              id="image"
-                              src="[[_getImageSrc(width, data.snippet.thumbnails)]]"
-                              on-loaded-changed="_onImageLoaded"
-                              >
-                  </iron-image>
+                  <iron-image id="image" on-loaded-changed="_onImageLoaded"></iron-image>
                 </div>
                 <div class="card-header">
                   <textfit-div id="title" min-font-size="10" max-font-size="28" text="[[data.snippet.title]]" manual-fire></textfit-div>
@@ -145,6 +141,9 @@ Example:
       listeners: {
         'neon-animation-finish': '_onNeonAnimationFinish'
       },
+      observers: [
+        '_setImageSrc(width, data)'
+      ],
       behaviors: [
         Polymer.NeonAnimationRunnerBehavior,
         document.StreamingList.FlagBehavior
@@ -158,15 +157,16 @@ Example:
 
         this.style.width = this.width + 'px';
       },
-      _getImageSrc: function() {
+      _setImageSrc: function() {
         var min = this.data.snippet.thumbnails.default;
         var med = this.data.snippet.thumbnails.medium;
         var max = this.data.snippet.thumbnails.high;
+        var src;
 
-        if (this.width <= min.width * 1.10) return min.url;
-        if (this.width <= med.width * 1.10) return med.url;
+        if (this.width <= min.width * 1.10) src = min.url;
+        if (this.width <= med.width * 1.10) src = med.url;
 
-        return max.url;
+        if (src) this.$.image.src = src;
       },
       _formatTitle: function (title) {
         var cut = title.substr(0, 80)
