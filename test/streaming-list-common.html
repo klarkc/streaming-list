@@ -253,31 +253,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var p = Polymer.dom(myEl.root).querySelector('#noResults');
       if (service === 'twitch') {
         var event = {
-          detail: {
-            response: {
-              streams: []
-            }
-          }
-        }
-        myEl.addEventListener('streaming-list-response', function(evt) {
-          assert.equal(p.innerHTML, 'No more results');
-          done();
-        });
-        myEl._onResponse(event);
+          detail: { response: { streams: [] } } }
       } else if(service === 'youtube') {
         var event = {
-          detail: {
-            response: {
-              items: []
-            }
-          }
-        }
-        myEl.addEventListener('streaming-list-response', function(evt) {
-          assert.equal(p.innerHTML, 'No more results');
-          done();
-        });
-        myEl._onResponse(event);
+          detail: { response: { items: [] } } }
       }
+      myEl.addEventListener('streaming-list-response', function(evt) {
+        assert.equal(p.innerHTML, 'No more results');
+        done();
+      });
+      myEl._onResponse(event);
     });
 
 });
