@@ -18,6 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="params.js"></script>
   <script src="youtube-res.js"></script>
   <script src="twitch-res.js"></script>
+  <script src="livecoding-res.js"></script>
 
   <!-- Step 1: import the element to test -->
   <link rel="import" href="../streaming-list.html">
@@ -36,6 +37,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <streaming-list key="hackme" service="youtube"></streaming-list>
     </template>
   </test-fixture>
+
+  <test-fixture id="streaming-list-fixture-livecoding">
+    <template>
+      <streaming-list service="livecoding"></streaming-list>
+    </template>
+  </test-fixture>
   <script>
   var service = document.params.service;
   var dom = document.params.dom || 'shady';
@@ -46,9 +53,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (service === 'youtube') {
         response = document.youtubeRes;
         apiUrl = 'https://www.googleapis.com/youtube/v3/search';
-      } else if(service === 'twitch') {
+      } else if (service === 'twitch') {
         apiUrl = 'https://api.twitch.tv/kraken/streams';
         response = document.twitchRes;
+      } else if (service === 'livecoding'){
+        apiUrl = 'https://www.livecoding.tv:443/api/livestreams/onair/';
+        response = document.livecodingRes;
       } else {
         throw Error('please define service with service argument (Ex: ?service=youtube)');
       }
