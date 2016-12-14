@@ -243,6 +243,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       myEl.generateRequest(true);
     });
+
+    test('the "no more results" message should not be shown', function() {
+      var p = Polymer.dom(myEl.root).querySelector('#noResults');
+      assert.equal(p.innerHTML, '');
+    });
+
+    test('should show the "no more results" message', function(done) {
+      var p = Polymer.dom(myEl.root).querySelector('#noResults');
+      if (service === 'twitch') {
+        var event = {
+          detail: { response: { streams: [] } } }
+      } else if(service === 'youtube') {
+        var event = {
+          detail: { response: { items: [] } } }
+      }
+      myEl.addEventListener('streaming-list-response', function(evt) {
+        assert.equal(p.innerHTML, 'No more results');
+        done();
+      });
+      myEl._onResponse(event);
+    });
+
 });
 </script>
 
