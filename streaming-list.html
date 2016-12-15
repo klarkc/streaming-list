@@ -131,6 +131,14 @@ Example:
         },
 
         /**
+         * `livecodingApiUrl` indicates the URL of youtube API to list streams
+         */
+        livecodingApiUrl: {
+          type: String,
+          value: "https://www.livecoding.tv:443/api/livestreams/onair/"
+        },
+
+        /**
          * `service` indicates the service to fetch data, can be the string youtube or twitch
          */
         service: {
@@ -204,7 +212,7 @@ Example:
         response: {
           type: Object,
           value: function(){
-            return {streams: [], items: []};
+            return {streams: [], items: [], results: []};
           },
           notify: true
         },
@@ -237,11 +245,12 @@ Example:
       _getApiUrl: function() {
         if(this.service === 'twitch') return this.twitchApiUrl;
         if(this.service === 'youtube') return this.youtubeApiUrl;
+        if(this.service === 'livecoding') return this.livecodingApiUrl;
         throw Error('missing or wrong service');
       },
 
       _concatParams: function() {
-        if(this.service === 'twitch') {
+        if (this.service === 'twitch') {
           return {
             limit: this.limit,
             language: this.lang,
@@ -250,7 +259,7 @@ Example:
           };
         }
 
-        if(this.service === 'youtube') {
+        if (this.service === 'youtube') {
           return {
             part: 'snippet',
             eventType: 'live',
@@ -262,6 +271,10 @@ Example:
             videoCategoryId: 20, // Gaming category
             key: this.key
           };
+        }
+
+        if (this.service === 'livecoding') {
+          return {};
         }
 
         throw Error('missing or wrong service');

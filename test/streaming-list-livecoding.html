@@ -38,11 +38,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var myEl, apiUrl, server, response, service;
 
     suiteSetup(function() {
-      apiUrl = 'https://www.livecoding.tv:443/api/livestreams/onair/';
-      response = document.livecodingRes;
+      apiUrl = this.apiUrl = 'https://www.livecoding.tv:443/api/livestreams/onair/';
+      response = this.response = document.livecodingRes;
 
       // Here we simulate the iron-ajax behavior
-      server = sinon.fakeServer.create();
+      server = this.server = sinon.fakeServer.create();
       server.respondWith(
         new RegExp(apiUrl + '.*'),
         function (xhr) {
@@ -54,7 +54,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       );
       server.autoRespond = true;
-      service = this.service = 'twitch';
+      service = this.service = 'livecoding';
     });
 
     setup(function() {
@@ -71,6 +71,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     suiteTeardown(function(){
       server.restore();
     });
+
+    // Common tests
+    streamingListCommon();
 
     test('defines the "livecodingApiUrl" property', function() {
       assert.equal(myEl.livecodingApiUrl, apiUrl);
@@ -112,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       responsePromise.then(function(){
         var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-livecoding-card');
         cards.forEach(function(card, index){
-          assert.equal(card.data, myEl.response.items[index]);
+          assert.equal(card.data, myEl.response.results[index]);
           assert.equal(card.width, myEl.width);
         });
       }).catch(done);
