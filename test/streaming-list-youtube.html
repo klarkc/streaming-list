@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <script src="params.js"></script>
+  <script src="streaming-list-common.js"></script>
   <script src="youtube-res.js"></script>
 
   <!-- Step 1: import the element to test -->
@@ -32,20 +33,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
   var dom = document.params.dom || 'shady';
-  suite('Specific youtube tests (' + dom + ' DOM)', function() {
+  suite('Youtube tests (' + dom + ' DOM)', function() {
 
-    var myEl,
-    apiUrl,
-    key,
-    server,
-    response;
+    var myEl, apiUrl, key, server, response, service;
 
     suiteSetup(function() {
-      apiUrl = 'https://www.googleapis.com/youtube/v3/search';
-      response = document.youtubeRes;
+      apiUrl = this.apiUrl = 'https://www.googleapis.com/youtube/v3/search';
+      response = this.response = document.youtubeRes;
 
       // Here we simulate the iron-ajax behavior
-      server = sinon.fakeServer.create();
+      server = this.server = sinon.fakeServer.create();
       server.respondWith(
         new RegExp(apiUrl + '.*'),
         function (xhr) {
@@ -57,11 +54,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       );
       server.autoRespond = true;
+      service = this.service = 'twitch';
     });
 
     setup(function() {
-      key = 'hackme';
-      myEl = fixture('streaming-list-fixture');
+      key = this.key = 'hackme';
+      myEl = this.myEl = fixture('streaming-list-fixture');
 
       // Disable auto request, to not call no-wanted events
       myEl.$.ajax.auto = false;

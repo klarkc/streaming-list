@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <script src="params.js"></script>
+  <script src="streaming-list-common.js"></script>
   <script src="livecoding-res.js"></script>
 
   <!-- Step 1: import the element to test -->
@@ -32,12 +33,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
   var dom = document.params.dom || 'shady';
-  suite('Specific livecoding tests (' + dom + ' DOM)', function() {
+  suite('Livecoding tests (' + dom + ' DOM)', function() {
 
-    var myEl,
-    apiUrl,
-    server,
-    response;
+    var myEl, apiUrl, server, response, service;
 
     suiteSetup(function() {
       apiUrl = 'https://www.livecoding.tv:443/api/livestreams/onair/';
@@ -56,10 +54,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       );
       server.autoRespond = true;
+      service = this.service = 'twitch';
     });
 
     setup(function() {
-      myEl = fixture('streaming-list-fixture');
+      myEl = this.myEl = fixture('streaming-list-fixture');
 
       // Disable auto request, to not call no-wanted events
       myEl.$.ajax.auto = false;

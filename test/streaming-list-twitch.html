@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <script src="params.js"></script>
+  <script src="streaming-list-common.js"></script>
   <script src="twitch-res.js"></script>
 
   <!-- Step 1: import the element to test -->
@@ -32,19 +33,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
   var dom = document.params.dom || 'shady';
-  suite('Specific twitch tests (' + dom + ' DOM)', function() {
-
-    var myEl,
-    apiUrl,
-    clientId,
-    server,
-    response;
+  suite('Twitch tests (' + dom + ' DOM)', function() {
+    var myEl, apiUrl, clientId, server, response, service;
 
     suiteSetup(function() {
-      apiUrl = 'https://api.twitch.tv/kraken/streams';
-      response = document.twitchRes;
+      apiUrl = this.apiUrl = 'https://api.twitch.tv/kraken/streams';
+      response = this.response = document.twitchRes;
       // Here we simulate the iron-ajax behavior
-      server = sinon.fakeServer.create();
+      server = this.server = sinon.fakeServer.create();
       server.respondWith(
         new RegExp(apiUrl + '.*'),
         function (xhr) {
@@ -56,23 +52,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       );
       server.autoRespond = true;
+      service = this.service = 'twitch';
     });
 
     setup(function() {
-      clientId = 'hackme';
-      myEl = fixture('streaming-list-fixture');
+      clientId = this.clientId = 'hackme';
+      myEl = this.myEl = fixture('streaming-list-fixture');
 
       // Disable auto request, to not call no-wanted events
       //myEl.$.ajax.auto = false;
 
       replace('twitchtv-card').with('fake-twitchtv-card');
       replace('paper-spinner').with('fake-paper-spinner');
-      replace('event-infinite-scroll').with('fake-event-infinite-scroll');
     });
 
     suiteTeardown(function(){
       server.restore();
     });
+
+    // Common tests suite
+    streamingListCommon();
 
     test('defines the "twitchApiUrl" property', function() {
       assert.equal(myEl.twitchApiUrl, apiUrl);
