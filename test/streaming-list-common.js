@@ -5,7 +5,6 @@ var streamingListCommon = function() {
 
   test('defines the "limit" property', function() {
     assert.equal(this.myEl.limit, 10);
-    console.log(this.myEl.asd);
   });
 
   test('defines the "width" property', function() {
