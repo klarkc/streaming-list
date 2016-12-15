@@ -70,6 +70,9 @@ Example:
       <template is="dom-repeat" items="[[response.items]]">
         <youtube-card game="[[game]]" lang="[[lang]]" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></youtube-card>
       </template>
+      <template is="dom-repeat" items="[[response.results]]">
+        <livecoding-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></livecoding-card>
+      </template>
     </div>
     <paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>
     <event-infinite-scroll
@@ -198,7 +201,7 @@ Example:
         },
 
         /**
-         * `game` Used to filter videos from a specific game
+         * `game` Used to filter videos from a specific game (not used to livecoding service)
          */
         game: {
           type: String,
@@ -309,6 +312,11 @@ Example:
         if (this.service === 'youtube') {
           oldStreams = this.response.items;
           this.set('response.items', oldStreams.concat(response.items));
+        }
+
+        if (this.service === 'livecoding') {
+          oldStreams = this.response.results;
+          this.set('response.results', oldStreams.concat(response.results));
         }
 
         this.fire('streaming-list-response', event.detail);

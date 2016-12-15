@@ -43,7 +43,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       response = this.response = document.livecodingRes;
       // Fix size of response to match limit
       response.results.splice(10, response.results.length);
-      response.count = myEl.limit;
+      response.count = 10;
 
       service = this.service = 'livecoding';
 
@@ -116,7 +116,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }).catch(done);
 
       flush(function(){
-        responsePromise.then(function(){
+        responsePromise.then(function(evt){
           var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-livecoding-card');
           assert.equal(cards.length, myEl.limit);
           cards.forEach(function(card, index){
