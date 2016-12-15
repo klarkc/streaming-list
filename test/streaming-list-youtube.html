@@ -61,6 +61,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       key = this.key = 'hackme';
       myEl = this.myEl = fixture('streaming-list-fixture');
 
+      // Fix size of response to match limit
+      response.items.splice(myEl.limit, response.items.length);
+
       // Disable auto request, to not call no-wanted events
       myEl.$.ajax.auto = false;
 
@@ -127,22 +130,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // rendering, a tough job
       this.slow(200);
 
-      var responsePromise = new Promise(function(resolve, reject){
-        myEl.addEventListener('streaming-list-rendered', resolve);
-        myEl.addEventListener('streaming-list-error', function(evt) {
-          reject(evt.detail.error || evt.detail);
-        });
-      });
-
-      responsePromise.then(function(){
+      flush(function(){
         var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-youtube-card');
+        assert.equal(cards.length, myEl.limit);
         cards.forEach(function(card, index){
           assert.equal(card.data, myEl.response.items[index]);
           assert.equal(card.width, myEl.width);
         });
-      }).catch(done);
-
-      flush(done); // Call observers first
+        done();
+      });
     });
   });
   </script>
