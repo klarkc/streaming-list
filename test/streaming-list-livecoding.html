@@ -39,7 +39,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     suiteSetup(function() {
       apiUrl = this.apiUrl = 'https://www.livecoding.tv:443/api/livestreams/onair/';
+
       response = this.response = document.livecodingRes;
+      // Fix size of response to match limit
+      response.results.splice(10, response.results.length);
+      response.count = myEl.limit;
+
+      service = this.service = 'livecoding';
 
       // Here we simulate the iron-ajax behavior
       server = this.server = sinon.fakeServer.create();
@@ -54,7 +60,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       );
       server.autoRespond = true;
-      service = this.service = 'livecoding';
     });
 
     setup(function() {
@@ -62,10 +67,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       // Disable auto request, to not call no-wanted events
       myEl.$.ajax.auto = false;
-
-      // Fix size of response to match limit
-      response.results.splice(myEl.limit, response.results.length);
-      response.count = myEl.limit;
 
       replace('livecoding-card').with('fake-livecoding-card');
       replace('paper-spinner').with('fake-paper-spinner');
@@ -109,14 +110,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // rendering, a tough job
       this.slow(200);
 
+      var responsePromise = new Promise(function(resolve, reject) {
+        myEl.addEventListener('streaming-list-response', resolve);
+        myEl.addEventListener('streaming-list-error', reject);
+      }).catch(done);
+
       flush(function(){
-        var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-livecoding-card');
-        assert.equal(cards.length, myEl.limit);
-        cards.forEach(function(card, index){
-          assert.equal(card.data, myEl.response.results[index]);
-          assert.equal(card.width, myEl.width);
+        responsePromise.then(function(){
+          var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-livecoding-card');
+          assert.equal(cards.length, myEl.limit);
+          cards.forEach(function(card, index){
+            assert.equal(card.data, myEl.response.results[index]);
+            assert.equal(card.width, myEl.width);
+          });
+          done();
         });
-        done();
       });
     });
   });

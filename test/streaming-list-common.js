@@ -96,11 +96,18 @@ var streamingListCommon = function() {
 
   test('the response event should be correctly fired', function(done){
     var res = this.response;
-    this.myEl.addEventListener('streaming-list-response', function(evt){
-      assert.deepEqual(evt.detail.response, res);
-    });
+    var myEl = this.myEl;
+    var responsePromise = new Promise(function(resolve, reject){
+      myEl.addEventListener('streaming-list-response', resolve);
+      myEl.addEventListener('streaming-list-error', reject);
+    }).catch(done);
 
-    flush(done); // Call all observers to the test
+    flush(function(){
+      responsePromise.then(function(evt){
+        assert.deepEqual(evt.detail.response, res);
+        done();
+      });
+    }); // Call all observers to the test
   });
 
   test('streaming-list-error should be triggered in a request error', function(done){
@@ -128,6 +135,7 @@ var streamingListCommon = function() {
     myEl._scrollListening = true;
     myEl.response.items = [{}];
     myEl.response.streams = [{}];
+    myEl.response.results = [{}];
     myEl._setCurrentPage(1);
 
     myEl.addEventListener('streaming-list-request', function(){
@@ -135,6 +143,7 @@ var streamingListCommon = function() {
       assert.equal(1, myEl.currentPage);
       assert.equal(1, myEl.response.items.length);
       assert.equal(1, myEl.response.streams.length);
+      assert.equal(1, myEl.response.results.length);
       done();
     });
 
@@ -152,6 +161,7 @@ var streamingListCommon = function() {
       assert.equal(0, myEl.currentPage);
       assert.equal(0, myEl.response.items.length);
       assert.equal(0, myEl.response.streams.length);
+      assert.equal(0, myEl.response.results.length);
       done();
     });
 
