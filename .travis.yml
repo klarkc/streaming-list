@@ -12,17 +12,18 @@ addons:
   sauce_connect:
     username: "klarkc"
   code_climate:
-  - repo_token: 91a5cd0f9f1f505b6f028186c6ed2e8ef950ae1810c7ca16f9b97b7a8a1948a9
+    repo_token: 91a5cd0f9f1f505b6f028186c6ed2e8ef950ae1810c7ca16f9b97b7a8a1948a9
   jwt:
     secure: elhoJ47GoSbP/Q68c+rwX1rFO1FFe8WYxTYBCz87D3cnTArk6IdzIn7y1nno7rsGfRiM5VN84AIzSWYXA07G0krb5WDljQmQTDcz2KbEZQpEu3Q0RmPWQEly4lC85Q+6ipBF8S69grho6v/lEby1rcwL/fD4J+4Qb1OQJsJ2fMiyCAHe/gXxh1LI316wp/DTQFL4qDYK8lfRxJqxq7Vo/fczONp19nnmqp83FA4d5nTed4u+GTZvweie6lCLVUuYjGvOj8hrsQEXeRCsTVErvpIhjCPZONvUpykY20qKo6bDcB5tf9aR5ex1Xgyz1hwm+hfEMBMYdzv5dU9219LFL8aNp24dq4agvJroRhOovBO4/o1xUlp/svixfmXEvabLFYXAqjb0JVbzGYVYY1S9vKNaACg2IjOTLhUNeUPTi7jHmn7GXVVYveuDuJW/kbQej3E7ASPVChmWf3Bng9dp3kW7ZWUzlPqCTmLGTrKlxeapBaXLRVLOLJptXU9vR+WucsevsAbUR312GBWkw1vUlpSaIRjKIHsjkcqMIfYk9sf4+y+B7tjWRQ6tMCbimmXIeIeqpggUc5INlaLPxH6JvKb/FQSRNUPbMCwLrQ4EPQ51NLHuvAMQvlsmYjNrmyVlgdRu2zrRIt66TgFiTqBTQVeeEC7u7QXyXi1ccUld90g=
 before_install:
 - source /opt/jdk_switcher/jdk_switcher.sh
 - jdk_switcher use oraclejdk8
 before_script:
-- npm install -g bower eslint eslint-plugin-html polylint web-component-tester web-component-tester-istanbul
-  istanbul
+- npm install -g bower eslint eslint-plugin-html polylint web-component-tester@6.0.0-prerelease.4 web-component-tester-istanbul codeclimate-test-reporter istanbul
 - bower install
 - polylint
 - eslint **.{html,js}
+after_success:
+- codeclimate-test-reporter < coverage/lcov.info
 script:
-- xvfb-run wct --skip-plugin istanbul
+- xvfb-run wct
