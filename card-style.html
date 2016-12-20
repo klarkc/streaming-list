@@ -85,28 +85,33 @@
       background-color: #DDD;
     }
 
-    #card .details .game {
+    #card .details .game,
+    #card .details .category, {
       @apply(--layout-horizontal);
       @apply(--layout-center);
     }
 
-    #card .details .game:hover {
+    #card .details .game:hover,
+    #card .details .category:hover {
       color: var(--paper-grey-800);
     }
 
     #card .details .game #game,
+    #card .details .game #category,
     #card .details .game #viewers,
     {
       margin-left: 4px;
     }
 
     #card .details .game,
+    #card .details .category,
     #card .details .viewers {
       text-decoration: none;
       color: var(--paper-grey-600);
     }
 
     #card::shadow .details .game #game,
+    #card::shadow .details .category #category,
     #card::shadow .details .heading textfit-div,
     #card::shadow .details .viewers #viewers {
       overflow: hidden;
