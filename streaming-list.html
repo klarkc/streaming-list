@@ -46,7 +46,7 @@ Example:
         @apply(--layout-wrap);
       }
 
-      twitchtv-card, youtube-card {
+      .card {
         margin: 16px;
       }
 
@@ -66,13 +66,13 @@ Example:
     </iron-ajax>
     <div id="streams">
       <template is="dom-repeat" items="[[response.streams]]">
-        <twitchtv-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
+        <twitchtv-card class="card" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
       </template>
       <template is="dom-repeat" items="[[response.items]]">
-        <youtube-card game="[[game]]" lang="[[lang]]" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></youtube-card>
+        <youtube-card class="card" game="[[game]]" lang="[[lang]]" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></youtube-card>
       </template>
       <template is="dom-repeat" items="[[response.results]]">
-        <livecoding-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></livecoding-card>
+        <livecoding-card class="card" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></livecoding-card>
       </template>
     </div>
     <paper-spinner id="spinnerBottom" alt="Loading more streams" active></paper-spinner>
