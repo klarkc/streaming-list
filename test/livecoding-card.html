@@ -81,13 +81,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.equal(myEl.style.width, '300px');
           });
 
-          test('_concatParams must join correctly', function(){
-            assert.equal(
-              myEl._concatParams(5, 'pt', 'test'),
-              JSON.stringify({})
-            );
-          });
-
           test('_formatViewers must format numeral', function(){
             assert.equal(myEl._formatViewers(100000), '100k viewers');
             assert.equal(myEl._formatViewers(100000000), '100m viewers');
@@ -112,7 +105,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           test('when tap on card, a window to the stream should open', function(done){
             sinon.stub(window, 'open', function(url, target){
-              assert.equal(url, 'https://livecoding.tv/test');
+              assert.equal(url, 'https://www.livecoding.tv/test');
               assert.equal(target, '_blank');
               done();
             });
@@ -202,7 +195,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           test('card should render the number of viewers', function(done) {
             myEl.set('data.viewers_live', 500);
             flush(function() {
-              assert.equal(myEl.$.viewers, 500);
+              assert.equal(myEl.$.viewers.textContent, '500 viewers');
               done();
             });
           });

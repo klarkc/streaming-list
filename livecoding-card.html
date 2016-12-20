@@ -9,6 +9,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../textfit-div/textfit-div.html">
+<link rel="import" href="card-style.html">
+<link rel="import" href="flag-behavior.html">
 
 <script src="../numeral/min/numeral.min.js"></script>
 
@@ -23,4 +33,160 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="livecoding-card"></dom-module>
+<dom-module id="livecoding-card">
+  <link rel="import" type="css" href="../flag-icon-css/css/flag-icon.min.css">
+  <template>
+    <style include="card-style"></style>
+    <paper-card
+                on-tap="_onTap"
+                animated-shadow="true"
+                id="card"
+                >
+                <div class="card-image">
+                  <iron-image id="image" on-loaded-changed="_onImageLoaded" src="[[data.thumbnail_url]]"></iron-image>
+                </div>
+                <div class="card-header">
+                  <textfit-div id="title" min-font-size="10" max-font-size="28" text="[[data.title]]" manual-fire></textfit-div>
+                </div>
+                <div class="card-content">
+                  <paper-icon-button id="userLogo" src="[[_formatLogo()]]" title$="Go to [[data.user__slug]] channel"></paper-icon-button>
+                  <div class="details">
+                    <div class="heading">
+                      <textfit-div id="userSlug" text="[[data.user__slug]]" ignore-errors="true" manual-fire></textfit-div>
+                      <span id="flag" class$="[[getFlagByLang(data.language)]]" title$="[[data.language)]]"></span>
+                    </div>
+                    <div class="category">
+                      <iron-icon icon="icons:code"></iron-icon>
+                      <span id="category" title$="More [[data.coding_category]] streams">[[data.coding_category]]</span>
+                    </div>
+                    <div class="viewers">
+                      <iron-icon icon="icons:visibility"></iron-icon>
+                      <span id="viewers">[[_formatViewers(data.viewers_live)]]</span>
+                    </div>
+                  </div>
+                </div>
+                <paper-ripple recenters should-keep-animating="true"></paper-ripple>
+    </paper-card>
+  </template>
+  <script>
+    Polymer({
+      is: "livecoding-card",
+      /**
+       * Fired when the card is fully loaded (including image).
+       *
+       * @event loaded
+       */
+      properties: {
+        /**
+         * `data` JSON Object representing source data (look Livecoding.TV api for details)
+         */
+        data: {
+          type: Object,
+          notify: true,
+          value: function(){
+            return {
+              user__slug: null,
+              title: null,
+              description: null,
+              coding_category: null,
+              difficulty: null,
+              language: null,
+              viewers_live: null,
+              thumbnail_url: null
+            };
+          }
+        },
+
+        /**
+         * `width` If you define width (in pixels) the card size will be fixed with the given width, this number is also used to load the preview image closest to the given width
+         */
+        width: {
+          type: Number,
+          value: null,
+          observer: '_updateWidth'
+        },
+
+        /**
+         * `animationConfig` Animation configuration (See Polymer docs for details)
+         */
+        animationConfig: {
+          value: function() {
+            return {
+              name: 'fade-in-animation',
+              node: this.$.card
+            }
+          }
+        }
+      },
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior,
+        document.StreamingList.FlagBehavior
+      ],
+      _updateWidth: function() {
+        if(!this.width) {
+          this.width = this.clientWidth;
+        } else {
+          this.style.display = 'inline-block';
+        }
+
+        this.style.width = this.width + 'px';
+      },
+      _formatTitle: function (title) {
+        var cut = title.substr(0, 80)
+        if (title.length > cut.length) {
+          cut += '...';
+        }
+        return cut;
+      },
+      _formatLogo: function (image) {
+        if(image) {
+          return image;
+        } else {
+          return "../livecoding_icon.svg";
+        }
+      },
+      _formatViewers: function (views) {
+        return numeral(views).format('0a') + ' viewers';
+      },
+      _categoryUrl: function (category) {
+        return 'https://www.livecoding.tv/livestreams/' + encodeURI(category);
+      },
+      _onTap: function (event) {
+        var target = Polymer.dom(event).localTarget;
+        var url = 'https://www.livecoding.tv/' + this.data.user__slug;
+
+        if (target === this.$.category) {
+          url = this._categoryUrl(this.data.coding_category);
+        }
+
+        window.open(url, '_blank');
+      },
+      _onImageLoaded: function(event) {
+        this.$.title.doFitMe();
+        this.$.userSlug.doFitMe();
+
+        // Only play animation if element was not loaded before AND there is a IMAGE loaded
+        if(!this.$.card.classList.contains('loaded')
+          && this.$.image.loaded
+        ) {
+          // console.log('Found a image, animating', event.target);
+          this.$.card.classList.add('loaded');
+          this.playAnimation();
+        }
+      },
+      _onNeonAnimationFinish: function(event) {
+        // simulate delay (only for testing)
+        /*
+        setTimeout(function(){
+          this.fire('loaded', this);
+        }.bind(this), Math.round(Math.random() * 2000));
+        */
+
+        this.fire('loaded', this);
+      }
+    });
+  </script>
+</dom-module>
