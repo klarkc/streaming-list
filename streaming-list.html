@@ -56,7 +56,7 @@ Example:
     <iron-ajax
                id="ajax"
                url="[[_getApiUrl(service, twitchApiUrl, youtubeApiUrl)]]"
-               headers='[[_concatHeaders(clientId)]]'
+               headers='[[_concatHeaders(service, clientId)]]'
                handle-as="json"
                on-response="_onResponse"
                on-request="_onRequest"
