@@ -35,7 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   var dom = document.params.dom || 'shady';
   suite('Livecoding tests (' + dom + ' DOM)', function() {
 
-    var myEl, apiUrl, server, response, service;
+    var myEl, apiUrl, server, response, service, token;
 
     suiteSetup(function() {
       apiUrl = this.apiUrl = 'https://www.livecoding.tv:443/api/livestreams/onair/';
@@ -63,7 +63,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     setup(function() {
+      token = this.token = {access_token: 'hackme', refresh_token: 'hackme'};
       myEl = this.myEl = fixture('streaming-list-fixture');
+      myEl.token = token;
 
       // Disable auto request, to not call no-wanted events
       myEl.$.ajax.auto = false;
@@ -90,6 +92,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.lengthOf(myEl.response.results, 0);
     });
 
+    test('defines the "token" property', function() {
+      assert.deepEqual(myEl.token, token);
+    });
+
     test('_getApiUrl should a valid api URL', function(){
       assert.equal(myEl._getApiUrl(), apiUrl);
     });
@@ -98,9 +104,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.deepEqual({}, myEl._concatParams());
     });
 
+    test('_concatHeaders should return headers object', function(){
+      assert.deepEqual(myEl.$.ajax.headers, myEl._concatHeaders());
+    });
+
     test('iron-ajax should be correctly setted', function(){
       // already requested at this point
       assert.equal(myEl.$.ajax.url, apiUrl);
+      assert.deepEqual(myEl.$.ajax.headers, {'Authorization': 'Bearer hackme'});
       assert.equal(myEl.$.ajax.handleAs, 'json');
       assert.equal(myEl.$.ajax.debounceDuration, 30);
       assert.deepEqual(myEl.$.ajax.params, {});

@@ -56,7 +56,7 @@ Example:
     <iron-ajax
                id="ajax"
                url="[[_getApiUrl(service, twitchApiUrl, youtubeApiUrl)]]"
-               headers='[[_concatHeaders(service, clientId)]]'
+               headers='[[_concatHeaders(service, clientId, token)]]'
                handle-as="json"
                on-response="_onResponse"
                on-request="_onRequest"
@@ -155,6 +155,19 @@ Example:
         clientId: {
           type: String,
           value: null
+        },
+
+        /**
+         * `token` OAuth Token, required for livecoding service, see how to get your token in our demo page
+         */
+        token: {
+          type: Object,
+          value: function() {
+            return {
+              access_token: null,
+              refresh_token: null
+            }
+          }
         },
 
         /**
@@ -287,6 +300,12 @@ Example:
         if (this.service === 'twitch') {
           return {
             'Client-ID': this.clientId
+          };
+        }
+
+        if (this.service === 'livecoding') {
+          return {
+            'Authorization': 'Bearer ' + this.token.access_token
           };
         }
 
