@@ -19,10 +19,10 @@ before_install:
 - source /opt/jdk_switcher/jdk_switcher.sh
 - jdk_switcher use oraclejdk8
 before_script:
-- npm install -g bower eslint eslint-plugin-html polylint web-component-tester web-component-tester-istanbul
+- npm install -g bower eslint eslint-plugin-html polylint web-component-tester@6.0.0-prerelease.4 web-component-tester-istanbul
   istanbul
 - bower install
 - polylint
 - eslint **.{html,js}
 script:
-- xvfb-run wct --skip-plugin istanbul
+- xvfb-run wct
