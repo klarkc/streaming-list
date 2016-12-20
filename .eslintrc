@@ -7,7 +7,8 @@ plugins:
 globals:
   Polymer: true
   CustomElements: true
-  HTMLImports: true
+  HTMLImports: true,
+  languages: true
 
 # http://eslint.org/docs/rules/
 rules:

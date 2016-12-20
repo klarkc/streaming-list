@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../event-infinite-scroll/event-infinite-scroll.html">
 <link rel="import" href="twitchtv-card.html">
 <link rel="import" href="youtube-card.html">
+<link rel="import" href="livecoding-card.html">
 
 <!--
 A webcomponent written with Polymer to list Twitch and (in future) Youtube streams. You will be able to filter the results by a specific game and define priority for a selected language.
@@ -45,7 +46,7 @@ Example:
         @apply(--layout-wrap);
       }
 
-      twitchtv-card, youtube-card {
+      .card {
         margin: 16px;
       }
 
@@ -56,7 +57,7 @@ Example:
     <iron-ajax
                id="ajax"
                url="[[_getApiUrl(service, twitchApiUrl, youtubeApiUrl)]]"
-               headers='[[_concatHeaders(clientId)]]'
+               headers='[[_concatHeaders(service, clientId, token)]]'
                handle-as="json"
                on-response="_onResponse"
                on-request="_onRequest"
@@ -65,10 +66,13 @@ Example:
     </iron-ajax>
     <div id="streams">
       <template is="dom-repeat" items="[[response.streams]]">
-        <twitchtv-card data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
+        <twitchtv-card class="card" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></twitchtv-card>
       </template>
       <template is="dom-repeat" items="[[response.items]]">
-        <youtube-card game="[[game]]" lang="[[lang]]" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></youtube-card>
+        <youtube-card class="card" game="[[game]]" lang="[[lang]]" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></youtube-card>
+      </template>
+      <template is="dom-repeat" items="[[response.results]]">
+        <livecoding-card class="card" data="[[item]]" width="[[width]]" on-loaded="_cardLoaded"></livecoding-card>
       </template>
     </div>
     <p id="noResults"></p>
@@ -132,7 +136,15 @@ Example:
         },
 
         /**
-         * `service` indicates the service to fetch data, can be the string youtube or twitch
+         * `livecodingApiUrl` indicates the URL of youtube API to list streams
+         */
+        livecodingApiUrl: {
+          type: String,
+          value: "https://www.livecoding.tv:443/api/livestreams/onair/"
+        },
+
+        /**
+         * `service` indicates the service to fetch data, can be the string youtube, twitch or livecoding
          */
         service: {
           type: String,
@@ -145,6 +157,19 @@ Example:
         clientId: {
           type: String,
           value: null
+        },
+
+        /**
+         * `token` OAuth Token, required for livecoding service, see how to get your token in our demo page
+         */
+        token: {
+          type: Object,
+          value: function() {
+            return {
+              access_token: null,
+              refresh_token: null
+            }
+          }
         },
 
         /**
@@ -182,7 +207,7 @@ Example:
         },
 
         /**
-         * `lang` Used to filter the language of the videos
+         * `lang` Used to filter the language of the videos (not used in livecoding service)
          */
         lang: {
           type: String,
@@ -191,7 +216,7 @@ Example:
         },
 
         /**
-         * `game` Used to filter videos from a specific game
+         * `game` Used to filter videos from a specific game (not used in livecoding service)
          */
         game: {
           type: String,
@@ -205,7 +230,7 @@ Example:
         response: {
           type: Object,
           value: function(){
-            return {streams: [], items: []};
+            return {streams: [], items: [], results: []};
           },
           notify: true
         },
@@ -238,11 +263,12 @@ Example:
       _getApiUrl: function() {
         if(this.service === 'twitch') return this.twitchApiUrl;
         if(this.service === 'youtube') return this.youtubeApiUrl;
+        if(this.service === 'livecoding') return this.livecodingApiUrl;
         throw Error('missing or wrong service');
       },
 
       _concatParams: function() {
-        if(this.service === 'twitch') {
+        if (this.service === 'twitch') {
           return {
             limit: this.limit,
             language: this.lang,
@@ -251,7 +277,7 @@ Example:
           };
         }
 
-        if(this.service === 'youtube') {
+        if (this.service === 'youtube') {
           return {
             part: 'snippet',
             eventType: 'live',
@@ -265,6 +291,10 @@ Example:
           };
         }
 
+        if (this.service === 'livecoding') {
+          return {};
+        }
+
         throw Error('missing or wrong service');
       },
 
@@ -272,6 +302,12 @@ Example:
         if (this.service === 'twitch') {
           return {
             'Client-ID': this.clientId
+          };
+        }
+
+        if (this.service === 'livecoding') {
+          return {
+            'Authorization': 'Bearer ' + this.token.access_token
           };
         }
 
@@ -308,6 +344,11 @@ Example:
             this.$.spinnerBottom.active = false;
             this.$.noResults.innerHTML = "No more results";
           }
+        }
+
+        if (this.service === 'livecoding') {
+          oldStreams = this.response.results;
+          this.set('response.results', oldStreams.concat(response.results));
         }
 
         this.fire('streaming-list-response', event.detail);

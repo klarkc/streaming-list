@@ -1,0 +1,215 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The compvare set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The compvare set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="params.js"></script>
+    <script src="livecoding-res.js"></script>
+    <script src="../iso-639-1_flags.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../livecoding-card.html">
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <test-fixture id="livecoding-card-fixture">
+      <template>
+        <livecoding-card></livecoding-card>
+      </template>
+    </test-fixture>
+
+    <script>
+      var dom = document.params.dom || 'shady';
+      suite('<livecoding-card> (' + dom + ' DOM)', function() {
+
+        var myEl,
+            stream;
+
+        setup(function() {
+          myEl = fixture('livecoding-card-fixture');
+          replace('textfit-div').with('fake-textfit-div');
+
+          stream = document.livecodingRes.results[0];
+        });
+
+        suite('default properties and behavior', function(){
+          test('defines the "data" property', function() {
+            assert.typeOf(myEl.data, 'object');
+            assert.property(myEl.data, 'user__slug');
+            assert.property(myEl.data, 'title');
+            assert.property(myEl.data, 'description');
+            assert.property(myEl.data, 'coding_category');
+            assert.property(myEl.data, 'difficulty');
+            assert.property(myEl.data, 'language');
+            assert.property(myEl.data, 'viewers_live');
+            assert.property(myEl.data, 'thumbnail_url');
+          });
+
+          test('defines the "width" property', function(done) {
+            flush(function(){
+              assert.equal(myEl.width, 0);
+              done();
+            });
+          });
+
+          test('defines the "animationConfig" property', function(){
+            assert.property(myEl, 'animationConfig');
+            assert.property(myEl.animationConfig, 'node');
+            assert.typeOf(myEl.animationConfig.name, 'string');
+          });
+
+          test('card must be invisible', function(){
+            var style = window.getComputedStyle(myEl.$.card);
+            assert.equal(style.visibility, 'hidden');
+          });
+
+          test('width must be defined to pixels', function(){
+            myEl.width = 300;
+            assert.equal(myEl.style.width, '300px');
+          });
+
+          test('_formatViewers must format numeral', function(){
+            assert.equal(myEl._formatViewers(100000), '100k viewers');
+            assert.equal(myEl._formatViewers(100000000), '100m viewers');
+            assert.equal(myEl._formatViewers(0), '0 viewers');
+          });
+
+          test('_formatTitle must cut the status text correctly', function(){
+            assert.lengthOf(
+              myEl._formatTitle(Array(82).join('x')),
+              83
+            );
+            assert.lengthOf(
+              myEl._formatTitle(Array(80).join('x')),
+              79
+            );
+          });
+
+          test('_formatLogo must return something', function(){
+            assert.equal(myEl._formatLogo('xxx'), 'xxx');
+            assert.equal(myEl._formatLogo(null), '../livecoding_icon.svg');
+          });
+
+          test('when tap on card, a window to the stream should open', function(done){
+            sinon.stub(window, 'open', function(url, target){
+              assert.equal(url, 'https://www.livecoding.tv/test');
+              assert.equal(target, '_blank');
+              done();
+            });
+            myEl.data.user__slug = 'test';
+            myEl.$.card.fire('tap');
+            window.open.restore();
+          });
+
+          test('when tap in a category, a window to the category directory must be open', function(done){
+            var catUrl = 'https://www.livecoding.tv/livestreams/test';
+            sinon.stub(window, 'open', function(url, target){
+              assert.equal(url, catUrl);
+              assert.equal(target, '_blank');
+              done();
+            });
+            myEl.data.coding_category = 'test';
+            myEl.$.card.fire('tap', {}, {node: myEl.$.category});
+            window.open.restore();
+          });
+
+          test('when _onImageLoaded text must fit', function(done){
+            sinon.stub(myEl.$.title, 'doFitMe', done);
+            myEl._onImageLoaded();
+            myEl.$.title.doFitMe.restore();
+          });
+
+          test('when _onImageLoaded class must be added and animation played', function(){
+            myEl.$.card.classList.add('loaded');
+            myEl.$.image.loaded = false;
+            myEl._onImageLoaded();
+            assert.equal(myEl.$.card.classList.contains('loaded'), true);
+          });
+        });
+
+        suite('on data changed', function(){
+          var dataPromise;
+
+          setup(function(){
+            dataPromise = new Promise(function(resolve){
+              myEl.addEventListener('data-changed', resolve);
+              myEl.data = stream;
+            });
+          });
+
+          test('generate one data changed event', function(){
+            return dataPromise;
+          });
+
+          test('image must be loaded', function(){
+            return dataPromise.then(function(){
+              var url = stream.thumbnail_url;
+              assert.equal(myEl.$.image.src, url)
+            });
+          });
+
+          test('card should render streaming title', function(done){
+            flush(function(){
+              assert.equal(myEl.$.title.text, stream.title);
+              done();
+            });
+          });
+
+          test('card should render user slug', function(done) {
+            flush(function(){
+              assert.equal(myEl.$.userSlug.text, stream.user__slug);
+              assert.equal(myEl.$.userLogo.src, '../livecoding_icon.svg');
+              done();
+            });
+          });
+
+          test('card should render category name', function(done) {
+            myEl.set('data.coding_category', 'test');
+            flush(function(){
+              assert.equal(myEl.$.category.textContent, 'test');
+              done();
+            });
+          });
+
+          test('card should render a flag', function(done){
+            myEl.set('data.language', 'English');
+            flush(function(){
+              assert.include(myEl.$.flag.getAttribute('class'), 'flag-icon-us');
+              done();
+            });
+          });
+
+          test('card should render the number of viewers', function(done) {
+            myEl.set('data.viewers_live', 500);
+            flush(function() {
+              assert.equal(myEl.$.viewers.textContent, '500 viewers');
+              done();
+            });
+          });
+
+          test('card should fire loaded after finish animation', function(done) {
+            myEl.addEventListener('loaded', function(event){
+              assert.equal(event.type, 'loaded');
+              done();
+            });
+            myEl.fire('neon-animation-finish');
+          });
+        });
+      });
+    </script>
+
+  </body>
+</html>

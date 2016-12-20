@@ -11,7 +11,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-image/iron-image.html">
-<link rel="import" href="../iron-icons/hardware-icons.html">
 <link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
@@ -21,22 +20,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="card-style.html">
 <link rel="import" href="flag-behavior.html">
 
+<script src="../numeral/min/numeral.min.js"></script>
+
 <!--
-A card for a specific object returned from Youtube V3 api.
+A card for a specific object returned from livecoding.tv api.
 
 Example:
 
-    <youtube-card
-      data="[[data_to_be_rendered]]"
-      game="Name of the Game"
-      >
-    </youtube-card>
+    <livecoding-card data="[[data_to_be_rendered]]"></livecoding-card>
 
 @demo demo/index.html
 @hero hero.svg
 -->
 
-<dom-module id="youtube-card">
+<dom-module id="livecoding-card">
   <link rel="import" type="css" href="../flag-icon-css/css/flag-icon.min.css">
   <template>
     <style include="card-style"></style>
@@ -49,18 +46,22 @@ Example:
                   <iron-image id="image" on-loaded-changed="_onImageLoaded"></iron-image>
                 </div>
                 <div class="card-header">
-                  <textfit-div id="title" min-font-size="10" max-font-size="28" text="[[data.snippet.title]]" manual-fire></textfit-div>
+                  <textfit-div id="title" min-font-size="10" max-font-size="28" text="[[data.title]]" manual-fire></textfit-div>
                 </div>
                 <div class="card-content">
-                  <paper-icon-button id="channelLogo" src="[[_formatLogo()]]" title$="Go to [[data.snippet.channelTitle]] channel"></paper-icon-button>
+                  <paper-icon-button id="userLogo" src="[[_formatLogo()]]" title$="Go to [[data.user__slug]] channel"></paper-icon-button>
                   <div class="details">
                     <div class="heading">
-                      <textfit-div id="channelTitle" text="[[data.snippet.channelTitle]]" ignore-errors="true" manual-fire></textfit-div>
-                      <span id="flag" class$="[[getFlagByLangCode(lang)]]" title$="[[getLanguageByLangCode(lang)]]"></span>
+                      <textfit-div id="userSlug" text="[[data.user__slug]]" ignore-errors="true" manual-fire></textfit-div>
+                      <span id="flag" class$="[[getFlagByLang(data.language)]]" title$="[[_formatLang(data.language)]]"></span>
                     </div>
-                    <div class="game">
-                      <iron-icon icon="hardware:videogame-asset"></iron-icon>
-                      <span id="game" title$="More [[game]] streams">[[game]]</span>
+                    <div class="category">
+                      <iron-icon icon="icons:code"></iron-icon>
+                      <span id="category" title$="More [[data.coding_category]] streams">[[data.coding_category]]</span>
+                    </div>
+                    <div class="viewers">
+                      <iron-icon icon="icons:visibility"></iron-icon>
+                      <span id="viewers">[[_formatViewers(data.viewers_live)]]</span>
                     </div>
                   </div>
                 </div>
@@ -69,7 +70,7 @@ Example:
   </template>
   <script>
     Polymer({
-      is: "youtube-card",
+      is: "livecoding-card",
       /**
        * Fired when the card is fully loaded (including image).
        *
@@ -77,26 +78,21 @@ Example:
        */
       properties: {
         /**
-         * `data` JSON Object representing source data (look Twitch.TV api for details)
+         * `data` JSON Object representing source data (look Livecoding.TV api for details)
          */
         data: {
           type: Object,
           notify: true,
           value: function(){
             return {
-              id: {
-                videoId: null
-              },
-              snippet: {
-               channelId: null,
-               title: null,
-               thumbnails: {
-                default: {url: null, width: null},
-                medium: {url: null, width: null},
-                high: {url: null, width: null}
-               },
-               channelTitle: null
-              }
+              user__slug: null,
+              title: null,
+              description: null,
+              coding_category: null,
+              difficulty: null,
+              language: null,
+              viewers_live: null,
+              thumbnail_url: null
             };
           }
         },
@@ -108,22 +104,6 @@ Example:
           type: Number,
           value: null,
           observer: '_updateWidth'
-        },
-
-        /**
-         * `game` Game title (to generate links)
-         */
-        game: {
-          type: String,
-          value: null
-        },
-
-        /**
-         * `lang` Language filter (to generate flag)
-         */
-        lang: {
-          type: String,
-          value: null
         },
 
         /**
@@ -142,7 +122,7 @@ Example:
         'neon-animation-finish': '_onNeonAnimationFinish'
       },
       observers: [
-        '_setImageSrc(width, data.snippet.thumbnails)'
+        '_setImageSrc(width, data.thumbnail_url)'
       ],
       behaviors: [
         Polymer.NeonAnimationRunnerBehavior,
@@ -157,21 +137,6 @@ Example:
 
         this.style.width = this.width + 'px';
       },
-      _setImageSrc: function() {
-        var min = this.data.snippet.thumbnails.default;
-        var med = this.data.snippet.thumbnails.medium;
-        var max = this.data.snippet.thumbnails.high;
-        var src;
-
-        if (this.width <= min.width * 1.10) {
-          src = min.url;
-        } else if (this.width <= med.width * 1.10) {
-          src = med.url;
-        } else {
-          src = max.url;
-        }
-        if (src) this.$.image.src = src;
-      },
       _formatTitle: function (title) {
         var cut = title.substr(0, 80)
         if (title.length > cut.length) {
@@ -183,29 +148,35 @@ Example:
         if(image) {
           return image;
         } else {
-          return "../youtube_icon.svg";
+          return "../livecoding_icon.svg";
         }
       },
-      _gameUrl: function (game) {
-        return 'https://gaming.youtube.com/results?search_query=' + encodeURI(game);
+      _formatLang: function(lang) {
+        // for some strange reason, we must parse language
+        return lang || null;
+      },
+      _formatViewers: function (views) {
+        return numeral(views).format('0a') + ' viewers';
+      },
+      _setImageSrc: function() {
+        if (this.data.thumbnail_url) this.$.image.src = this.data.thumbnail_url;
+      },
+      _categoryUrl: function (category) {
+        return 'https://www.livecoding.tv/livestreams/' + encodeURI(category);
       },
       _onTap: function (event) {
         var target = Polymer.dom(event).localTarget;
-        var url = 'https://gaming.youtube.com/watch?v=' + this.data.id.videoId;
+        var url = 'https://www.livecoding.tv/' + this.data.user__slug;
 
-        if (target === this.$.game) {
-          url = this._gameUrl(this.game);
-        }
-
-        if (target === this.$.channelTitle || target === this.$.channelLogo) {
-          url = 'https://gaming.youtube.com/channel/' + this.data.snippet.channelId;
+        if (target === this.$.category) {
+          url = this._categoryUrl(this.data.coding_category);
         }
 
         window.open(url, '_blank');
       },
       _onImageLoaded: function(event) {
         this.$.title.doFitMe();
-        this.$.channelTitle.doFitMe();
+        this.$.userSlug.doFitMe();
 
         // Only play animation if element was not loaded before AND there is a IMAGE loaded
         if(!this.$.card.classList.contains('loaded')

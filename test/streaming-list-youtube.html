@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <script src="params.js"></script>
+  <script src="streaming-list-common.js"></script>
   <script src="youtube-res.js"></script>
 
   <!-- Step 1: import the element to test -->
@@ -32,20 +33,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
   var dom = document.params.dom || 'shady';
-  suite('Specific youtube tests (' + dom + ' DOM)', function() {
+  suite('Youtube tests (' + dom + ' DOM)', function() {
 
-    var myEl,
-    apiUrl,
-    key,
-    server,
-    response;
+    var myEl, apiUrl, key, server, response, service;
 
     suiteSetup(function() {
-      apiUrl = 'https://www.googleapis.com/youtube/v3/search';
-      response = document.youtubeRes;
+      apiUrl = this.apiUrl = 'https://www.googleapis.com/youtube/v3/search';
+
+      response = this.response = document.youtubeRes;
+      // Fix size of response to match limit
+      response.items.splice(10, response.items.length);
+
+      service = this.service = 'twitch';
 
       // Here we simulate the iron-ajax behavior
-      server = sinon.fakeServer.create();
+      server = this.server = sinon.fakeServer.create();
       server.respondWith(
         new RegExp(apiUrl + '.*'),
         function (xhr) {
@@ -60,8 +62,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     setup(function() {
-      key = 'hackme';
-      myEl = fixture('streaming-list-fixture');
+      key = this.key = 'hackme';
+      myEl = this.myEl = fixture('streaming-list-fixture');
 
       // Disable auto request, to not call no-wanted events
       myEl.$.ajax.auto = false;
@@ -129,22 +131,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // rendering, a tough job
       this.slow(200);
 
-      var responsePromise = new Promise(function(resolve, reject){
-        myEl.addEventListener('streaming-list-rendered', resolve);
-        myEl.addEventListener('streaming-list-error', function(evt) {
-          reject(evt.detail.error || evt.detail);
-        });
-      });
-
-      responsePromise.then(function(){
-        var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-youtube-card');
-        cards.forEach(function(card, index){
-          assert.equal(card.data, myEl.response.items[index]);
-          assert.equal(card.width, myEl.width);
-        });
+      var responsePromise = new Promise(function(resolve, reject) {
+        myEl.addEventListener('streaming-list-response', resolve);
+        myEl.addEventListener('streaming-list-error', reject);
       }).catch(done);
 
-      flush(done); // Call observers first
+      flush(function(){
+        responsePromise.then(function(){
+          var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-youtube-card');
+          assert.equal(cards.length, myEl.limit);
+          cards.forEach(function(card, index){
+            assert.equal(card.data, myEl.response.items[index]);
+            assert.equal(card.width, myEl.width);
+          });
+          done();
+        });
+      });
     });
   });
   </script>

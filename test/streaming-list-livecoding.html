@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../web-component-tester/browser.js"></script>
   <script src="params.js"></script>
   <script src="streaming-list-common.js"></script>
-  <script src="twitch-res.js"></script>
+  <script src="livecoding-res.js"></script>
 
   <!-- Step 1: import the element to test -->
   <link rel="import" href="../streaming-list.html">
@@ -27,23 +27,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- You can use the document as a place to set up your fixtures. -->
   <test-fixture id="streaming-list-fixture">
     <template>
-      <streaming-list client-id="hackme" service="twitch"></streaming-list>
+      <streaming-list service="livecoding"></streaming-list>
     </template>
   </test-fixture>
 
   <script>
   var dom = document.params.dom || 'shady';
-  suite('Twitch tests (' + dom + ' DOM)', function() {
-    var myEl, apiUrl, clientId, server, response, service;
+  suite('Livecoding tests (' + dom + ' DOM)', function() {
+
+    var myEl, apiUrl, server, response, service, token;
 
     suiteSetup(function() {
-      apiUrl = this.apiUrl = 'https://api.twitch.tv/kraken/streams';
+      apiUrl = this.apiUrl = 'https://www.livecoding.tv:443/api/livestreams/onair/';
 
-      response = this.response = document.twitchRes;
+      response = this.response = document.livecodingRes;
       // Fix size of response to match limit
-      response.streams.splice(10, response.streams.length);
+      response.results.splice(10, response.results.length);
+      response.count = 10;
 
-      service = this.service = 'twitch';
+      service = this.service = 'livecoding';
 
       // Here we simulate the iron-ajax behavior
       server = this.server = sinon.fakeServer.create();
@@ -61,52 +63,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     setup(function() {
-      clientId = this.clientId = 'hackme';
+      token = this.token = {access_token: 'hackme', refresh_token: 'hackme'};
       myEl = this.myEl = fixture('streaming-list-fixture');
+      myEl.token = token;
 
       // Disable auto request, to not call no-wanted events
-      //myEl.$.ajax.auto = false;
+      myEl.$.ajax.auto = false;
 
-      replace('twitchtv-card').with('fake-twitchtv-card');
+      replace('livecoding-card').with('fake-livecoding-card');
       replace('paper-spinner').with('fake-paper-spinner');
+      replace('event-infinite-scroll').with('fake-event-infinite-scroll');
     });
 
     suiteTeardown(function(){
       server.restore();
     });
 
-    // Common tests suite
+    // Common tests
     streamingListCommon();
 
-    test('defines the "twitchApiUrl" property', function() {
-      assert.equal(myEl.twitchApiUrl, apiUrl);
-    });
-
-    test('defines the "clientId" property', function() {
-      assert.equal(myEl.clientId, clientId);
+    test('defines the "livecodingApiUrl" property', function() {
+      assert.equal(myEl.livecodingApiUrl, apiUrl);
     });
 
     test('defines the "response" property', function() {
       assert.property(myEl, 'response');
-      assert.property(myEl.response, 'streams');
-      assert.lengthOf(myEl.response.streams, 0);
+      assert.property(myEl.response, 'results');
+      assert.lengthOf(myEl.response.results, 0);
     });
 
-    test('defines the "currentPage" property', function(){
-      assert.equal(myEl.currentPage, 0);
+    test('defines the "token" property', function() {
+      assert.deepEqual(myEl.token, token);
     });
 
     test('_getApiUrl should a valid api URL', function(){
       assert.equal(myEl._getApiUrl(), apiUrl);
     });
 
-    test('_concatParams should return params object', function(){
-      assert.deepEqual({
-        limit: 10,
-        language: 'en',
-        game: null,
-        offset: 0
-      }, myEl._concatParams());
+    test('_concatParams should return empty params object', function(){
+      assert.deepEqual({}, myEl._concatParams());
     });
 
     test('_concatHeaders should return headers object', function(){
@@ -116,18 +111,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     test('iron-ajax should be correctly setted', function(){
       // already requested at this point
       assert.equal(myEl.$.ajax.url, apiUrl);
-      assert.deepEqual(myEl.$.ajax.headers, {'Client-ID': 'hackme'});
+      assert.deepEqual(myEl.$.ajax.headers, {'Authorization': 'Bearer hackme'});
       assert.equal(myEl.$.ajax.handleAs, 'json');
       assert.equal(myEl.$.ajax.debounceDuration, 30);
-      assert.deepEqual(myEl.$.ajax.params, {
-        limit: 10,
-        language: 'en',
-        game: null,
-        offset: 0
-      });
+      assert.deepEqual(myEl.$.ajax.params, {});
     });
 
-    test('element should have the right twitchtv-card\'s', function(done){
+    test('element should have the right livecoding-card\'s', function(done){
       // rendering, a tough job
       this.slow(200);
 
@@ -137,11 +127,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }).catch(done);
 
       flush(function(){
-        responsePromise.then(function(){
-          var cards = Polymer.dom(myEl.root).querySelectorAll('fake-twitchtv-card');
+        responsePromise.then(function(evt){
+          var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-livecoding-card');
           assert.equal(cards.length, myEl.limit);
           cards.forEach(function(card, index){
-            assert.equal(card.data, myEl.response.streams[index]);
+            assert.equal(card.data, myEl.response.results[index]);
             assert.equal(card.width, myEl.width);
           });
           done();

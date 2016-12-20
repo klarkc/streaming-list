@@ -40,22 +40,84 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       suite('FlagBehavior (' + dom + ' DOM)', function() {
-        var myEl;
+        var myEl, consoleSpy;
+
+        suiteSetup(function() {
+          consoleSpy = sinon.spy(console, 'log');
+        });
 
         setup(function() {
           myEl = fixture('my-element-fixture');
         });
 
-        test('formatLanguage must set language', function() {
-          assert.equal(myEl.formatLanguage(null), null);
-          assert.equal(myEl.formatLanguage('pt-BR'), "Portuguese");
-          assert.equal(myEl.formatLanguage('en'), "English");
-          assert.equal(myEl.formatLanguage('qwd12d12'), null);
-          assert.equal(myEl.formatLanguage('en', true), "flag-icon flag-icon-us");
+        teardown(function() {
+          consoleSpy.reset();
         });
 
-        test('formatFlag must set flag', function(){
-          assert.equal(myEl.formatFlag('en'), "flag-icon flag-icon-us");
+        // getLanguageByLangCode
+        test('getLanguageByLangCode must return an language name', function() {
+          assert.equal(
+            myEl.getLanguageByLangCode('en'),
+            'English'
+          );
+        });
+
+        test('getLanguageByLangCode must return nothing', function() {
+          assert.isUndefined(
+            myEl.getLanguageByLangCode()
+          );
+        });
+
+        test('getLanguageByLangCode must log when flag not found', function() {
+          myEl.getLanguageByLangCode('zz');
+          assert(consoleSpy.calledOnce);
+          assert.isUndefined(
+            myEl.getLanguageByLangCode()
+          );
+        });
+
+        // getFlagByLangCode
+        test('getFlagByLangCode must return flag classes', function() {
+          assert.equal(
+            myEl.getFlagByLangCode('en'),
+            'flag-icon flag-icon-us'
+          );
+        });
+
+        test('getFlagByLangCode must return nothing', function() {
+          assert.isUndefined(
+            myEl.getFlagByLangCode()
+          );
+        });
+
+        test('getFlagByLangCode must log when flag not found', function() {
+          myEl.getFlagByLangCode('zz');
+          assert(consoleSpy.calledOnce);
+          assert.isUndefined(
+            myEl.getFlagByLangCode()
+          );
+        });
+
+        // getFlagByLang
+        test('getFlagByLang must return flag classes', function() {
+          assert.equal(
+            myEl.getFlagByLang('English'),
+            'flag-icon flag-icon-us'
+          );
+        });
+
+        test('getFlagByLang must return nothing', function() {
+          assert.isUndefined(
+            myEl.getFlagByLang()
+          );
+        });
+
+        test('getFlagByLang must log when flag not found', function() {
+          myEl.getFlagByLang('Poop');
+          assert(consoleSpy.calledOnce);
+          assert.isUndefined(
+            myEl.getFlagByLang()
+          );
         });
       });
     </script>
