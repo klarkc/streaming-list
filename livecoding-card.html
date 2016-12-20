@@ -43,7 +43,7 @@ Example:
                 id="card"
                 >
                 <div class="card-image">
-                  <iron-image id="image" on-loaded-changed="_onImageLoaded" src="[[data.thumbnail_url]]"></iron-image>
+                  <iron-image id="image" on-loaded-changed="_onImageLoaded"></iron-image>
                 </div>
                 <div class="card-header">
                   <textfit-div id="title" min-font-size="10" max-font-size="28" text="[[data.title]]" manual-fire></textfit-div>
@@ -121,6 +121,9 @@ Example:
       listeners: {
         'neon-animation-finish': '_onNeonAnimationFinish'
       },
+      observers: [
+        '_setImageSrc(width, data.thumbnail_url)'
+      ],
       behaviors: [
         Polymer.NeonAnimationRunnerBehavior,
         document.StreamingList.FlagBehavior
@@ -154,6 +157,9 @@ Example:
       },
       _formatViewers: function (views) {
         return numeral(views).format('0a') + ' viewers';
+      },
+      _setImageSrc: function() {
+        if (this.data.thumbnail_url) this.$.image.src = this.data.thumbnail_url;
       },
       _categoryUrl: function (category) {
         return 'https://www.livecoding.tv/livestreams/' + encodeURI(category);
