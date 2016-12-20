@@ -53,7 +53,7 @@ Example:
                   <div class="details">
                     <div class="heading">
                       <textfit-div id="userSlug" text="[[data.user__slug]]" ignore-errors="true" manual-fire></textfit-div>
-                      <span id="flag" class$="[[getFlagByLang(data.language)]]" title$="[[data.language)]]"></span>
+                      <span id="flag" class$="[[getFlagByLang(data.language)]]" title$="[[_formatLang(data.language)]]"></span>
                     </div>
                     <div class="category">
                       <iron-icon icon="icons:code"></iron-icon>
@@ -147,6 +147,10 @@ Example:
         } else {
           return "../livecoding_icon.svg";
         }
+      },
+      _formatLang: function(lang) {
+        // for some strange reason, we must parse language
+        return lang || null;
       },
       _formatViewers: function (views) {
         return numeral(views).format('0a') + ' viewers';
