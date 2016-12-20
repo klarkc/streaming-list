@@ -50,6 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           lang="{{language}}"
           width="{{size}}"
           client-id="{{clientId}}"
+          accessToken="{{liveCodingToken}}"
           key="{{key}}"
           service="{{service}}"
           game="{{game}}"
@@ -84,6 +85,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             key: {
               type: String,
               value: "AIzaSyDMAAk08_eOgNAj12gQ3wb3liY0KJgb5kI"
+            },
+            livecodingToken: {
+              type: String,
+              value: function() {
+                /*
+                Getting a valid token:
+                  1. Open in your browser https://www.livecoding.tv/developer/applications/register/
+                  2. Register your app with:
+                      * "Public" in "Client type"
+                      * "Authorization code" in Authorization grant type
+                      * "http://localhost" in "Redirect uris"
+                  3. Copy Client Id
+                  4. Open in your browser https://www.livecoding.tv/o/authorize?client_id=PASTE_YOUR_CLIENT_ID&response_type=code
+                  5. Copy the "code" param in the redirected URL
+                  6. Run: curl -X POST -d "grant_type=authorization_code&code=PASTE_YOUR_CODE&client_id=PASTE_YOUR_CLIENT_ID&redirect_uri=http://localhost" https://www.livecoding.tv/o/token/
+                */
+                return {
+                  access_token: 'Cer1wrCxqAXagnNe0CfmJJzmSKXo2C',
+                  refresh_token: 'UZ2yjwqlmfF78y0vi0xMyd6RaqYIQr'
+                }
+              }
             }
           }
         });
