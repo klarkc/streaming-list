@@ -148,6 +148,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       });
     });
+
+    test('should show the "no more results" message', function(done) {
+      var p = Polymer.dom(this.myEl.root).querySelector('#noResults');
+      var event = {
+          detail: { response: { streams: [] } }
+      };
+      this.myEl.addEventListener('streaming-list-response', function(evt) {
+        assert.equal(p.innerHTML, 'No more results');
+        done();
+      });
+      this.myEl._onResponse(event);
+    });
   });
   </script>
 

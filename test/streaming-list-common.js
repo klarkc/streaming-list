@@ -171,4 +171,9 @@ var streamingListCommon = function() {
 
     myEl.generateRequest(true);
   });
+
+  test('the "no more results" message should not be shown', function() {
+    var p = Polymer.dom(this.myEl.root).querySelector('#noResults');
+    assert.equal(p.innerHTML, '');
+  });
 };
