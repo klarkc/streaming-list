@@ -324,31 +324,31 @@ Example:
         //console.log(event.detail.response);
         var oldStreams;
         var response = event.detail.response;
+        var length;
 
         // set old streams concated with new streams
         if (this.service === 'twitch') {
           oldStreams = this.response.streams;
           this.set('response.streams', oldStreams.concat(response.streams));
-          // deactivates spinner and show message if no more results are found
-          if(response.streams.length < this.limit) {
-            this.$.spinnerBottom.active = false;
-            this.$.noResults.innerHTML = "No more results";
-          }
+          length = response.streams.length;
         }
 
         if (this.service === 'youtube') {
           oldStreams = this.response.items;
+          length = response.items.length;
           this.set('response.items', oldStreams.concat(response.items));
-          // deactivates spinner and show message if no more results are found
-          if(response.items.length < this.limit) {
-            this.$.spinnerBottom.active = false;
-            this.$.noResults.innerHTML = "No more results";
-          }
         }
 
         if (this.service === 'livecoding') {
           oldStreams = this.response.results;
+          length = response.results.length;
           this.set('response.results', oldStreams.concat(response.results));
+        }
+
+        // deactivates spinner and show message if no more results are found
+        if(length < this.limit) {
+          this.$.spinnerBottom.active = false;
+          this.$.noResults.innerHTML = "No more results";
         }
 
         this.fire('streaming-list-response', event.detail);
