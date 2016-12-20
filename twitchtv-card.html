@@ -61,7 +61,7 @@ Example:
         <div class="details">
           <div class="heading">
             <textfit-div id="title" text="[[data.channel.display_name]]" ignore-errors="true" manual-fire></textfit-div>
-            <span class$="[[formatFlag(data.channel.language)]]" title$="[[formatLanguage(data.channel.language)]]"></span>
+            <span class$="[[getFlagByLangCode(data.channel.language)]]" title$="[[getLanguageByLangCode(data.channel.language)]]"></span>
           </div>
           <div class="game">
             <iron-icon icon="hardware:videogame-asset"></iron-icon>
