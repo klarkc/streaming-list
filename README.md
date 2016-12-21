@@ -94,7 +94,7 @@ Install it via:
 
 Then, you can run your tests on _all_ of your local browsers via:
 
-    wct
+    wct --skip-plugin sauce
 
 #### WCT Tips
 
