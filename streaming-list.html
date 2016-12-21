@@ -287,7 +287,8 @@ Example:
             relevanceLanguage: this.lang,
             type: 'video',
             videoCategoryId: 20, // Gaming category
-            key: this.key
+            key: this.key,
+            pageToken: this._nextPageToken
           };
         }
 
@@ -337,6 +338,7 @@ Example:
           oldStreams = this.response.items;
           length = response.items.length;
           this.set('response.items', oldStreams.concat(response.items));
+          this._nextPageToken = response.nextPageToken;
         }
 
         if (this.service === 'livecoding') {
