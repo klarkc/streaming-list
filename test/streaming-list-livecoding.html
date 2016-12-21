@@ -35,11 +35,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   var dom = document.params.dom || 'shady';
   suite('Livecoding tests (' + dom + ' DOM)', function() {
 
-    var myEl, apiUrl, server, response, service, token;
+    var myEl, apiUrl, server, response,
+      service, token, tokenUrl, clientId;
 
     suiteSetup(function() {
       apiUrl = this.apiUrl = 'https://www.livecoding.tv:443/api/livestreams/onair/';
-
+      tokenUrl = 'https://www.livecoding.tv/o/token/';
       response = this.response = document.livecodingRes;
       // Fix size of response to match limit
       response.results.splice(10, response.results.length);
@@ -64,6 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     setup(function() {
       token = this.token = {access_token: 'hackme', refresh_token: 'hackme'};
+      clientId = this.clientId = 'hackme';
       myEl = this.myEl = fixture('streaming-list-fixture');
       myEl.token = token;
 
@@ -84,6 +86,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('defines the "livecodingApiUrl" property', function() {
       assert.equal(myEl.livecodingApiUrl, apiUrl);
+    });
+
+    test('defines the "livecodingTokenUrl" property', function() {
+      assert.equal(myEl.livecodingTokenUrl, tokenUrl);
+    });
+
+    test('defines the "clientId" property', function() {
+      assert.equal(myEl.clientId, clientId);
     });
 
     test('defines the "response" property', function() {
@@ -149,6 +159,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         done();
       });
       this.myEl._onResponse(event);
+    });
+
+    test.skip('access_token must be refreshed after an 401 auth error', function(done) {
+      // TODO: Please implement this test
+      done();
+    });
+
+    test.skip('streaming-list-refresh-token must be fired after a token refresh', function(done) {
+      // TODO: Please implement this test
+      done();
     });
   });
   </script>
