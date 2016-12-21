@@ -68,6 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       clientId = this.clientId = 'hackme';
       myEl = this.myEl = fixture('streaming-list-fixture');
       myEl.token = token;
+      myEl.clientId = this.clientId;
 
       // Disable auto request, to not call no-wanted events
       myEl.$.ajax.auto = false;
