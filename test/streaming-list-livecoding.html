@@ -151,15 +151,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('should show the "no more results" message', function(done) {
-      var p = Polymer.dom(this.myEl.root).querySelector('#noResults');
+      var p = Polymer.dom(myEl.root).querySelector('#noResults');
       var event = {
           detail: { response: { results: [] } }
         };
-      this.myEl.addEventListener('streaming-list-response', function(evt) {
+      myEl.addEventListener('streaming-list-response', function(evt) {
         assert.equal(p.innerHTML, 'No more results');
         done();
       });
-      this.myEl._onResponse(event);
+      myEl._onResponse(event);
     });
 
     test.skip('access_token must be refreshed after an 401 auth error', function(done) {
