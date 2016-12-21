@@ -105,7 +105,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         relevanceLanguage: myEl.lang,
         type: 'video',
         videoCategoryId: 20, // Gaming category
-        key: myEl.key
+        key: myEl.key,
+        pageToken: myEl._nextPageToken
       }, myEl._concatParams());
     });
 
@@ -123,7 +124,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         relevanceLanguage: 'en',
         type: 'video',
         videoCategoryId: 20, // Gaming category
-        key: key
+        key: key,
+        pageToken: null
       });
     });
 
@@ -159,6 +161,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         done();
       });
       this.myEl._onResponse(event);
+    });
+
+    test('_nextPageToken should be seted after a response', function() {
+      myEl.addEventListener('streaming-list-response', function(done) {
+        assert.equal(myEl._nextPageToken, response.nextPageToken);
+        done();
+      });
+      myEl.generateRequest();
     });
   });
   </script>
