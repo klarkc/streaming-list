@@ -128,46 +128,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.equal(myEl.$.ajax.params.pageToken, null);
     });
 
-    test('element should have the right youtube-card\'s', function(done){
-      // rendering, a tough job
-      this.slow(200);
+    suite('after response', function() {
+      setup(function(done){
+        // rendering, a tough job
+        this.slow(200);
 
-      var responsePromise = new Promise(function(resolve, reject) {
-        myEl.addEventListener('streaming-list-response', resolve);
-        myEl.addEventListener('streaming-list-error', reject);
-      }).catch(done);
+        var responsePromise = new Promise(function(resolve, reject) {
+          myEl.addEventListener('streaming-list-response', resolve);
+          myEl.addEventListener('streaming-list-error', reject);
+        }).catch(done);
 
-      flush(function(){
-        responsePromise.then(function(){
-          var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-youtube-card');
-          assert.equal(cards.length, myEl.limit);
-          cards.forEach(function(card, index){
-            assert.equal(card.data, myEl.response.items[index]);
-            assert.equal(card.width, myEl.width);
+        flush(function(){
+          responsePromise.then(function(){
+            done();
           });
-          done();
         });
       });
-    });
 
-    test('should show the "no more results" message', function(done) {
-      var p = Polymer.dom(myEl.root).querySelector('#noResults');
-      var event = {
-          detail: { response: { items: [] } }
-      };
-      myEl.addEventListener('streaming-list-response', function(evt) {
-        assert.equal(p.innerHTML, 'No more results');
-        done();
+      test('element should have the right youtube-card\'s', function(){
+        var cards =  Polymer.dom(myEl.root).querySelectorAll('fake-youtube-card');
+        assert.equal(cards.length, myEl.limit);
+        cards.forEach(function(card, index){
+          assert.equal(card.data, myEl.response.items[index]);
+          assert.equal(card.width, myEl.width);
+        });
       });
-      myEl._onResponse(event);
-    });
 
-    test('_nextPageToken should be seted after a response', function(done) {
-      myEl.addEventListener('streaming-list-response', function() {
+      test('should show the "no more results" message', function() {
+          var p = Polymer.dom(myEl.root).querySelector('#noResults');
+          var event = {
+              detail: { response: { items: [] } }
+          };
+
+          myEl.addEventListener('streaming-list-response', function() {
+            assert.equal(p.innerHTML, 'No more results');
+          });
+          myEl._onResponse(event);
+      });
+
+      test('_nextPageToken should be seted after a response', function() {
         assert.equal(myEl._nextPageToken, response.nextPageToken);
-        done();
       });
-      myEl.generateRequest();
     });
   });
   </script>
