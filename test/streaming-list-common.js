@@ -158,6 +158,7 @@ var streamingListCommon = function() {
     var myEl = this.myEl;
     myEl.addEventListener('streaming-list-request', function(){
       assert.isFalse(myEl._scrollListening);
+      assert.isNull(myEl._nextPageToken);
       assert.equal(0, myEl.currentPage);
       assert.equal(0, myEl.response.items.length);
       assert.equal(0, myEl.response.streams.length);
