@@ -247,7 +247,7 @@ Example:
       },
 
       observers: [
-        'generateRequest(service, twitchApiUrl, youtubeApiUrl, limit, lang, game, clientId, key)'
+        'generateRequest(service, twitchApiUrl, youtubeApiUrl, limit, lang, game, clientId, key, token)'
       ],
 
       listeners: {
@@ -359,6 +359,16 @@ Example:
       },
 
       _onError: function(event) {
+        // If it was an Auth error and service is livecoding, refresh token
+        if(
+          this.service ==='livecoding' &&
+          event.detail.request.status === 401
+        ) {
+          console.log('refreshing livecoding token');
+          this.set('token.access_token', this.token.refresh_token);
+          return;
+        }
+
         this.fire('streaming-list-error', event.detail);
       },
 
