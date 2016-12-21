@@ -115,18 +115,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.equal(myEl.$.ajax.url, apiUrl);
       assert.equal(myEl.$.ajax.handleAs, 'json');
       assert.equal(myEl.$.ajax.debounceDuration, 30);
-      assert.deepEqual(myEl.$.ajax.params, {
-        part: 'snippet',
-        eventType: 'live',
-        maxResults: 10,
-        order: 'viewCount',
-        q: null,
-        relevanceLanguage: 'en',
-        type: 'video',
-        videoCategoryId: 20, // Gaming category
-        key: key,
-        pageToken: null
-      });
+      assert.equal(myEl.$.ajax.params.part, 'snippet');
+      assert.equal(myEl.$.ajax.params.eventType, 'live');
+      assert.equal(myEl.$.ajax.params.part, 'snippet');
+      assert.equal(myEl.$.ajax.params.maxResults, 10);
+      assert.equal(myEl.$.ajax.params.order, 'viewCount');
+      assert.equal(myEl.$.ajax.params.q, null);
+      assert.equal(myEl.$.ajax.params.relevanceLanguage, 'en');
+      assert.equal(myEl.$.ajax.params.type, 'video');
+      assert.equal(myEl.$.ajax.params.videoCategoryId, 20);
+      assert.equal(myEl.$.ajax.params.key, key);
+      assert.equal(myEl.$.ajax.params.pageToken, null);
     });
 
     test('element should have the right youtube-card\'s', function(done){
@@ -152,19 +151,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     test('should show the "no more results" message', function(done) {
-      var p = Polymer.dom(this.myEl.root).querySelector('#noResults');
+      var p = Polymer.dom(myEl.root).querySelector('#noResults');
       var event = {
           detail: { response: { items: [] } }
       };
-      this.myEl.addEventListener('streaming-list-response', function(evt) {
+      myEl.addEventListener('streaming-list-response', function(evt) {
         assert.equal(p.innerHTML, 'No more results');
         done();
       });
-      this.myEl._onResponse(event);
+      myEl._onResponse(event);
     });
 
-    test('_nextPageToken should be seted after a response', function() {
-      myEl.addEventListener('streaming-list-response', function(done) {
+    test('_nextPageToken should be seted after a response', function(done) {
+      myEl.addEventListener('streaming-list-response', function() {
         assert.equal(myEl._nextPageToken, response.nextPageToken);
         done();
       });
