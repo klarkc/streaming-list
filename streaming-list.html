@@ -226,9 +226,9 @@ Example:
       },
 
       observers: [
-        'generateRequest(service, twitchApiUrl, limit, lang, game, clientId)',
-        'generateRequest(service, youtubeApiUrl, limit, lang, game, key)',
-        'generateRequest(service, livecodingApiUrl, livecodingTokenUrl, limit, clientId, token.*)'
+        '_checkMatchingParams(service, twitchApiUrl, limit, lang, game, clientId)',
+        '_checkMatchingParams(service, youtubeApiUrl, limit, lang, game, key)',
+        '_checkMatchingParams(service, livecodingApiUrl, livecodingTokenUrl, limit, clientId, token.*)'
       ],
 
       listeners: {
@@ -241,6 +241,20 @@ Example:
         // Here we set minimal required values to generateRequest
         if(!this.game) this.game = null;
         if(!this.lang) this.lang = null;
+      },
+
+      /**
+       * Check if service and api url matches before procced to request
+       * @param  {String} service the service name
+       * @param  {String} apiUrl  the api URL
+       * @return
+       */
+      _checkMatchingParams: function(service, apiUrl) {
+        if(service === 'twitch' && apiUrl !== this.twitchApiUrl) return;
+        if(service === 'youtube' && apiUrl !== this.youtubeApiUrl) return;
+        if(service === 'livecoding' && apiUrl !== this.livecodingApiUrl) return;
+
+        this.generateRequest.apply(this, arguments);
       },
 
       _getApiUrl: function() {
