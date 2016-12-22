@@ -228,7 +228,7 @@ Example:
       observers: [
         'generateRequest(service, twitchApiUrl, limit, lang, game, clientId)',
         'generateRequest(service, youtubeApiUrl, limit, lang, game, key)',
-        'generateRequest(service, livecodingApiUrl,, livecodingTokenUrl, limit, clientId, token)'
+        'generateRequest(service, livecodingApiUrl,, livecodingTokenUrl, limit, clientId, token.*)'
       ],
 
       listeners: {
@@ -236,9 +236,11 @@ Example:
       },
 
       ready: function() {
-        if(this.width) {
-          this.className = 'layout horizontal wrap';
-        }
+        if(this.width) this.className = 'layout horizontal wrap';
+
+        // Here we set minimal required values to generateRequest
+        if(!this.game) this.game = null;
+        if(!this.lang) this.lang = null;
       },
 
       _getApiUrl: function() {
@@ -303,36 +305,40 @@ Example:
 
       _onResponse: function(event) {
         //console.log(event.detail.response);
-        var oldStreams;
         var response = event.detail.response;
-        var length;
 
         // set old streams concated with new streams
-        if (this.service === 'twitch') {
-          oldStreams = this.response.streams;
-          this.set('response.streams', oldStreams.concat(response.streams));
-          length = response.streams.length;
-        }
+        if(this.service === 'twitch') this._processTwitchResponse(response);
+        if(this.service === 'youtube') this._processYoutubeResponse(response);
+        if(this.service === 'livecoding') this._processLivecodingResponse(response);
 
-        if (this.service === 'youtube') {
-          oldStreams = this.response.items;
-          length = response.items.length;
-          this.set('response.items', oldStreams.concat(response.items));
-        }
+        this.fire('streaming-list-response', event.detail);
+      },
 
-        if (this.service === 'livecoding') {
-          oldStreams = this.response.results;
-          length = response.results.length;
-          this.set('response.results', oldStreams.concat(response.results));
-        }
+      _processTwitchResponse: function(response) {
+        if(!this.response) this.response = {streams: []};
+        this.set('response.streams', this.response.streams.concat(response.streams));
+        this._checkMoreResults(this.response.streams.length);
+      },
 
+      _processYoutubeResponse: function(response) {
+        if(!this.response) this.response = {items: []};
+        this.set('response.items', this.response.items.concat(response.items));
+        this._checkMoreResults(this.response.items.length);
+      },
+
+      _processLivecodingResponse: function(response) {
+        if(!this.response) this.response = {results: []};
+        this.set('response.results', this.response.results.concat(response.results));
+        this._checkMoreResults(this.response.results.length);
+      },
+
+      _checkMoreResults: function(length) {
         // deactivates spinner and show message if no more results are found
         if(length < this.limit) {
           this.$.spinnerBottom.active = false;
           this.$.noResults.innerHTML = "No more results";
         }
-
-        this.fire('streaming-list-response', event.detail);
       },
 
       _onError: function(event) {
@@ -416,9 +422,7 @@ Example:
         //console.log('reseting state');
         this.$.scroll.stopObserve();
         this._scrollListening = false;
-
-        this.set('response.streams', []);
-        this.set('response.items', []);
+        this.set('response', null);
         this._setCurrentPage(0);
       },
 
