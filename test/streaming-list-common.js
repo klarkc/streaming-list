@@ -7,16 +7,16 @@ var streamingListCommon = function() {
     assert.equal(this.myEl.limit, 10);
   });
 
-  test('defines the "width" property', function() {
-    assert.equal(this.myEl.width, null);
+  test('"width" property should be undefined', function() {
+    assert.isUndefined(this.myEl.width);
   });
 
-  test('defines the "lang" property', function() {
-    assert.equal(this.myEl.lang, "en");
+  test('"lang" property should be undefined', function() {
+    assert.isUndefined(this.myEl.lang);
   });
 
-  test('defines the "game" property', function() {
-    assert.equal(this.myEl.game, null);
+  test('"game" property should be undefined', function() {
+    assert.isUndefined(this.myEl.game);
   });
 
   test('_onRequest should activate spinner', function() {
@@ -94,20 +94,18 @@ var streamingListCommon = function() {
     /* Pending implementation */
   });
 
-  test('the response event should be correctly fired', function(done){
+  test('the response event should be correctly fired', function(){
     var res = this.response;
     var myEl = this.myEl;
     var responsePromise = new Promise(function(resolve, reject){
       myEl.addEventListener('streaming-list-response', resolve);
       myEl.addEventListener('streaming-list-error', reject);
-    }).catch(done);
+    });
+    var flushPromise = new Promise(function(resolve){
+      flush(resolve);
+    });
 
-    flush(function(){
-      responsePromise.then(function(evt){
-        assert.deepEqual(evt.detail.response, res);
-        done();
-      });
-    }); // Call all observers to the test
+    return Promise.all([flushPromise, responsePromise]);
   });
 
   test('streaming-list-error should be triggered in a request error', function(done){

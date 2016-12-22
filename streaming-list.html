@@ -162,31 +162,17 @@ Example:
         /**
          * `clientId` Client-ID, required for twitch service (register your app at https://www.twitch.tv/settings/connections)
          */
-        clientId: {
-          type: String,
-          value: null
-        },
+        clientId: String,
 
         /**
          * `token` OAuth Token, required for livecoding service, see how to get your token in our demo page
          */
-        token: {
-          type: Object,
-          value: function() {
-            return {
-              access_token: null,
-              refresh_token: null
-            }
-          }
-        },
+        token: Object,
 
         /**
          * `key` API Key, required for youtube service (register your app at https://console.cloud.google.com/appengine)
          */
-        key: {
-          type: String,
-          value: null
-        },
+        key: String,
 
         /**
          * `limit` Used to define the number of itens on each page
@@ -208,38 +194,23 @@ Example:
         /**
         * `width` If you define width (in pixels) the container layout will be changed to wrap and the card size will be fixed with the given width
         */
-        width: {
-          type: Number,
-          notify: true,
-          value: null
-        },
+        width: Number,
 
         /**
          * `lang` Used to filter the language of the videos (not used in livecoding service)
          */
-        lang: {
-          type: String,
-          notify: true,
-          value: "en"
-        },
+        lang: String,
 
         /**
          * `game` Used to filter videos from a specific game (not used in livecoding service)
          */
-        game: {
-          type: String,
-          notify: true,
-          value: null
-        },
+        game: String,
 
         /**
         * `response` Cached data retrieved from the server
         */
         response: {
           type: Object,
-          value: function(){
-            return {streams: [], items: [], results: []};
-          },
           notify: true
         },
 
@@ -255,7 +226,9 @@ Example:
       },
 
       observers: [
-        'generateRequest(service, twitchApiUrl, youtubeApiUrl, limit, lang, game, clientId, key)'
+        'generateRequest(service, twitchApiUrl, limit, lang, game, clientId)',
+        'generateRequest(service, youtubeApiUrl, limit, lang, game, key)',
+        'generateRequest(service, livecodingApiUrl,, livecodingTokenUrl, limit, clientId, token)'
       ],
 
       listeners: {
@@ -454,11 +427,11 @@ Example:
        * @returns {!IronRequestElement} Returns !IronRequestElement
        */
       generateRequest: function() {
+        console.trace(arguments);
         // Clear application state before, if generateRequest has arguments (observer)
         if (arguments.length > 0) this._resetState();
 
         this.$.ajax.params = this._concatParams();
-        //console.trace(this.$.ajax.params);
         return this.$.ajax.generateRequest();
       }
     });
